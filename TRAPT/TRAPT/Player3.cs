@@ -17,7 +17,7 @@ namespace TRAPT
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Player : Microsoft.Xna.Framework.GameComponent
+    public class Player3 : Microsoft.Xna.Framework.GameComponent
     {
         // PHYSICS FIELDS
 
@@ -63,7 +63,7 @@ namespace TRAPT
         int spriteWidth = 88;
         int spriteHeight = 88;
 
-        public Player(Game game)
+        public Player3(Game game)
             : base(game)
         {
             // TODO: Construct any child components here
@@ -238,47 +238,46 @@ namespace TRAPT
             if (ks.IsKeyDown(this.up))
             {
                 //this.direction = (float)Math.PI * 2;
-                SpeedUp();
+                //SpeedUp();
 
-                this.velocity.Y = -1 * (float)(this.speed);
+                //this.velocity.Y = -1 * (float)(this.speed);
 
                 //this.velocity.Y -= (float)(this.acceleration);
 
-                //MotionAdd((float)(Math.PI * 2), this.acceleration);
+                MotionAdd((float)(Math.PI * 2), this.acceleration);
 
             }
             else if (ks.IsKeyDown(this.down))
             {
                 //this.direction = (float)Math.PI;
-                SpeedUp();
+                //SpeedUp();
 
-                this.velocity.Y = (float)(this.speed);
+                //this.velocity.Y = (float)(this.speed);
 
                 //this.velocity.Y += (float)(this.acceleration);
 
-                //MotionAdd((float)Math.PI, this.acceleration);
+                MotionAdd((float)Math.PI, this.acceleration);
             }
             if (ks.IsKeyDown(this.left))
             {
                 //this.direction = (float)(3 * Math.PI / 2);
-                SpeedUp();
+                //SpeedUp();
 
-                this.velocity.X = -1 * (float)(this.speed);
+                //this.velocity.X = -1 * (float)(this.speed);
 
                 //this.velocity.X -= (float)(this.acceleration);
 
-                //MotionAdd((float)(3 * Math.PI / 2), this.acceleration);
+                MotionAdd((float)(3 * Math.PI / 2), this.acceleration);
             }
             else if (ks.IsKeyDown(this.right))
             {
                 //this.direction = (float)Math.PI / 2;
-                SpeedUp();
+                //SpeedUp();
 
-                this.velocity.X = (float)(this.speed);
-
+                //this.velocity.X = (float)(this.speed);
                 //this.velocity.X += (float)(this.acceleration);
 
-                //MotionAdd((float)(Math.PI / 2), this.acceleration);
+                MotionAdd((float)(Math.PI / 2), this.acceleration);
             }
 
 
@@ -355,12 +354,12 @@ namespace TRAPT
             spriteBatch.DrawString(this.font, debug, origin, Color.White);
         }
 
-        public bool IsColliding(Player that)
+        public bool IsColliding(Player3 that)
         {
             return this.destination.Intersects(that.destination);
         }
 
-        public void Collide(Player that)
+        public void Collide(Player3 that)
         {
             // change the velocites
             Vector2 swapV = new Vector2(that.velocity.X, that.velocity.Y);

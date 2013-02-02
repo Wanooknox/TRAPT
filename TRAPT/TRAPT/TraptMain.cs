@@ -107,7 +107,7 @@ namespace TRAPT
 
 
             this.spriteBatch.End();
-
+            
             base.Draw(gameTime);
         }
     }

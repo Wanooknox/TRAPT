@@ -17,7 +17,7 @@ namespace TRAPT
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Player : Microsoft.Xna.Framework.GameComponent
+    public class Player2 : Microsoft.Xna.Framework.GameComponent
     {
         // PHYSICS FIELDS
 
@@ -31,7 +31,7 @@ namespace TRAPT
         private static float MIN_SPEED = 0f;
         float friction = 0.25f;
         float acceleration = 0.5f;
-        float rotation_acceleration = 0.05f * (float)Math.PI;
+        float rotation_acceleration = 0.05f * (float)180;
 
         float spinCount = 0f;
 
@@ -63,7 +63,7 @@ namespace TRAPT
         int spriteWidth = 88;
         int spriteHeight = 88;
 
-        public Player(Game game)
+        public Player2(Game game)
             : base(game)
         {
             // TODO: Construct any child components here
@@ -97,7 +97,7 @@ namespace TRAPT
         private float RandDir()
         {
             // set random rotation. random # from 0.0 - 1.0 * 2pi gets angle in radians
-            return (float)((new Random()).NextDouble() * (2 * Math.PI));
+            return (float)((new Random()).NextDouble() * (2 * 180));
         }
 
         private void StartMoving()
@@ -142,7 +142,7 @@ namespace TRAPT
         private void UpdateVelocity()
         {
             // do some fancy trig to find the right value for X and Y based onthe speed and direction
-            this.velocity.Y = (float)(this.speed * Math.Cos(this.direction + Math.PI));
+            this.velocity.Y = (float)(this.speed * Math.Cos(this.direction + 180));
             this.velocity.X = (float)(this.speed * Math.Sin(this.direction));
         }
 
@@ -154,7 +154,7 @@ namespace TRAPT
             //calculate a new direction (in radians) based on the current velocity values
             this.direction = (float)Math.Atan2(this.velocity.X, -this.velocity.Y);
             //add a small ofset to differ the direction just a bit
-            //this.direction += (float)((new Random()).NextDouble() * (Math.PI / 6));
+            //this.direction += (float)((new Random()).NextDouble() * (180 / 6));
         }
 
 
@@ -163,11 +163,11 @@ namespace TRAPT
             
             float finalDir;
             //if the difference in direction is less than 2 degrees
-            if (Math.Abs(dir2 - dir1) < ((Math.PI * 2) / 360)
-                || Math.Abs(dir1 - Math.PI) == dir2)
+            if (Math.Abs(dir2 - dir1) < 2
+                || Math.Abs(dir1 - 180) == dir2)
             {
                 // enforce new direction
-                finalDir = dir1;
+                finalDir = dir2;
             }
             else
             {
@@ -180,15 +180,15 @@ namespace TRAPT
                     dir2 = temp;
                 }
 
-                if (dir2 - dir1 > Math.PI)
+                if (dir2 - dir1 > 180)
                 {
-                    dir2 -= (float)(Math.PI * 2);
+                    dir2 -= (float)360;
                 }
 
                 finalDir = (dir2 + dir1) / 2;
                 if (finalDir < 0)
                 {
-                    finalDir += (float)(Math.PI * 2);
+                    finalDir += (float)360;
                 }
             }
 
@@ -208,18 +208,18 @@ namespace TRAPT
             if (Math.Abs(this.velocity.Length()) < MAX_SPEED)
             {
                 // do some fancy trig to find the right value for X and Y based on the speed and direction
-                this.velocity.Y += (float)(speedAdd * Math.Cos(midAngle + Math.PI));
-                this.velocity.X += (float)(speedAdd * Math.Sin(midAngle));
+                this.velocity.Y += (float)(speedAdd * Math.Sin(midAngle));
+                this.velocity.X += (float)(speedAdd * Math.Cos(midAngle));
 
                 this.speed += speedAdd;
                 this.direction = midAngle;
             }
             else
             {
-                this.speed = Math.Abs(this.velocity.Length());
+                this.speed = MAX_SPEED;//Math.Abs(this.velocity.Length());
                 // do some fancy trig to find the right value for X and Y based on the speed and direction
-                this.velocity.Y = (float)(this.speed * Math.Cos(midAngle + Math.PI));
-                this.velocity.X = (float)(this.speed * Math.Sin(midAngle));
+                this.velocity.Y = (float)(this.speed * Math.Sin(midAngle));
+                this.velocity.X = (float)(this.speed * Math.Cos(midAngle));
 
             }
             
@@ -237,48 +237,47 @@ namespace TRAPT
             // Move faster or slower.
             if (ks.IsKeyDown(this.up))
             {
-                //this.direction = (float)Math.PI * 2;
-                SpeedUp();
+                //this.direction = (float)180 * 2;
+                //SpeedUp();
 
-                this.velocity.Y = -1 * (float)(this.speed);
+                //this.velocity.Y = -1 * (float)(this.speed);
 
                 //this.velocity.Y -= (float)(this.acceleration);
 
-                //MotionAdd((float)(Math.PI * 2), this.acceleration);
+                MotionAdd((float)90, this.acceleration);
 
             }
             else if (ks.IsKeyDown(this.down))
             {
-                //this.direction = (float)Math.PI;
-                SpeedUp();
+                //this.direction = (float)180;
+                //SpeedUp();
 
-                this.velocity.Y = (float)(this.speed);
+                //this.velocity.Y = (float)(this.speed);
 
                 //this.velocity.Y += (float)(this.acceleration);
 
-                //MotionAdd((float)Math.PI, this.acceleration);
+                MotionAdd((float)270, this.acceleration);
             }
             if (ks.IsKeyDown(this.left))
             {
-                //this.direction = (float)(3 * Math.PI / 2);
-                SpeedUp();
+                //this.direction = (float)(3 * 180 / 2);
+                //SpeedUp();
 
-                this.velocity.X = -1 * (float)(this.speed);
+                //this.velocity.X = -1 * (float)(this.speed);
 
                 //this.velocity.X -= (float)(this.acceleration);
 
-                //MotionAdd((float)(3 * Math.PI / 2), this.acceleration);
+                MotionAdd((float)180, this.acceleration);
             }
             else if (ks.IsKeyDown(this.right))
             {
-                //this.direction = (float)Math.PI / 2;
-                SpeedUp();
+                //this.direction = (float)180 / 2;
+                //SpeedUp();
 
-                this.velocity.X = (float)(this.speed);
-
+                //this.velocity.X = (float)(this.speed);
                 //this.velocity.X += (float)(this.acceleration);
 
-                //MotionAdd((float)(Math.PI / 2), this.acceleration);
+                MotionAdd((float)0, this.acceleration);
             }
 
 
@@ -348,19 +347,19 @@ namespace TRAPT
                 // Required, but, not important.
                 SpriteEffects.None, 0);
 
-            String debug = "Direction: " + this.direction * (180.0/Math.PI)
+            String debug = "Direction: " + this.direction
                 + "\nVelocity: " + this.velocity
                 + "\nSpeed: " + this.speed;
 
             spriteBatch.DrawString(this.font, debug, origin, Color.White);
         }
 
-        public bool IsColliding(Player that)
+        public bool IsColliding(Player2 that)
         {
             return this.destination.Intersects(that.destination);
         }
 
-        public void Collide(Player that)
+        public void Collide(Player2 that)
         {
             // change the velocites
             Vector2 swapV = new Vector2(that.velocity.X, that.velocity.Y);
