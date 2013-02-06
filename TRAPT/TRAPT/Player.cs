@@ -20,20 +20,16 @@ namespace TRAPT
     public class Player : Microsoft.Xna.Framework.GameComponent
     {
         // PHYSICS FIELDS
-
         public Vector2 position;
         public Vector2 velocity;
         private float rotation;
         private float direction;
 
         float speed = 0f;
-        private static float MAX_SPEED = 10f;
+        private static float MAX_SPEED = 5f;
         private static float MIN_SPEED = 0f;
         float friction = 0.25f;
         float acceleration = 0.5f;
-        float rotation_acceleration = 0.05f * (float)Math.PI;
-
-        float spinCount = 0f;
 
         // CONTROLS
 
@@ -42,21 +38,15 @@ namespace TRAPT
         protected Keys down = Keys.S;
         protected Keys left = Keys.A;
         protected Keys right = Keys.D;
-        //protected Keys start = Keys.Space;
-        //bool isMoving = false;
 
 
         // DRAWING FIELDS
-
         Texture2D texture;
         SpriteFont font;
         public Rectangle destination;
         public Rectangle source;
         Color color;
-        //SoundEffect boing;
-
-
-
+        
         // sprite shape
         int spriteStartX = 0; // X of top left corner of sprite 0. 
         int spriteStartY = 0; // Y of top left corner of sprite 0.
@@ -77,7 +67,7 @@ namespace TRAPT
         {
             this.position = position;
             this.rotation = rotation;
-            //this.direction = RandDir();
+            
 
             //calculate a random sprite color
             Random randonGen = new Random();
@@ -88,24 +78,11 @@ namespace TRAPT
             this.source = new Rectangle(this.spriteStartX, this.spriteStartY, this.spriteWidth, this.spriteHeight);
 
             this.texture = Game.Content.Load<Texture2D>("face");
+            // font for printing debug info.
             this.font = Game.Content.Load<SpriteFont>("SpriteFont1");
-            //this.boing = Game.Content.Load<SoundEffect>("boing");
+            
 
             base.Initialize();
-        }
-
-        private float RandDir()
-        {
-            // set random rotation. random # from 0.0 - 1.0 * 2pi gets angle in radians
-            return (float)((new Random()).NextDouble() * (2 * Math.PI));
-        }
-
-        private void StartMoving()
-        {
-            //change the direction to a random one.
-            this.direction = RandDir();
-            // calculate the velocity vector
-            UpdateVelocity();
         }
 
         /// <summary>
@@ -119,9 +96,12 @@ namespace TRAPT
                 //add acceleration to the speed and recalculate the velocity vector
                 this.speed += this.acceleration;
             }
-            //UpdateVelocity();
         }
 
+        
+
+        // these are experimental methods that are not being used right now
+        #region Not Used
         /// <summary>
         /// 
         /// </summary>
@@ -156,7 +136,6 @@ namespace TRAPT
             //add a small ofset to differ the direction just a bit
             //this.direction += (float)((new Random()).NextDouble() * (Math.PI / 6));
         }
-
 
         private float MidAngle(float dir1, float dir2)
         {
@@ -222,8 +201,8 @@ namespace TRAPT
                 this.velocity.X = (float)(this.speed * Math.Sin(midAngle));
 
             }
-            
         }
+        #endregion
 
         /// <summary>
         /// Allows the game component to update itself.
@@ -233,54 +212,42 @@ namespace TRAPT
         {
             // Moving update:
             KeyboardState ks = Keyboard.GetState();
+            MouseState ms = Mouse.GetState();
 
             // Move faster or slower.
             if (ks.IsKeyDown(this.up))
             {
-                //this.direction = (float)Math.PI * 2;
+                //increase the speed
                 SpeedUp();
-
+                //reverse on y axis at rate of speed
                 this.velocity.Y = -1 * (float)(this.speed);
-
-                //this.velocity.Y -= (float)(this.acceleration);
-
-                //MotionAdd((float)(Math.PI * 2), this.acceleration);
-
             }
             else if (ks.IsKeyDown(this.down))
             {
-                //this.direction = (float)Math.PI;
+                //increase speed
                 SpeedUp();
-
+                //forward on y axis at rate of speed
                 this.velocity.Y = (float)(this.speed);
-
-                //this.velocity.Y += (float)(this.acceleration);
-
-                //MotionAdd((float)Math.PI, this.acceleration);
             }
             if (ks.IsKeyDown(this.left))
             {
-                //this.direction = (float)(3 * Math.PI / 2);
+                //inccrease speed
                 SpeedUp();
-
+                //reverse on x axis at rate of speed
                 this.velocity.X = -1 * (float)(this.speed);
-
-                //this.velocity.X -= (float)(this.acceleration);
-
-                //MotionAdd((float)(3 * Math.PI / 2), this.acceleration);
             }
             else if (ks.IsKeyDown(this.right))
             {
-                //this.direction = (float)Math.PI / 2;
+                //increase speed
                 SpeedUp();
-
+                //forward on x axis at rate of speed
                 this.velocity.X = (float)(this.speed);
-
-                //this.velocity.X += (float)(this.acceleration);
-
-                //MotionAdd((float)(Math.PI / 2), this.acceleration);
             }
 
+            //calculate visual rotation angle to look toward the mouse position
+            float delX = this.position.X - ms.X;
+            float delY = this.position.Y - ms.Y;
+            this.rotation = (float)(Math.Atan2(delY, delX));
 
             // Include friction.
             // If our velocity (scalar magnitude of a vector = length of a vector) is greater than the effect of friction,
@@ -289,39 +256,29 @@ namespace TRAPT
             {
                 this.velocity.X -= Math.Sign(this.velocity.X) * this.friction; // Whatever sign velocity is, 
                 this.velocity.Y -= Math.Sign(this.velocity.Y) * this.friction; // apply friction in the opposite direction.
+                //reduce the symbolic rate of speed along with velocity
                 this.speed -= this.friction;
             }
             else
             { // If our velocity is closer to zero than the effect of friction, we should just stop. 
-                this.velocity.X = 0;
-                this.velocity.Y = 0;
+                this.velocity.X = MIN_SPEED;
+                this.velocity.Y = MIN_SPEED;
                 this.speed = MIN_SPEED;
             }
 
-            // Bounce off screen  
+            // stop at edge of screen  
             if (this.position.X + this.velocity.X < this.spriteWidth
                 || Game.GraphicsDevice.Viewport.Width < this.position.X + this.velocity.X)
             {
-                //reverse the x velocity 
-                //this.velocity.X = this.velocity.X * -1;
+                //halt the x velocity 
                 this.velocity.X = 0;
-                //calculate new direction angle from existing velocity
-                //UpdateDirection();
-                // start spinning and play boing!
-                //this.spinCount = 3;
-                //this.boing.Play();
             }
             if (this.position.Y + this.velocity.Y < this.spriteHeight
                 || Game.GraphicsDevice.Viewport.Height < this.position.Y + this.velocity.Y)
             {
 
-                //this.velocity.Y = this.velocity.Y * -1;
+                //halt y velocity
                 this.velocity.Y = 0;
-                //calculate new direction angle from existing velocity
-                //UpdateDirection();
-                // start spinning and play boing!
-                //this.spinCount = 3;
-                //this.boing.Play();
             }
 
             // Apply the velocity to the position.  
@@ -342,10 +299,8 @@ namespace TRAPT
             // The origin is the point inside the source rectangle to rotate around.
             Vector2 origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
             spriteBatch.Draw(this.texture, this.destination, this.source, this.color,
-                // New parameters:
                 this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
                 origin,
-                // Required, but, not important.
                 SpriteEffects.None, 0);
 
             String debug = "Direction: " + this.direction * (180.0/Math.PI)

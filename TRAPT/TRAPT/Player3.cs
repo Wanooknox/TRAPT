@@ -233,7 +233,8 @@ namespace TRAPT
         {
             // Moving update:
             KeyboardState ks = Keyboard.GetState();
-
+            MouseState ms = Mouse.GetState();
+            
             // Move faster or slower.
             if (ks.IsKeyDown(this.up))
             {
@@ -280,6 +281,9 @@ namespace TRAPT
                 MotionAdd((float)(Math.PI / 2), this.acceleration);
             }
 
+            float delX = this.position.X - ms.X;
+            float delY = this.position.Y - ms.Y;
+            this.rotation = (float)(Math.Atan2(delY,delX) * Math.PI);
 
             // Include friction.
             // If our velocity (scalar magnitude of a vector = length of a vector) is greater than the effect of friction,
@@ -347,9 +351,10 @@ namespace TRAPT
                 // Required, but, not important.
                 SpriteEffects.None, 0);
 
-            String debug = "Direction: " + this.direction * (180.0/Math.PI)
+            String debug = "Direction: " + this.direction //* (180.0/Math.PI)
                 + "\nVelocity: " + this.velocity
-                + "\nSpeed: " + this.speed;
+                + "\nSpeed: " + this.speed
+                + "\nRotation: " + this.rotation;
 
             spriteBatch.DrawString(this.font, debug, origin, Color.White);
         }

@@ -21,6 +21,7 @@ namespace TRAPT
 
         Player player;
         Vector2 actorStart;
+        Cursor cursor;
 
         public TraptMain()
         {
@@ -44,6 +45,9 @@ namespace TRAPT
 
             this.player = new Player(this);
             player.Initialize(this.actorStart, 0.0f);
+
+            this.cursor = new Cursor(this);
+            this.cursor.Initialize();
             
 
             base.Initialize();
@@ -88,6 +92,8 @@ namespace TRAPT
                 this.Exit();
             }
 
+            this.cursor.Update(gameTime);
+
             this.player.Update(gameTime);
 
             base.Update(gameTime);
@@ -103,9 +109,10 @@ namespace TRAPT
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            
             this.player.Draw(this.spriteBatch);
 
-
+            this.cursor.Draw(this.spriteBatch);
             this.spriteBatch.End();
             
             base.Draw(gameTime);
