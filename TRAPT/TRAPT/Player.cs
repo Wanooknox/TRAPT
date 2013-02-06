@@ -326,9 +326,6 @@ namespace TRAPT
             //and input new motion
             this.UpdateDirection();
             that.UpdateDirection();
-            //this.boing.Play();
-            this.spinCount = 3;
-            that.spinCount = 3;
 
         }
 
