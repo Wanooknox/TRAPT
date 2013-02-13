@@ -32,7 +32,7 @@ namespace Midterm
         Vector2 spriteCenter;
 
         float acceleration = 0.25f;
-        float friction = 0.05f;
+        float friction = 0.1f;
 
         //Controlls
         protected Keys forwards;
@@ -123,20 +123,26 @@ namespace Midterm
 
             if (ks.IsKeyDown(strafeL))
             {
-                velocity.Y -= (float)(acceleration * Math.Cos(rotation + (2 * Math.PI)));
-                velocity.X -= (float)(acceleration * Math.Sin(rotation + Math.PI));
+                //velocity.Y -= (float)(acceleration * Math.Cos(rotation +  Math.PI + (Math.PI)/2));
+                //velocity.X -= (float)(acceleration * Math.Sin(rotation + (Math.PI/2)));
+
+                velocity.X -= acceleration;
             }
 
-            if (ks.IsKeyDown(strafeL))
+            if (ks.IsKeyDown(strafeR))
             {
-                velocity.Y += (float)(acceleration * Math.Cos(rotation + (2 * Math.PI)));
-                velocity.X += (float)(acceleration * Math.Sin(rotation + Math.PI));
+               // velocity.Y += (float)(acceleration * Math.Cos(rotation +  Math.PI + (Math.PI)/2));
+               // velocity.X += (float)(acceleration * Math.Sin(rotation + (Math.PI/2)));
+
+               velocity.X += (acceleration);
             }
 
             if (Math.Abs(this.velocity.Length()) > this.friction)
             {
                 this.velocity.X -= Math.Sign(this.velocity.X) * this.friction; // Whatever sign velocity is, 
                 this.velocity.Y -= Math.Sign(this.velocity.Y) * this.friction; // apply friction in the opposite direction.
+
+               // velocity.X += acceleration;
             }
             else
             { // If our velocity is closer to zero than the effect of friction, we should just stop. 
@@ -147,12 +153,12 @@ namespace Midterm
             if (this.pos.X + this.velocity.X < 0 ||
                Game.GraphicsDevice.Viewport.Width < this.pos.X + this.velocity.X)
             {
-                this.velocity.X = this.velocity.X * -1;
+                this.velocity.X = this.velocity.X * -0.5f;
             }
             if (this.pos.Y + this.velocity.Y < 0 ||
                 Game.GraphicsDevice.Viewport.Height < this.pos.Y + this.velocity.Y)
             {
-                this.velocity.Y = this.velocity.Y * -1;
+                this.velocity.Y = this.velocity.Y * -0.5f;
             }
 
 
