@@ -17,19 +17,22 @@ namespace TRAPT
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Player : Microsoft.Xna.Framework.GameComponent
+    public class Player : EnvironmentAgent//Microsoft.Xna.Framework.DrawableGameComponent
     {
         // PHYSICS FIELDS
-        public Vector2 position;
-        public Vector2 velocity;
-        private float rotation;
-        private float direction;
+        //public Vector2 position;
+        //public Vector2 velocity;
+        //private float rotation;
+        //private float direction;
 
-        float speed = 0f;
-        private static float MAX_SPEED = 5f;
-        private static float MIN_SPEED = 0f;
-        float friction = 0.25f;
-        float acceleration = 0.5f;
+        //float speed = 0f;
+        //private static float MAX_SPEED = 5f;
+        //private static float MIN_SPEED = 0f;
+        //float friction = 0.25f;
+        //float acceleration = 0.5f;
+
+        bool colliding = false;
+        EnvironmentObj collidingWith;
 
         // CONTROLS
 
@@ -41,21 +44,22 @@ namespace TRAPT
 
 
         // DRAWING FIELDS
-        Texture2D texture;
+        Texture2D guideTex;
         SpriteFont font;
-        public Rectangle destination;
-        public Rectangle source;
-        Color color;
+        //public Rectangle destination;
+        //public Rectangle source;
+        public Color color;
         
         // sprite shape
         int spriteStartX = 0; // X of top left corner of sprite 0. 
         int spriteStartY = 0; // Y of top left corner of sprite 0.
-        int spriteWidth = 88;
-        int spriteHeight = 88;
+        int spriteWidth = 100;
+        int spriteHeight = 100;
 
         public Player(Game game)
             : base(game)
         {
+            //game.Components.Add(this);
             // TODO: Construct any child components here
         }
 
@@ -80,6 +84,7 @@ namespace TRAPT
             this.texture = Game.Content.Load<Texture2D>("face");
             // font for printing debug info.
             this.font = Game.Content.Load<SpriteFont>("SpriteFont1");
+            this.guideTex = Game.Content.Load<Texture2D>("tileguide");
             
 
             base.Initialize();
@@ -276,9 +281,14 @@ namespace TRAPT
             if (this.position.Y + this.velocity.Y < this.spriteHeight
                 || Game.GraphicsDevice.Viewport.Height < this.position.Y + this.velocity.Y)
             {
-
                 //halt y velocity
                 this.velocity.Y = 0;
+            }
+
+            //Enforce collision resolution
+            if (colliding)
+            {
+                EnforceCollide(collidingWith);
             }
 
             // Apply the velocity to the position.  
@@ -292,8 +302,11 @@ namespace TRAPT
         public void Draw(SpriteBatch spriteBatch)
         {
             // Basic destination rectangle updating from last time. 
-            this.destination.X = (int)Math.Round(this.position.X - this.destination.Width / 2);
-            this.destination.Y = (int)Math.Round(this.position.Y - this.destination.Height / 2);
+            //this.destination.X = (int)Math.Round(this.position.X - this.destination.Width / 2);
+            //this.destination.Y = (int)Math.Round(this.position.Y - this.destination.Height / 2);
+
+            this.destination.X = (int)Math.Round(this.position.X);
+            this.destination.Y = (int)Math.Round(this.position.Y);
 
             // Draw the player's texture.  
             // The origin is the point inside the source rectangle to rotate around.
@@ -302,30 +315,64 @@ namespace TRAPT
                 this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
                 origin,
                 SpriteEffects.None, 0);
+            //TODO: Orgin is fucked up.
+            this.destination.X = (int)Math.Round(this.position.X - this.destination.Width / 2);
+            this.destination.Y = (int)Math.Round(this.position.Y - this.destination.Height / 2);
 
-            String debug = "Direction: " + this.direction * (180.0/Math.PI)
+            //reference for where the hitbox is.
+            spriteBatch.Draw(this.guideTex, this.Destination, Color.White);
+
+            String debug = "Destination: " + this.Destination//this.direction * (180.0/Math.PI)
                 + "\nVelocity: " + this.velocity
-                + "\nSpeed: " + this.speed;
+                + "\nSpeed: " + this.speed
+                + "\nPosition: " + this.Position//.X + " " + this.Position.Y
+                + "\nStuff: " + Game.Components.Count;
 
             spriteBatch.DrawString(this.font, debug, origin, Color.White);
         }
 
-        public bool IsColliding(Player that)
+        //public override bool IsColliding(Player that)
+        //{
+        //    return this.destination.Intersects(that.destination);
+        //}
+
+        public override void Collide(EnvironmentObj that)
         {
-            return this.destination.Intersects(that.destination);
+            colliding = true;
+            collidingWith = that;
         }
 
-        public void Collide(Player that)
+        public void EnforceCollide(EnvironmentObj that)
         {
-            // change the velocites
-            Vector2 swapV = new Vector2(that.velocity.X, that.velocity.Y);
-            that.velocity.X = this.velocity.X * -1;
-            that.velocity.Y = this.velocity.Y * -1;
-            this.velocity.X = swapV.X;
-            this.velocity.Y = swapV.Y;
-            //and input new motion
-            this.UpdateDirection();
-            that.UpdateDirection();
+            //// change the velocites
+            //Vector2 swapV = new Vector2(that.velocity.X, that.velocity.Y);
+            //that.velocity.X = this.velocity.X * -1;
+            //that.velocity.Y = this.velocity.Y * -1;
+            //this.velocity.X = swapV.X;
+            //this.velocity.Y = swapV.Y;
+            ////and input new motion
+            //this.UpdateDirection();
+            //that.UpdateDirection();
+
+            //TODO: work on player object's collision resolution
+            if (that is WallTile)
+            {
+                //if horizontal collision
+                //if (this.Destination.Left <= that.Destination.Right || this.Destination.Right >= that.Destination.Left)
+                  if  (this.position.X + this.velocity.X < this.spriteWidth
+                || that.Destination.Width < this.position.X + this.velocity.X)
+                {
+                    //this.position.X -= this.Destination.Left - that.Destination.Right;
+                    this.velocity.X = 0;
+                }
+                if (this.Destination.Top <= that.Destination.Bottom || this.Destination.Bottom >= that.Destination.Top)
+                {
+                    //this.position.Y -= this.Destination.Bottom - that.Destination.Top;
+                    this.velocity.Y = 0;
+                }
+
+            }
+            colliding = false;
 
         }
 

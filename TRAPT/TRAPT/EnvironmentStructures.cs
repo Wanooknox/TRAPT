@@ -8,25 +8,18 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-
+using Graph;
 
 namespace TRAPT
 {
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Cursor : Microsoft.Xna.Framework.GameComponent
+    public class EnvironmentStructures : EnvironmentObj //Microsoft.Xna.Framework.GameComponent
     {
-        //Tracking
-        Vector2 position;
-
-        //Drawing
-        Texture2D cursorImg;
-
-        public Cursor(Game game)
+        public EnvironmentStructures(Game game)
             : base(game)
         {
-            game.Components.Add(this);
             // TODO: Construct any child components here
         }
 
@@ -36,8 +29,13 @@ namespace TRAPT
         /// </summary>
         public override void Initialize()
         {
-            //load the cursor image
-            this.cursorImg = Game.Content.Load<Texture2D>("cursor");
+            // determine this object's cell position
+            int cellX = (int)(this.position.X / 128);
+            int cellY = (int)(this.position.Y / 128);
+
+            IVertex<Cell> temp = ((TraptMain)Game).locationTracker.GetVertex(new Cell(cellX, cellY));
+            EnvironmentObj temp2 = this;
+            temp.Data.Add(new GameComponentRef(ref temp2));
 
             base.Initialize();
         }
@@ -48,18 +46,9 @@ namespace TRAPT
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            //update the cursor position
-            MouseState ms = Mouse.GetState();
-            this.position.X = ms.X;
-            this.position.Y = ms.Y;
+            
 
             base.Update(gameTime);
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            //draw the cursor
-            spriteBatch.Draw(this.cursorImg, this.position, Color.White);
         }
     }
 }
