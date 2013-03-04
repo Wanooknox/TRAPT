@@ -1,6 +1,6 @@
 using System;
 
-namespace TRAPT
+namespace Project
 {
 #if WINDOWS || XBOX
     static class Program
@@ -10,7 +10,7 @@ namespace TRAPT
         /// </summary>
         static void Main(string[] args)
         {
-            using (TraptMain game = new TraptMain())
+            using (Game1 game = new Game1())
             {
                 game.Run();
             }

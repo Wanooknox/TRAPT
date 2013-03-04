@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 
-namespace TRAPT
+namespace Project
 {
     /// <summary>
     /// This is a game component that implements IUpdateable.
@@ -18,7 +18,7 @@ namespace TRAPT
     public class Cursor : Microsoft.Xna.Framework.GameComponent
     {
         //Tracking
-        Vector2 position;
+        public Vector2 cursorPosition;
 
         //Drawing
         Texture2D cursorImg;
@@ -49,8 +49,8 @@ namespace TRAPT
         {
             //update the cursor position
             MouseState ms = Mouse.GetState();
-            this.position.X = ms.X;
-            this.position.Y = ms.Y;
+            this.cursorPosition.X = ms.X;
+            this.cursorPosition.Y = ms.Y;
 
             base.Update(gameTime);
         }
@@ -58,7 +58,7 @@ namespace TRAPT
         public void Draw(SpriteBatch spriteBatch)
         {
             //draw the cursor
-            spriteBatch.Draw(this.cursorImg, this.position, Color.White);
+            spriteBatch.Draw(this.cursorImg, this.cursorPosition, Color.White);
         }
     }
 }

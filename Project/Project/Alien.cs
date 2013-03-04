@@ -10,29 +10,33 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 
-namespace Midterm
+namespace Project
 {
-    public class SpriteClass : Microsoft.Xna.Framework.GameComponent
+    public class Alien : Microsoft.Xna.Framework.GameComponent
     {
         //Constants used for comparison
         Vector2 NORTH = new Vector2(0, -1);
 
+        //testing
+        public Vector2 screenPosition;
 
         //Position and Orientation
-        Vector2 velocity;
-        Vector2 pos;
-        Vector2 direction;
-        double rotation;
+        public Vector2 velocity;
+        public Vector2 alienPosition;
+        public Vector2 direction;
+        public double rotation;
 
         //Drawing fields
 
-        Texture2D texture;
-        Rectangle destination;
-        Nullable<Rectangle> source;
-        Vector2 spriteCenter;
+        public Texture2D texture;
+        public Rectangle destination;
+        //Nullable<Rectangle> source;
+        public Vector2 spriteCenter;
 
-        float acceleration = 0.25f;
-        float friction = 0.1f;
+        float acceleration = 0.05f;
+        float friction = 0.01f;
+        float maxSpeed = 1.0f;
+
 
         //Controlls
         protected Keys forwards;
@@ -42,10 +46,11 @@ namespace Midterm
 
         //Mouse
 
-        MouseState mouse;
+        //MouseState mouse;
         Vector2 mouseVector;
 
-        public SpriteClass(Game game) : base(game)
+        public Alien(Game game)
+            : base(game)
         {
 
         }
@@ -65,7 +70,7 @@ namespace Midterm
             //Direction in radians
             double direction;
 
-            Console.WriteLine("X: " + pos.X + " Y: " + pos.Y);
+            Console.WriteLine("X: " + alienPosition.X + " Y: " + alienPosition.Y);
             if (vec1.X < 0)
             {
                 direction = -1 * (Math.Acos(dotProduct(vec1, vec2) / (getLength(vec1) * getLength(vec2))));
@@ -81,15 +86,14 @@ namespace Midterm
 
         public virtual void Initalize(Vector2 position, float theta)
         {
-           
+            texture = Game.Content.Load<Texture2D>("alien_with_tale");
+            //texture = Game.Content.Load<Texture2D>("blueGuard");
 
-            texture = Game.Content.Load<Texture2D>("alien_middle");
-
-            pos = position;
+            alienPosition = position;
             rotation = theta;
-            destination = new Rectangle((int)pos.X, (int)pos.Y, texture.Height, texture.Width);
+            destination = new Rectangle((int)alienPosition.X, (int)alienPosition.Y, texture.Height, texture.Width);
 
-            spriteCenter = new Vector2(pos.X + texture.Width / 2, pos.Y + texture.Height / 2);
+            spriteCenter = new Vector2(alienPosition.X + texture.Width / 2, alienPosition.Y + texture.Height / 2);
 
             forwards = Keys.W;
             backwards = Keys.S;
@@ -104,10 +108,10 @@ namespace Midterm
             KeyboardState ks = Keyboard.GetState();
             MouseState ms = Mouse.GetState();
             mouseVector = new Vector2(ms.X, ms.Y);
-            direction = mouseVector - pos;
+            direction = mouseVector - alienPosition;
             rotation = calculateAngle(direction, NORTH);
             //rotation = 0;
-            //Console.WriteLine(rotation);
+            Console.WriteLine(velocity);
 
             if (ks.IsKeyDown(forwards))
             {
@@ -123,26 +127,22 @@ namespace Midterm
 
             if (ks.IsKeyDown(strafeL))
             {
-                //velocity.Y -= (float)(acceleration * Math.Cos(rotation +  Math.PI + (Math.PI)/2));
-                //velocity.X -= (float)(acceleration * Math.Sin(rotation + (Math.PI/2)));
-
                 velocity.X -= acceleration;
             }
 
             if (ks.IsKeyDown(strafeR))
             {
-               // velocity.Y += (float)(acceleration * Math.Cos(rotation +  Math.PI + (Math.PI)/2));
-               // velocity.X += (float)(acceleration * Math.Sin(rotation + (Math.PI/2)));
-
-               velocity.X += (acceleration);
+                velocity.X += (acceleration);
             }
 
+
+            //Apply friction
             if (Math.Abs(this.velocity.Length()) > this.friction)
             {
                 this.velocity.X -= Math.Sign(this.velocity.X) * this.friction; // Whatever sign velocity is, 
                 this.velocity.Y -= Math.Sign(this.velocity.Y) * this.friction; // apply friction in the opposite direction.
 
-               // velocity.X += acceleration;
+                // velocity.X += acceleration;
             }
             else
             { // If our velocity is closer to zero than the effect of friction, we should just stop. 
@@ -150,41 +150,42 @@ namespace Midterm
                 this.velocity.Y = 0;
             }
 
-            if (this.pos.X + this.velocity.X < 0 ||
-               Game.GraphicsDevice.Viewport.Width < this.pos.X + this.velocity.X)
-            {
-                this.velocity.X = this.velocity.X * -0.5f;
-            }
-            if (this.pos.Y + this.velocity.Y < 0 ||
-                Game.GraphicsDevice.Viewport.Height < this.pos.Y + this.velocity.Y)
-            {
-                this.velocity.Y = this.velocity.Y * -0.5f;
-            }
+
+            //Check for collisions with walls
+            //if (this.alienPosition.X + this.velocity.X < 32 ||
+            //   Game.GraphicsDevice.Viewport.Width - 32 < this.alienPosition.X + this.velocity.X)
+            //{
+            //    this.velocity.X = this.velocity.X * -0.5f;
+            //}
+            //if (this.alienPosition.Y + this.velocity.Y < 32 ||
+            //    Game.GraphicsDevice.Viewport.Height - 32 < this.alienPosition.Y + this.velocity.Y)
+            //{
+            //    this.velocity.Y = this.velocity.Y * -0.5f;
+            //}
 
 
-      
+            alienPosition.Y += velocity.Y;
+            alienPosition.X += velocity.X;
+            screenPosition.Y = alienPosition.Y;
+            screenPosition.X = alienPosition.X;
 
-            pos.Y += velocity.Y;
-            pos.X += velocity.X;
-
-             
 
             base.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-        
-            spriteCenter = new Vector2(texture.Width / 2,texture.Height / 2);
 
-            this.destination.X = (int)Math.Round(this.pos.X - this.destination.Width / 2);
-            this.destination.Y = (int)Math.Round(this.pos.Y - this.destination.Height / 2);
+            spriteCenter = new Vector2(texture.Width / 2, texture.Height / 2);
+
+            this.destination.X = (int)Math.Round(this.alienPosition.X - this.destination.Width / 2);
+            this.destination.Y = (int)Math.Round(this.alienPosition.Y - this.destination.Height / 2);
 
 
             //Console.WriteLine("X: " + pos.X + " Y: " + pos.Y);
 
 
-            spriteBatch.Draw(texture, pos, null, Color.White, (float) rotation, spriteCenter, 1, SpriteEffects.None, 0.0f);
+            spriteBatch.Draw(texture, alienPosition, null, Color.White, (float)rotation, spriteCenter, 1, SpriteEffects.None, 0.0f);
             //spriteBatch.Draw(texture, pos, Color.White);
 
         }
