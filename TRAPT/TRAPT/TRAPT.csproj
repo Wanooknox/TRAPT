@@ -101,6 +101,7 @@
     <Compile Include="Tile.cs" />
     <Compile Include="TraptMain.cs" />
     <Compile Include="WallTile.cs" />
+    <Compile Include="Weapon.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

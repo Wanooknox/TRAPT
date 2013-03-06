@@ -27,6 +27,8 @@ namespace TRAPT
         // the image file to load the sprite(s) from
         protected Texture2D texture;
 
+        public List<EnvironmentObj> imHitting;
+
         public Vector2 Position
         {
             get { return position; }
@@ -53,6 +55,7 @@ namespace TRAPT
         public override void Initialize()
         {
             // TODO: Add your initialization code here
+            imHitting = new List<EnvironmentObj>();
 
             base.Initialize();
         }

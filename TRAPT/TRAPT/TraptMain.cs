@@ -27,6 +27,7 @@ namespace TRAPT
         public UGraphList<Cell> locationTracker;
 
         Player player;
+        Weapon testGun;
         Vector2 actorStart;
         Cursor cursor;
         Tile testTile;
@@ -69,6 +70,11 @@ namespace TRAPT
 
             //this.testTile = new WallTile(this);
             //testTile.Initialize(actorStart, 1);
+
+            Vector2 gunStart = new Vector2((GraphicsDevice.Viewport.Width / 4) *3, (GraphicsDevice.Viewport.Height / 4) *3);
+            this.testGun = new Weapon(this);
+            this.testGun.Initialize(gunStart, 30, "rifle");
+
 
             this.cursor = new Cursor(this);
             this.cursor.Initialize();
@@ -224,7 +230,8 @@ namespace TRAPT
                             if (((EnvironmentObj)me).IsColliding(component.item))
                             {
                                 //throw new ApplicationException("hit!");
-                                ((EnvironmentObj)me).Collide(component.item);
+                                //((EnvironmentObj)me).Collide(component.item);
+                                ((EnvironmentObj)me).imHitting.Add(component.item);
                             }
                         }
                     }
@@ -279,14 +286,14 @@ namespace TRAPT
             }
 
             
-
+            CollisionTestv2();
             //this.cursor.Update(gameTime);
 
             //this.player.Update(gameTime);
 
             foreach (GameComponent i in this.Components)
             {
-                CollisionTestv2();
+                
                 i.Update(gameTime);
                 
             }
@@ -324,6 +331,7 @@ namespace TRAPT
             }
 
             this.player.Draw(this.spriteBatch);
+            this.testGun.Draw(this.spriteBatch);
 
             this.cursor.Draw(this.spriteBatch);
             this.spriteBatch.End();

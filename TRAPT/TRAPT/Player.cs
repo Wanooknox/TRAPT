@@ -286,15 +286,36 @@ namespace TRAPT
             }
 
             //Enforce collision resolution
-            if (colliding)
+            //if (colliding)
+            //{
+            //    EnforceCollide(collidingWith);
+            //}
+
+            //if (!colliding)
+            //{
+            //    // Apply the velocity to the position.  
+            //    this.position.Y += this.velocity.Y;
+            //    this.position.X += this.velocity.X;
+            //}
+            //else 
+            //{ 
+            //    colliding = false;
+            //    for (int i = 0; i < imHitting.Count(); i++)
+            //    {
+            //        this.Collide(imHitting[i]);
+            //        imHitting.RemoveAt(i);
+            //    }
+            //}
+
+            for (int i = 0; i < imHitting.Count(); i++)
             {
-                EnforceCollide(collidingWith);
+                this.Collide(imHitting[i]);
+                imHitting.RemoveAt(i);
             }
 
             // Apply the velocity to the position.  
             this.position.Y += this.velocity.Y;
             this.position.X += this.velocity.X;
-           
 
             base.Update(gameTime);
         }
@@ -315,7 +336,7 @@ namespace TRAPT
                 this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
                 origin,
                 SpriteEffects.None, 0);
-            //TODO: Orgin is fucked up.
+            //TODO: Orgin is bad
             this.destination.X = (int)Math.Round(this.position.X - this.destination.Width / 2);
             this.destination.Y = (int)Math.Round(this.position.Y - this.destination.Height / 2);
 
@@ -331,19 +352,40 @@ namespace TRAPT
             spriteBatch.DrawString(this.font, debug, origin, Color.White);
         }
 
-        //public override bool IsColliding(Player that)
+        public override bool IsColliding(EnvironmentObj that)
+        {
+            //Rectangle temp = new Rectangle(
+            //    (int)Math.Round(this.destination.X - this.velocity.X),
+            //    (int)Math.Round(this.destination.Y - this.velocity.Y),
+            //    (int)Math.Round(this.destination.Width + this.velocity.X),
+            //    (int)Math.Round(this.destination.Height + this.velocity.Y));
+            //return temp.Intersects(that.Destination);
+            return this.destination.Intersects(that.Destination);
+        }
+
+        //public override void Collide(EnvironmentObj that)
         //{
-        //    return this.destination.Intersects(that.destination);
+        //    colliding = true;
+        //    collidingWith = that;
         //}
 
         public override void Collide(EnvironmentObj that)
         {
-            colliding = true;
-            collidingWith = that;
-        }
+            //this.destination.X -= (int)(Math.Sign(this.velocity.X) * Math.Abs(this.velocity.X));//(int)Math.Round(this.velocity.X);
+            //this.destination.Y -= (int)Math.Round(this.velocity.Y);
 
-        public void EnforceCollide(EnvironmentObj that)
-        {
+            //Math.Sign(this.velocity.X) * this.friction;
+
+
+
+            this.position.X -= (int)(Math.Sign(this.velocity.X) * Math.Ceiling(Math.Abs(this.velocity.X)));
+            this.position.Y -= (int)(Math.Sign(this.velocity.Y) * Math.Ceiling(Math.Abs(this.velocity.Y)));
+
+            this.destination.X = (int)(Math.Sign(this.velocity.X) * Math.Abs(Math.Round(this.position.X - this.destination.Width / 2)));
+            this.destination.Y = (int)(Math.Sign(this.velocity.Y) * Math.Abs(Math.Round(this.position.Y - this.destination.Height / 2)));
+
+
+
             //// change the velocites
             //Vector2 swapV = new Vector2(that.velocity.X, that.velocity.Y);
             //that.velocity.X = this.velocity.X * -1;
@@ -357,10 +399,14 @@ namespace TRAPT
             //TODO: work on player object's collision resolution
             if (that is WallTile)
             {
+                colliding = true;
+                //throw new ApplicationException("hit wall!");
+                
+
                 //if horizontal collision
-                //if (this.Destination.Left <= that.Destination.Right || this.Destination.Right >= that.Destination.Left)
-                  if  (this.position.X + this.velocity.X < this.spriteWidth
-                || that.Destination.Width < this.position.X + this.velocity.X)
+                if (this.Destination.Left <= that.Destination.Right || this.Destination.Right >= that.Destination.Left)
+                //  if  (this.position.X + this.velocity.X < this.spriteWidth
+                //|| that.Destination.Width < this.position.X + this.velocity.X)
                 {
                     //this.position.X -= this.Destination.Left - that.Destination.Right;
                     this.velocity.X = 0;
@@ -370,9 +416,19 @@ namespace TRAPT
                     //this.position.Y -= this.Destination.Bottom - that.Destination.Top;
                     this.velocity.Y = 0;
                 }
-
+                 
+                
             }
-            colliding = false;
+            else if (that is Weapon)
+            {
+                if (((Weapon)that).Owner == null)
+                {
+                    ((Weapon)that).Owner = this;
+                    ((Weapon)that).GetSprite();
+                    //throw new ApplicationException("FUICK");
+                }
+            }
+            
 
         }
 
