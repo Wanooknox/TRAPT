@@ -75,11 +75,7 @@ namespace TRAPT
 
             Vector2 gunStart = new Vector2((GraphicsDevice.Viewport.Width / 4) *3, (GraphicsDevice.Viewport.Height / 4) *3);
             this.testGun = new Weapon(this);
-<<<<<<< HEAD
-            this.testGun.Initialize(gunStart, 30, "rifle");
-=======
             this.testGun.Initialize(gunStart, 30, "SMG");
->>>>>>> Weapons and better collisions
 
 
             this.cursor = new Cursor(this);
@@ -357,11 +353,6 @@ namespace TRAPT
                     }
                 }
             }
-
-<<<<<<< HEAD
-            this.player.Draw(this.spriteBatch);
-            this.testGun.Draw(this.spriteBatch);
-=======
             //this.player.Draw(this.spriteBatch);
             //this.testGun.Draw(this.spriteBatch);
 
@@ -377,7 +368,6 @@ namespace TRAPT
                 }
 
             }
->>>>>>> Weapons and better collisions
 
             this.spriteBatch.End();
             

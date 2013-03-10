@@ -15,15 +15,6 @@ namespace TRAPT
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-<<<<<<< HEAD
-    public class Weapon : EnvironmentObj//Microsoft.Xna.Framework.GameComponent
-    {
-        #region Attributes
-        private int ammo;
-        private string gunType;
-        private EnvironmentObj owner;
-        private Texture2D texture;
-=======
     public class Weapon : Mover//Microsoft.Xna.Framework.GameComponent
     {
         #region Attributes
@@ -41,7 +32,6 @@ namespace TRAPT
         //private Texture2D texture;
         
         //private float rotation;
->>>>>>> Weapons and better collisions
         //TACKING FIELDS
         public Cell checkin;
         #endregion
@@ -57,11 +47,8 @@ namespace TRAPT
             get { return gunType; }
             set { gunType = value; }
         }
-<<<<<<< HEAD
-        public EnvironmentObj Owner
-=======
+
         public Agent Owner
->>>>>>> Weapons and better collisions
         {
             get { return owner; }
             set { owner = value; }
@@ -83,31 +70,14 @@ namespace TRAPT
         /// </summary>
         public virtual void Initialize(Vector2 position, int ammo, string gunType)
         {
-<<<<<<< HEAD
-=======
             this.DrawOrder = 300;
 
->>>>>>> Weapons and better collisions
             this.texture = Game.Content.Load<Texture2D>("guns");
 
             this.position = position;
             this.ammo = ammo;
             this.gunType = gunType;
 
-<<<<<<< HEAD
-            GetSprite();
-
-            // determine this object's cell position
-            int cellX = (int)(this.position.X / 128);
-            int cellY = (int)(this.position.Y / 128);
-
-            IVertex<Cell> temp = ((TraptMain)Game).locationTracker.GetVertex(new Cell(cellX, cellY));
-            EnvironmentObj temp2 = this;
-
-            //add this object to the determined cell
-            temp.Data.Add(new GameComponentRef(ref temp2));
-            this.checkin = temp.Data;
-=======
             this.rotation = 0;
 
             this.projectileStrayer = new Random();
@@ -125,7 +95,6 @@ namespace TRAPT
             ////add this object to the determined cell
             //temp.Data.Add(new GameComponentRef(ref temp2));
             //this.checkin = temp.Data;
->>>>>>> Weapons and better collisions
 
             base.Initialize();
         }
@@ -138,18 +107,11 @@ namespace TRAPT
             //if i don't have an owner
             if (owner == null)
             {
-<<<<<<< HEAD
-                if (this.gunType.Equals("rifle"))
-=======
                 if (this.gunType.Equals("SMG"))
->>>>>>> Weapons and better collisions
                 {
                     //load the one floor view of the rifle
                     this.source = new Rectangle(0, 0, 64, 106);
                     this.destination = new Rectangle(0, 0, 64, 106);
-<<<<<<< HEAD
-
-=======
                 }
                 else if (this.gunType.Equals("shotgun"))
                 {
@@ -157,14 +119,10 @@ namespace TRAPT
                     //load the one floor view of the rifle
                     this.source = new Rectangle(0, 0, 64, 106);
                     this.destination = new Rectangle(0, 0, 64, 106);
->>>>>>> Weapons and better collisions
                 }
             }
             else // i DO have an ower
             {
-<<<<<<< HEAD
-                if (this.gunType.Equals("rifle"))
-=======
                 if (this.gunType.Equals("SMG"))
                 {
                     // load the in hads view for the rife
@@ -172,14 +130,10 @@ namespace TRAPT
                     this.destination = new Rectangle(64, 0, 108 - 64, 106);
                 }
                 else if (this.gunType.Equals("shotgun"))
->>>>>>> Weapons and better collisions
                 {
                     // load the in hads view for the rife
                     this.source = new Rectangle(64, 0, 108 - 64, 106);
                     this.destination = new Rectangle(64, 0, 108 - 64, 106);
-<<<<<<< HEAD
-
-=======
                 }
             }
         }
@@ -210,13 +164,10 @@ namespace TRAPT
                 {
                     EnvironmentObj temp2 = this;
                     this.checkin.Remove(new GameComponentRef(ref temp2));
->>>>>>> Weapons and better collisions
                 }
             }
         }
 
-<<<<<<< HEAD
-=======
         public void SetOwner(bool pickup, Agent owner)
         {
             if (pickup)
@@ -233,7 +184,6 @@ namespace TRAPT
             }
         }
 
->>>>>>> Weapons and better collisions
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
@@ -245,14 +195,6 @@ namespace TRAPT
             {
                 this.position.X = owner.Position.X;
                 this.position.Y = owner.Position.Y;
-<<<<<<< HEAD
-            }
-
-            base.Update(gameTime);
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-=======
                 this.rotation = owner.Rotation;
 
                 MouseState ms = Mouse.GetState();
@@ -297,18 +239,13 @@ namespace TRAPT
         }
 
         public override void Draw(SpriteBatch spriteBatch)
->>>>>>> Weapons and better collisions
         {
             this.destination.X = (int)Math.Round(this.position.X);
             this.destination.Y = (int)Math.Round(this.position.Y);
 
             Vector2 origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
             spriteBatch.Draw(this.texture, this.destination, this.source, Color.White,
-<<<<<<< HEAD
-                0, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
-=======
                 this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
->>>>>>> Weapons and better collisions
                 origin,
                 SpriteEffects.None, 0);
         }
