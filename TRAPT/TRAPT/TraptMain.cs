@@ -49,6 +49,8 @@ namespace TRAPT
             graphics.PreferredBackBufferHeight = 600;
             graphics.ApplyChanges();
 
+            this.IsMouseVisible = true;
+
             //this.Window.AllowUserResizing = false;
 
             //Viewport temp = new Viewport(0,0,600,600);
@@ -73,7 +75,11 @@ namespace TRAPT
 
             Vector2 gunStart = new Vector2((GraphicsDevice.Viewport.Width / 4) *3, (GraphicsDevice.Viewport.Height / 4) *3);
             this.testGun = new Weapon(this);
+<<<<<<< HEAD
             this.testGun.Initialize(gunStart, 30, "rifle");
+=======
+            this.testGun.Initialize(gunStart, 30, "SMG");
+>>>>>>> Weapons and better collisions
 
 
             this.cursor = new Cursor(this);
@@ -81,6 +87,23 @@ namespace TRAPT
             
 
             base.Initialize();
+        }
+
+        /// <summary>
+        /// check if a point is inside the game world.
+        /// </summary>
+        /// <param name="point"></param>
+        public bool IsInWorld(Vector2 point)
+        {
+            //default to false
+            bool result = false;
+            //if inside the drawing area
+            if (point.X >= 0 && point.Y >= 0
+                && point.X <= graphics.PreferredBackBufferWidth && point.Y <= graphics.PreferredBackBufferHeight)
+            {
+                result = true;
+            }
+            return result;
         }
 
         private void PopulateGraph()
@@ -204,9 +227,9 @@ namespace TRAPT
         {
             foreach (GameComponent me in this.Components)
             {
-                if (me is EnvironmentAgent)
+                if (me is Agent)
                 {
-                    Cell meCell = ((EnvironmentAgent)me).checkin;
+                    Cell meCell = ((Agent)me).checkin;
 
                     //create a list for collision checking
                     List<GameComponentRef> toCollide = new List<GameComponentRef>();
@@ -249,8 +272,9 @@ namespace TRAPT
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            
             // TODO: use this.Content to load your game content here
+            
         }
 
         /// <summary>
@@ -291,7 +315,11 @@ namespace TRAPT
 
             //this.player.Update(gameTime);
 
-            foreach (GameComponent i in this.Components)
+            GameComponentCollection currComponentState = new GameComponentCollection();
+            currComponentState.Concat(this.Components);
+            //Array currComponentState = this.Components.ToArray();
+            //Array.Sort(currComponentState);
+            foreach (GameComponent i in currComponentState)
             {
                 
                 i.Update(gameTime);
@@ -309,8 +337,8 @@ namespace TRAPT
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-
-            this.spriteBatch.Begin();
+            
+            this.spriteBatch.Begin(SpriteSortMode.BackToFront,BlendState.AlphaBlend);
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
@@ -318,7 +346,7 @@ namespace TRAPT
             
 
             //this.testTile.Draw(this.spriteBatch);
-            
+
             for (int i = 0; i < this.map.GetUpperBound(0); i++)
             {
                 for (int j = 0; j < this.map.GetUpperBound(1); j++)
@@ -330,10 +358,27 @@ namespace TRAPT
                 }
             }
 
+<<<<<<< HEAD
             this.player.Draw(this.spriteBatch);
             this.testGun.Draw(this.spriteBatch);
+=======
+            //this.player.Draw(this.spriteBatch);
+            //this.testGun.Draw(this.spriteBatch);
 
-            this.cursor.Draw(this.spriteBatch);
+            //this.cursor.Draw(this.spriteBatch);
+            
+            //GameComponentCollection currComponentState = new GameComponentCollection();
+            //currComponentState.Concat(this.Components);
+            foreach (GameComponent i in this.Components)
+            {
+                if (i is DrawableGameComponent && ((DrawableGameComponent)i).Visible)
+                {
+                    ((EnvironmentObj)i).Draw(this.spriteBatch);
+                }
+
+            }
+>>>>>>> Weapons and better collisions
+
             this.spriteBatch.End();
             
             base.Draw(gameTime);

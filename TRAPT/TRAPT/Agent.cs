@@ -15,23 +15,16 @@ namespace TRAPT
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class EnvironmentAgent : EnvironmentObj//Microsoft.Xna.Framework.GameComponent
+    public class Agent : Mover//Microsoft.Xna.Framework.GameComponent
     {
-        //PHYSICS FIELDS
-        public Vector2 velocity;
-        protected float rotation;
-        protected float direction;
+        //protected float speed = 0f;
+        //protected static float MAX_ACTOR_SPEED = 5f;
+        //protected static float MIN_ACTOR_SPEED = 0f;
+        //protected float friction = 0.25f;
+        //protected float acceleration = 0.5f;
 
-        protected float speed = 0f;
-        protected static float MAX_SPEED = 5f;
-        protected static float MIN_SPEED = 0f;
-        protected float friction = 0.25f;
-        protected float acceleration = 0.5f;
 
-        //TACKING FIELDS
-        public  Cell checkin;
-
-        public EnvironmentAgent(Game game)
+        public Agent(Game game)
             : base(game)
         {
             // TODO: Construct any child components here

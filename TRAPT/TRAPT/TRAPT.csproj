@@ -74,9 +74,10 @@
   <ItemGroup>
     <Compile Include="Cell.cs" />
     <Compile Include="Cursor.cs" />
-    <Compile Include="EnvironmentAgent.cs" />
+    <Compile Include="Agent.cs" />
     <Compile Include="EnvironmentObj.cs" />
-    <Compile Include="EnvironmentStructures.cs" />
+    <Compile Include="Mover.cs" />
+    <Compile Include="Structure.cs" />
     <Compile Include="GameComponentRef.cs" />
     <Compile Include="Graph\AGraph.cs" />
     <Compile Include="Graph\AGraphList.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="Player3.cs" />
     <Compile Include="Player2.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Tile.cs" />

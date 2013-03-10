@@ -4,3 +4,7 @@ Content\walls.xnb
 Content\SpriteFont1.xnb
 Content\tileguide.xnb
 Content\guns.xnb
+<<<<<<< HEAD
+=======
+Content\projectiles.xnb
+>>>>>>> Weapons and better collisions

@@ -17,17 +17,18 @@ namespace TRAPT
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Player : EnvironmentAgent//Microsoft.Xna.Framework.DrawableGameComponent
+    public class Player : Agent//Microsoft.Xna.Framework.DrawableGameComponent
     {
         // PHYSICS FIELDS
+        private Vector2 prevPos;
         //public Vector2 position;
         //public Vector2 velocity;
         //private float rotation;
         //private float direction;
 
         //float speed = 0f;
-        //private static float MAX_SPEED = 5f;
-        //private static float MIN_SPEED = 0f;
+        private static float MAX_PLAYER_SPEED = 5f;
+        private static float MIN_PLAYER_SPEED = 0f;
         //float friction = 0.25f;
         //float acceleration = 0.5f;
 
@@ -69,7 +70,9 @@ namespace TRAPT
         /// </summary>
         public virtual void Initialize(Vector2 position, float rotation)
         {
+            this.DrawOrder = 500;
             this.position = position;
+            this.prevPos = position;
             this.rotation = rotation;
             
 
@@ -96,7 +99,7 @@ namespace TRAPT
         private void SpeedUp()
         {
             // as long as we are below the maximum speed
-            if (this.speed < MAX_SPEED)
+            if (this.speed < MAX_PLAYER_SPEED)
             {
                 //add acceleration to the speed and recalculate the velocity vector
                 this.speed += this.acceleration;
@@ -113,7 +116,7 @@ namespace TRAPT
         private void SlowDown()
         {
             // as long as we are above the minimum speed
-            if (this.speed > MIN_SPEED)
+            if (this.speed > MIN_PLAYER_SPEED)
             {
                 //subtract acceleration to the speed and recalculate the velocity vector
                 this.speed -= this.acceleration;
@@ -183,13 +186,13 @@ namespace TRAPT
         private void MotionAdd(float dir, float speedAdd)
         {
             float midAngle;
-            if (this.speed > MIN_SPEED)
+            if (this.speed > MIN_PLAYER_SPEED)
             {
                 midAngle = MidAngle(this.direction, dir);
             }
             else { midAngle = dir; }
 
-            if (Math.Abs(this.velocity.Length()) < MAX_SPEED)
+            if (Math.Abs(this.velocity.Length()) < MAX_PLAYER_SPEED)
             {
                 // do some fancy trig to find the right value for X and Y based on the speed and direction
                 this.velocity.Y += (float)(speedAdd * Math.Cos(midAngle + Math.PI));
@@ -250,9 +253,9 @@ namespace TRAPT
             }
 
             //calculate visual rotation angle to look toward the mouse position
-            float delX = this.position.X - ms.X;
-            float delY = this.position.Y - ms.Y;
-            this.rotation = (float)(Math.Atan2(delY, delX));
+            double delX = ms.X - this.position.X;
+            double delY = ms.Y - this.position.Y;
+            this.rotation = (float)(Math.Atan2(delY, delX) + (Math.PI / 2.0));
 
             // Include friction.
             // If our velocity (scalar magnitude of a vector = length of a vector) is greater than the effect of friction,
@@ -266,9 +269,9 @@ namespace TRAPT
             }
             else
             { // If our velocity is closer to zero than the effect of friction, we should just stop. 
-                this.velocity.X = MIN_SPEED;
-                this.velocity.Y = MIN_SPEED;
-                this.speed = MIN_SPEED;
+                this.velocity.X = MIN_PLAYER_SPEED;
+                this.velocity.Y = MIN_PLAYER_SPEED;
+                this.speed = MIN_PLAYER_SPEED;
             }
 
             // stop at edge of screen  
@@ -306,21 +309,30 @@ namespace TRAPT
             //        imHitting.RemoveAt(i);
             //    }
             //}
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> Weapons and better collisions
             for (int i = 0; i < imHitting.Count(); i++)
             {
                 this.Collide(imHitting[i]);
                 imHitting.RemoveAt(i);
             }
 
-            // Apply the velocity to the position.  
+            // Apply the velocity to the position.
+            this.prevPos = this.position;
             this.position.Y += this.velocity.Y;
             this.position.X += this.velocity.X;
+<<<<<<< HEAD
+=======
+
+>>>>>>> Weapons and better collisions
 
             base.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             // Basic destination rectangle updating from last time. 
             //this.destination.X = (int)Math.Round(this.position.X - this.destination.Width / 2);
@@ -333,9 +345,13 @@ namespace TRAPT
             // The origin is the point inside the source rectangle to rotate around.
             Vector2 origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
             spriteBatch.Draw(this.texture, this.destination, this.source, this.color,
-                this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
+                this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
                 origin,
                 SpriteEffects.None, 0);
+<<<<<<< HEAD
+=======
+
+>>>>>>> Weapons and better collisions
             //TODO: Orgin is bad
             this.destination.X = (int)Math.Round(this.position.X - this.destination.Width / 2);
             this.destination.Y = (int)Math.Round(this.position.Y - this.destination.Height / 2);
@@ -346,7 +362,7 @@ namespace TRAPT
             String debug = "Destination: " + this.Destination//this.direction * (180.0/Math.PI)
                 + "\nVelocity: " + this.velocity
                 + "\nSpeed: " + this.speed
-                + "\nPosition: " + this.Position//.X + " " + this.Position.Y
+                + "\nRotation: " + this.Rotation//.X + " " + this.Position.Y
                 + "\nStuff: " + Game.Components.Count;
 
             spriteBatch.DrawString(this.font, debug, origin, Color.White);
@@ -354,12 +370,22 @@ namespace TRAPT
 
         public override bool IsColliding(EnvironmentObj that)
         {
+<<<<<<< HEAD
             //Rectangle temp = new Rectangle(
             //    (int)Math.Round(this.destination.X - this.velocity.X),
             //    (int)Math.Round(this.destination.Y - this.velocity.Y),
             //    (int)Math.Round(this.destination.Width + this.velocity.X),
             //    (int)Math.Round(this.destination.Height + this.velocity.Y));
             //return temp.Intersects(that.Destination);
+=======
+            //Rectangle temp = this.destination;
+
+            //temp.X = (int)Math.Round(this.position.X + this.velocity.X - this.destination.Width / 2);
+            //temp.Y = (int)Math.Round(this.position.Y + this.velocity.Y - this.destination.Height / 2);
+
+            //return temp.Intersects(that.Destination);
+
+>>>>>>> Weapons and better collisions
             return this.destination.Intersects(that.Destination);
         }
 
@@ -378,11 +404,19 @@ namespace TRAPT
 
 
 
+<<<<<<< HEAD
             this.position.X -= (int)(Math.Sign(this.velocity.X) * Math.Ceiling(Math.Abs(this.velocity.X)));
             this.position.Y -= (int)(Math.Sign(this.velocity.Y) * Math.Ceiling(Math.Abs(this.velocity.Y)));
 
             this.destination.X = (int)(Math.Sign(this.velocity.X) * Math.Abs(Math.Round(this.position.X - this.destination.Width / 2)));
             this.destination.Y = (int)(Math.Sign(this.velocity.Y) * Math.Abs(Math.Round(this.position.Y - this.destination.Height / 2)));
+=======
+            //this.position.X -= (int)(Math.Sign(this.velocity.X) * Math.Ceiling(Math.Abs(this.velocity.X)));
+            //this.position.Y -= (int)(Math.Sign(this.velocity.Y) * Math.Ceiling(Math.Abs(this.velocity.Y)));
+
+            //this.destination.X = (int)(Math.Sign(this.velocity.X) * Math.Abs(Math.Round(this.position.X - this.destination.Width / 2)));
+            //this.destination.Y = (int)(Math.Sign(this.velocity.Y) * Math.Abs(Math.Round(this.position.Y - this.destination.Height / 2)));
+>>>>>>> Weapons and better collisions
 
 
 
@@ -401,21 +435,72 @@ namespace TRAPT
             {
                 colliding = true;
                 //throw new ApplicationException("hit wall!");
+<<<<<<< HEAD
                 
 
                 //if horizontal collision
                 if (this.Destination.Left <= that.Destination.Right || this.Destination.Right >= that.Destination.Left)
                 //  if  (this.position.X + this.velocity.X < this.spriteWidth
                 //|| that.Destination.Width < this.position.X + this.velocity.X)
+=======
+
+                //if (this.velocity.X > 0 || this.velocity.X < 0) //came from left
+                //{
+                //    this.position.X = this.prevPos.X; // -this.velocity.X;
+                //    //this.velocity.X = 0;
+                //}
+                //if (this.velocity.Y > 0 || this.velocity.Y < 0)
+                //{
+                //    this.position.Y = this.prevPos.Y;// -this.velocity.Y;
+                //    //this.velocity.Y = 0;
+                //}
+
+                //previous destionation rectangle on the y asix
+                Rectangle prevDest = this.destination;
+                prevDest.Y = (int)Math.Round(this.prevPos.Y - this.destination.Height / 2);
+
+                if (this.velocity.X > 0 && prevDest.Intersects(that.Destination)) // object came from the left
+>>>>>>> Weapons and better collisions
                 {
-                    //this.position.X -= this.Destination.Left - that.Destination.Right;
-                    this.velocity.X = 0;
+                    this.position.X = that.Destination.Left - (this.destination.Width/2)-1;
+                    //this.destination.X = (int)Math.Round(this.position.X);
                 }
-                if (this.Destination.Top <= that.Destination.Bottom || this.Destination.Bottom >= that.Destination.Top)
+                else if (this.velocity.X < 0 && prevDest.Intersects(that.Destination)) // object came from the right
                 {
-                    //this.position.Y -= this.Destination.Bottom - that.Destination.Top;
-                    this.velocity.Y = 0;
+                    this.position.X = that.Destination.Right + (this.destination.Width / 2)+1;
+                    //this.velocity.X = 0;
+                    //this.destination.X = (int)Math.Round(this.position.X);
                 }
+<<<<<<< HEAD
+=======
+                //previous destionation rectangle on the x asxis
+                prevDest = this.destination;
+                prevDest.X = (int)Math.Round(this.prevPos.X - this.destination.Width / 2);
+
+                if (this.velocity.Y > 0 && prevDest.Intersects(that.Destination)) // object came from the top
+                {
+                    this.position.Y = that.Destination.Top - (this.destination.Height/2)-1;
+                }
+                else if (this.velocity.Y < 0 && prevDest.Intersects(that.Destination)) // object came from the bottom
+                {
+                    this.position.Y = that.Destination.Bottom + (this.destination.Height/2)+1;
+                }
+                
+
+                ////if horizontal collision
+                //if (this.Destination.Left <= that.Destination.Right || this.Destination.Right >= that.Destination.Left)
+                ////  if  (this.position.X + this.velocity.X < this.spriteWidth
+                ////|| that.Destination.Width < this.position.X + this.velocity.X)
+                //{
+                //    //this.position.X -= this.Destination.Left - that.Destination.Right;
+                //    this.velocity.X = 0;
+                //}
+                //if (this.Destination.Top <= that.Destination.Bottom || this.Destination.Bottom >= that.Destination.Top)
+                //{
+                //    //this.position.Y -= this.Destination.Bottom - that.Destination.Top;
+                //    this.velocity.Y = 0;
+                //}
+>>>>>>> Weapons and better collisions
                  
                 
             }
@@ -423,8 +508,14 @@ namespace TRAPT
             {
                 if (((Weapon)that).Owner == null)
                 {
+<<<<<<< HEAD
                     ((Weapon)that).Owner = this;
                     ((Weapon)that).GetSprite();
+=======
+                    ((Weapon)that).SetOwner(true, this);
+                    //((Weapon)that).Owner = this;
+                    //((Weapon)that).GetSprite();
+>>>>>>> Weapons and better collisions
                     //throw new ApplicationException("FUICK");
                 }
             }

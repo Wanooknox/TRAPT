@@ -8,37 +8,36 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-
+using Graph;
 
 namespace TRAPT
 {
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class WallTile : Tile //Microsoft.Xna.Framework.GameComponent
+    public class Structure : EnvironmentObj //Microsoft.Xna.Framework.GameComponent
     {
-        
-
-        public WallTile(Game game)
+        public Structure(Game game)
             : base(game)
         {
             // TODO: Construct any child components here
-
         }
 
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
         /// </summary>
-        public override void Initialize(Vector2 position, int tileCount)
+        public override void Initialize()
         {
-            this.DrawOrder = 1000;
-            this.textureName = "walls";
+            // determine this object's cell position
+            int cellX = (int)(this.position.X / 128);
+            int cellY = (int)(this.position.Y / 128);
 
-            position.X = position.X * 128;
-            position.Y = position.Y * 128;
+            IVertex<Cell> temp = ((TraptMain)Game).locationTracker.GetVertex(new Cell(cellX, cellY));
+            EnvironmentObj temp2 = this;
+            temp.Data.Add(new GameComponentRef(ref temp2));
 
-            base.Initialize(position, tileCount);
+            base.Initialize();
         }
 
         /// <summary>
@@ -47,7 +46,7 @@ namespace TRAPT
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
+            
 
             base.Update(gameTime);
         }

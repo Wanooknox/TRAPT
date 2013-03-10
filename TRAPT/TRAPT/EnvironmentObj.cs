@@ -71,7 +71,7 @@ namespace TRAPT
             base.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
             //// Basic destination rectangle updating from last time. 
             //this.destination.X = (int)Math.Round(this.position.X - this.destination.Width / 2);
@@ -90,6 +90,7 @@ namespace TRAPT
             //    + "\nSpeed: " + this.speed;
 
             //spriteBatch.DrawString(this.font, debug, origin, Color.White);
+            
         }
 
         public virtual bool IsColliding(EnvironmentObj that)
