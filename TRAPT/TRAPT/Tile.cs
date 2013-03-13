@@ -15,11 +15,11 @@ namespace TRAPT
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Tile : Structure//Microsoft.Xna.Framework.GameComponent
+    public abstract class Tile : Structure//Microsoft.Xna.Framework.GameComponent
     {
         
 
-        protected string textureName;
+        //protected string textureName;
 
 
         // A "frame" is one frame of the animation; a box around the player within the spirte map. 
@@ -53,7 +53,7 @@ namespace TRAPT
             this.tileCount = tileCount;
             this.source = new Rectangle(this.tileStartX + this.tileSkipX * this.tileCount, this.tileStartY, this.tileWidth, this.tileHeight);
 
-            this.texture = Game.Content.Load<Texture2D>(this.textureName);
+            this.texture = Game.Content.Load<Texture2D>("environment_tiles");
 
 
             base.Initialize();
@@ -70,7 +70,7 @@ namespace TRAPT
             base.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             //// Basic destination rectangle updating from last time. 
             //this.destination.X = (int)Math.Round(this.position.X - this.destination.Width / 2);
@@ -89,6 +89,7 @@ namespace TRAPT
             //    // Required, but, not important.
             //    SpriteEffects.None, 0);
             spriteBatch.Draw(this.texture, this.Destination, this.source, Color.White);
+            //spriteBatch.Draw(this.texture, this.Destination, this.source, Color.White, 0, Vector2.Zero, SpriteEffects.None, 0);
 
         }
     }

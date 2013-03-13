@@ -15,7 +15,7 @@ namespace TRAPT
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Structure : EnvironmentObj //Microsoft.Xna.Framework.GameComponent
+    public abstract class Structure : EnvironmentObj //Microsoft.Xna.Framework.GameComponent
     {
         public Structure(Game game)
             : base(game)

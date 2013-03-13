@@ -54,8 +54,8 @@ namespace TRAPT
         // sprite shape
         int spriteStartX = 0; // X of top left corner of sprite 0. 
         int spriteStartY = 0; // Y of top left corner of sprite 0.
-        int spriteWidth = 100;
-        int spriteHeight = 100;
+        int spriteWidth = 64;
+        int spriteHeight = 64;
 
         public Player(Game game)
             : base(game)
@@ -84,7 +84,7 @@ namespace TRAPT
                 this.spriteWidth, this.spriteHeight);
             this.source = new Rectangle(this.spriteStartX, this.spriteStartY, this.spriteWidth, this.spriteHeight);
 
-            this.texture = Game.Content.Load<Texture2D>("face");
+            this.texture = Game.Content.Load<Texture2D>("alien_with_tail");
             // font for printing debug info.
             this.font = Game.Content.Load<SpriteFont>("SpriteFont1");
             this.guideTex = Game.Content.Load<Texture2D>("tileguide");
@@ -252,10 +252,25 @@ namespace TRAPT
                 this.velocity.X = (float)(this.speed);
             }
 
+            Vector2 msInWorld = ((TraptMain)Game).cursor.GetMouseInWorld();
             //calculate visual rotation angle to look toward the mouse position
-            double delX = ms.X - this.position.X;
-            double delY = ms.Y - this.position.Y;
+            double delX = msInWorld.X - this.position.X;
+            double delY = msInWorld.Y - this.position.Y;
             this.rotation = (float)(Math.Atan2(delY, delX) + (Math.PI / 2.0));
+            Console.WriteLine(delX + " " + delY);
+
+            //////////////////////////////
+
+            //Vector2 temp = Vector2.Transform(this.position, Matrix.Invert(((TraptMain)Game).camera.GetViewMatrix(new Vector2(0))));
+            ////this.camera.Position = new Vector2(ms.X - temp.X, ms.Y - temp.Y);
+
+            
+            //double delX = ms.X - temp.X;//this.position.X;
+            //double delY = ms.Y - temp.Y;//this.position.Y;
+            //this.rotation = (float)(Math.Atan2(delY, delX) + (Math.PI / 2.0));
+            //Console.WriteLine(delX + " " + delY);
+
+            ////////////////////////
 
             // Include friction.
             // If our velocity (scalar magnitude of a vector = length of a vector) is greater than the effect of friction,
@@ -275,18 +290,18 @@ namespace TRAPT
             }
 
             // stop at edge of screen  
-            if (this.position.X + this.velocity.X < this.spriteWidth
-                || Game.GraphicsDevice.Viewport.Width < this.position.X + this.velocity.X)
-            {
-                //halt the x velocity 
-                this.velocity.X = 0;
-            }
-            if (this.position.Y + this.velocity.Y < this.spriteHeight
-                || Game.GraphicsDevice.Viewport.Height < this.position.Y + this.velocity.Y)
-            {
-                //halt y velocity
-                this.velocity.Y = 0;
-            }
+            //if (this.position.X + this.velocity.X < this.spriteWidth
+            //    || Game.GraphicsDevice.Viewport.Width < this.position.X + this.velocity.X)
+            //{
+            //    //halt the x velocity 
+            //    this.velocity.X = 0;
+            //}
+            //if (this.position.Y + this.velocity.Y < this.spriteHeight
+            //    || Game.GraphicsDevice.Viewport.Height < this.position.Y + this.velocity.Y)
+            //{
+            //    //halt y velocity
+            //    this.velocity.Y = 0;
+            //}
 
             //Enforce collision resolution
             //if (colliding)
@@ -309,7 +324,8 @@ namespace TRAPT
             //        imHitting.RemoveAt(i);
             //    }
             //}
-            
+
+            this.prevPos = this.position;
             for (int i = 0; i < imHitting.Count(); i++)
             {
                 this.Collide(imHitting[i]);
@@ -317,18 +333,65 @@ namespace TRAPT
             }
 
             // Apply the velocity to the position.
-            this.prevPos = this.position;
+            
             this.position.Y += this.velocity.Y;
             this.position.X += this.velocity.X;
+
+            
 
             base.Update(gameTime);
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public void DrawShroud(SpriteBatch spriteBatch)
         {
-            // Basic destination rectangle updating from last time. 
-            //this.destination.X = (int)Math.Round(this.position.X - this.destination.Width / 2);
-            //this.destination.Y = (int)Math.Round(this.position.Y - this.destination.Height / 2);
+            Random rand = new Random();
+            this.color.A = (byte)rand.Next(50);
+
+            //fray left
+            this.destination.X = (int)Math.Round(this.position.X-rand.Next(3));
+            this.destination.Y = (int)Math.Round(this.position.Y-rand.Next(3));
+
+            // Draw the player's texture.  
+            // The origin is the point inside the source rectangle to rotate around.
+            Vector2 origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
+            spriteBatch.Draw(this.texture, this.destination, this.source, this.color,
+                this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
+                origin,
+                SpriteEffects.None, 0);
+
+            //fray right
+            this.destination.X = (int)Math.Round(this.position.X+rand.Next(3));
+            this.destination.Y = (int)Math.Round(this.position.Y+rand.Next(3));
+
+            // Draw the player's texture.  
+            spriteBatch.Draw(this.texture, this.destination, this.source, this.color,
+                this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
+                origin,
+                SpriteEffects.None, 0);
+        }
+
+        public void DrawFortify(SpriteBatch spriteBatch)
+        {
+            Random rand = new Random();
+            this.color.A = (byte)rand.Next(100,200);
+            this.color.R = 255;
+
+
+            this.destination.X = (int)Math.Round(this.position.X+rand.Next(3));
+            this.destination.Y = (int)Math.Round(this.position.Y+rand.Next(3));
+
+            // Draw the player's texture.  
+            // The origin is the point inside the source rectangle to rotate around.
+            Vector2 origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
+            spriteBatch.Draw(this.texture, this.destination, this.source, this.color,
+                this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
+                origin,
+                SpriteEffects.None, 0);
+        }
+
+        public void DrawNormal(SpriteBatch spriteBatch)
+        {
+            this.color.A = 255;
 
             this.destination.X = (int)Math.Round(this.position.X);
             this.destination.Y = (int)Math.Round(this.position.Y);
@@ -340,6 +403,14 @@ namespace TRAPT
                 this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
                 origin,
                 SpriteEffects.None, 0);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            // Basic destination rectangle updating from last time. 
+            //this.DrawNormal(spriteBatch);
+            this.DrawShroud(spriteBatch);
+            //this.DrawFortify(spriteBatch);
 
             //TODO: Orgin is bad
             this.destination.X = (int)Math.Round(this.position.X - this.destination.Width / 2);
@@ -354,7 +425,7 @@ namespace TRAPT
                 + "\nRotation: " + this.Rotation//.X + " " + this.Position.Y
                 + "\nStuff: " + Game.Components.Count;
 
-            spriteBatch.DrawString(this.font, debug, origin, Color.White);
+            spriteBatch.DrawString(this.font, debug, new Vector2(0), Color.White);
         }
 
         public override bool IsColliding(EnvironmentObj that)
@@ -426,13 +497,16 @@ namespace TRAPT
                 if (this.velocity.X > 0 && prevDest.Intersects(that.Destination)) // object came from the left
                 {
                     this.position.X = that.Destination.Left - (this.destination.Width/2)-1;
-                    //this.destination.X = (int)Math.Round(this.position.X);
+
+                    //this.velocity.X = 0;
+                    //this.position.X = prevPos.X;
                 }
                 else if (this.velocity.X < 0 && prevDest.Intersects(that.Destination)) // object came from the right
                 {
                     this.position.X = that.Destination.Right + (this.destination.Width / 2)+1;
+
                     //this.velocity.X = 0;
-                    //this.destination.X = (int)Math.Round(this.position.X);
+                    //this.position.X = prevPos.X;                   
                 }
                 //previous destionation rectangle on the x asxis
                 prevDest = this.destination;

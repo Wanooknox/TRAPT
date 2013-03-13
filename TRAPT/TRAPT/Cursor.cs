@@ -15,10 +15,16 @@ namespace TRAPT
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Cursor : Microsoft.Xna.Framework.GameComponent
+    public class Cursor : Mover//Microsoft.Xna.Framework.GameComponent
     {
         //Tracking
         Vector2 position;
+
+        public Vector2 Position
+        {
+            get { return position; }
+            set { position = value; }
+        }
 
         //Drawing
         Texture2D cursorImg;
@@ -26,7 +32,7 @@ namespace TRAPT
         public Cursor(Game game)
             : base(game)
         {
-            game.Components.Add(this);
+            //game.Components.Add(this);
             // TODO: Construct any child components here
         }
 
@@ -36,6 +42,7 @@ namespace TRAPT
         /// </summary>
         public override void Initialize()
         {
+            this.DrawOrder = 9000;
             //load the cursor image
             this.cursorImg = Game.Content.Load<Texture2D>("cursor");
 
@@ -53,11 +60,26 @@ namespace TRAPT
             this.position.X = ms.X;
             this.position.Y = ms.Y;
 
+            this.position = Vector2.Transform(this.position, Matrix.Invert(((TraptMain)Game).camera.GetViewMatrix()));
+            
+
             base.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public Vector2 GetMouseInWorld()
         {
+            MouseState ms = Mouse.GetState();
+            return Vector2.Transform(
+                new Vector2(ms.X, ms.Y), 
+                Matrix.Invert(
+                    ((TraptMain)Game).camera.GetViewMatrix()
+                    )
+                    );
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            
             //draw the cursor
             spriteBatch.Draw(this.cursorImg, this.position, Color.White);
         }

@@ -17,8 +17,9 @@ namespace TRAPT
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Player2 : Microsoft.Xna.Framework.GameComponent
+    public class Player2 : Agent//Microsoft.Xna.Framework.GameComponent
     {
+        public bool shooting;
         // PHYSICS FIELDS
 
         public Vector2 position;

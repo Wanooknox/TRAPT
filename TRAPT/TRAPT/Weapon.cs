@@ -138,6 +138,10 @@ namespace TRAPT
             }
         }
 
+        /// <summary>
+        /// Call to make the gun declare it's location
+        /// </summary>
+        /// <param name="set">true - declare loction, false - undeclare the location</param>
         public void CellPosition(bool set)
         {
             //if we need to set the location
@@ -168,6 +172,11 @@ namespace TRAPT
             }
         }
 
+        /// <summary>
+        /// Call to attach the gun to an agent (Player or Enemy)
+        /// </summary>
+        /// <param name="pickup">true - pick up the gun, false - drop the gun</param>
+        /// <param name="owner">the agent to attach the gun to</param>
         public void SetOwner(bool pickup, Agent owner)
         {
             if (pickup)
@@ -183,6 +192,48 @@ namespace TRAPT
                 this.CellPosition(true);
             }
         }
+        /// <summary>
+        /// Call to make the gun shoot
+        /// </summary>
+        public void Shoot()
+        {
+            MouseState ms = Mouse.GetState();
+            
+            //if button clicked and have enough ammo
+            if (this.ammo > 0 && 
+                ((this.Owner is Player && ms.LeftButton == ButtonState.Pressed)
+                || (this.Owner is Player2 && ((Player2)this.Owner).shooting) ) )
+            {
+                if (this.gunType.Equals("SMG"))
+                {
+                    Projectile bullet = new Projectile(Game);
+                    bullet.Initialize(this.position, 10.0f, this.rotation, this.gunType, ref this.projectileStrayer);
+                    //100 millisecond delay
+                    this.delay = TimeSpan.FromMilliseconds(100);
+                }
+                else if (this.gunType.Equals("shotgun"))
+                {
+                    //fire 10 projectiles at once for the shotgun.
+                    for (int i = 0; i < 10; i++)
+                    {
+                        Projectile bullet = new Projectile(Game);
+                        bullet.Initialize(this.position, 10.0f, this.rotation, this.gunType, ref this.projectileStrayer);
+                        //1500 millisecond delay
+                        this.delay = TimeSpan.FromMilliseconds(1500);
+                    }
+                }
+                //decrease ammo
+                this.ammo -= 1;
+            }
+        }
+
+        /// <summary>
+        /// call to drop the gun
+        /// </summary>
+        public void Drop()
+        {
+            this.Dispose();
+        }
 
         /// <summary>
         /// Allows the game component to update itself.
@@ -197,39 +248,21 @@ namespace TRAPT
                 this.position.Y = owner.Position.Y;
                 this.rotation = owner.Rotation;
 
-                MouseState ms = Mouse.GetState();
                 //if the shot delay is zero or less
                 if (this.delay <= TimeSpan.Zero)
                 {
-                    //if button clicked and have enough ammo
-                    if (ms.LeftButton == ButtonState.Pressed && this.ammo > 0)
-                    {
-                        if (this.gunType.Equals("SMG"))
-                        {
-                            Projectile bullet = new Projectile(Game);
-                            bullet.Initialize(this.position, 10.0f, this.rotation, this.gunType, ref this.projectileStrayer);
-                            //100 millisecond delay
-                            this.delay = TimeSpan.FromMilliseconds(100);
-                        }
-                        else if (this.gunType.Equals("shotgun"))
-                        {
-                            //fire 10 projectiles at once for the shotgun.
-                            for (int i = 0; i < 10; i++)
-                            {
-                                Projectile bullet = new Projectile(Game);
-                                bullet.Initialize(this.position, 10.0f, this.rotation, this.gunType, ref this.projectileStrayer);
-                                //1500 millisecond delay
-                                this.delay = TimeSpan.FromMilliseconds(1500);
-                            }
-                        }
-                        //decrease ammo
-                        this.ammo -= 1;
-                    }
+                    this.Shoot();
                 }
                 else //lower the shot delay
                 {
                     //current delay time minus the time since last update call.
                     this.delay -= gameTime.ElapsedGameTime;
+                }
+
+                KeyboardState ks = Keyboard.GetState();
+                if (this.owner is Player && ks.IsKeyDown(Keys.R))
+                {
+                    this.Drop();
                 }
             }
 
@@ -240,6 +273,7 @@ namespace TRAPT
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+
             this.destination.X = (int)Math.Round(this.position.X);
             this.destination.Y = (int)Math.Round(this.position.Y);
 
@@ -248,6 +282,9 @@ namespace TRAPT
                 this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
                 origin,
                 SpriteEffects.None, 0);
+
+            //spriteBatch.End();
+            //spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, ((TraptMain)Game).camera.GetViewMatrix());
         }
         #endregion
     }

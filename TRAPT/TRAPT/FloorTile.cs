@@ -15,15 +15,12 @@ namespace TRAPT
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class WallTile : Tile //Microsoft.Xna.Framework.GameComponent
+    public class FloorTile : Tile//Microsoft.Xna.Framework.GameComponent
     {
-        
-
-        public WallTile(Game game)
+        public FloorTile(Game game)
             : base(game)
         {
             // TODO: Construct any child components here
-
         }
 
         /// <summary>
@@ -32,13 +29,11 @@ namespace TRAPT
         /// </summary>
         public override void Initialize(Vector2 position, int tileCount)
         {
-            this.DrawOrder = 1000;
+            this.DrawOrder = 0;
             //this.textureName = "walls";
 
             position.X = position.X * 128;
             position.Y = position.Y * 128;
-
-            //this.Visible = true;
 
             base.Initialize(position, tileCount);
         }
