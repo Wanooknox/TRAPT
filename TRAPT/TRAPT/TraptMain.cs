@@ -9,6 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+using Graph;
+using TRAPT.Levels;
+
+
 namespace TRAPT
 {
     /// <summary>
@@ -19,14 +23,54 @@ namespace TRAPT
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Player player;
-        Vector2 actorStart;
-        Cursor cursor;
+        #region GameState
+        enum GameState
+        {
+            MainMenu,
+            Instructions,
+            Playing,
+            Paused,
+        }
+        //Set gamestate
+        GameState currentGameState = GameState.MainMenu;
+
+        Button btnPlayTutorial, btnInstructions;
+        Level lvl;
+        TimeSpan switchDelay = TimeSpan.Zero;
+
+        //Pause stuff
+        bool paused = false;
+        Texture2D pausedTexture;
+        Microsoft.Xna.Framework.Rectangle pausedRectangle;
+        Button btnPlay, btnQuit;
+
+        #endregion 
+
+        int screenWidth = 800, screenHeight = 600;
+
+        public const int GRID_CELL_SIZE = 128;
+        public static TileLayer tileLayer;
+        public static UGraphList<Cell> locationTracker;
+        public static GameComponentCollection[] layers;
+        public static Cursor cursor;
+        public static Camera camera;
+        public static Player player;
+        public static KeyboardState ks, ksold;
+
+
+        #region XNA Built In
 
         public TraptMain()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            //create layers
+            layers = new GameComponentCollection[3];
+            layers[0] = new GameComponentCollection();
+            layers[1] = new GameComponentCollection();
+            layers[2] = new GameComponentCollection();
+
         }
 
         /// <summary>
@@ -37,18 +81,27 @@ namespace TRAPT
         /// </summary>
         protected override void Initialize()
         {
-            graphics.PreferredBackBufferHeight = 600;
+            //Screen stuff
+            graphics.PreferredBackBufferWidth = screenWidth;
+            graphics.PreferredBackBufferHeight = screenHeight;
+            //graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
-            //set start point to center screen
-            this.actorStart = new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+            //Init camera
+            camera = new Camera(this);
+            camera.Initialize(GraphicsDevice.Viewport);
+            //camera.Limits = new Rectangle(0, 0, tileLayer.mapWidth * GRID_CELL_SIZE, tileLayer.mapHeight * GRID_CELL_SIZE);
 
-            this.player = new Player(this);
-            player.Initialize(this.actorStart, 0.0f);
+            //Init cursor
+            cursor = new Cursor(this);
+            cursor.Initialize();
+            this.IsMouseVisible = true;
 
-            this.cursor = new Cursor(this);
-            this.cursor.Initialize();
-            
+            //map and location tracking
+            tileLayer = new TileLayer(this);
+            //locationTracker = new UGraphList<Cell>();
+
+            //this.lvl = new Level1(this);
 
             base.Initialize();
         }
@@ -61,6 +114,21 @@ namespace TRAPT
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            //Menu Buttons
+            btnPlayTutorial = new Button(Content.Load<Texture2D>("playTutorial_New"), graphics.GraphicsDevice);
+            btnPlayTutorial.setPosition(new Vector2(270, 240));
+            btnInstructions = new Button(Content.Load<Texture2D>("instructions_New"), graphics.GraphicsDevice);
+            btnInstructions.setPosition(new Vector2(270, 280));
+
+            //Pause stuff
+            pausedTexture = Content.Load<Texture2D>("paused");
+            pausedRectangle = new Microsoft.Xna.Framework.Rectangle(0, 0, pausedTexture.Width, pausedTexture.Height);
+
+            btnPlay = new Button(Content.Load<Texture2D>("playTutorial_New"), graphics.GraphicsDevice);
+            btnPlay.setPosition(new Vector2(300, 225));
+            btnQuit = new Button(Content.Load<Texture2D>("quitGame"), graphics.GraphicsDevice);
+            btnQuit.setPosition(new Vector2(300, 275));
 
             // TODO: use this.Content to load your game content here
         }
@@ -85,16 +153,109 @@ namespace TRAPT
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            KeyboardState ks = Keyboard.GetState();
+            // Allows the game to exit
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed) this.Exit();
 
-            if (ks.IsKeyDown(Keys.Escape))
+            //cursor.Update(gameTime);
+
+            //get newest keyboard state
+            KeyboardState ks = Keyboard.GetState();
+            MouseState mouse = Mouse.GetState();
+
+            //if (ks.IsKeyDown(Keys.Escape)) this.Exit();
+
+            switch (currentGameState)
             {
-                this.Exit();
+                case GameState.MainMenu:
+                    if (btnPlayTutorial.isClicked)
+                    {
+                        cursor.ChangeMouseMode("play");
+                        btnPlayTutorial.isClicked = false;
+                        currentGameState = GameState.Playing;
+                    }
+                    if (btnInstructions.isClicked)
+                    {
+                        btnInstructions.isClicked = false;
+                        currentGameState = GameState.Instructions;
+                    }
+
+                    btnPlayTutorial.Update(mouse);
+                    btnInstructions.Update(mouse);
+                    cursor.Update(gameTime);
+                    //base.Update(gameTime);
+                    break;
+
+                case GameState.Instructions:
+                    if (mouse.LeftButton == ButtonState.Pressed)
+                    {
+                        currentGameState = GameState.MainMenu;
+                    }
+                    cursor.Update(gameTime);
+                    //base.Update(gameTime);
+                    break;
+
+                case GameState.Playing:
+                    //if no level loaded
+                    if (this.lvl == null)
+                    {
+                        //load next level
+                        //this.lvl = new Level1(this);
+                        //this.lvl.Initialize();
+                        this.ChangeLevel("level1");
+                    }
+                    else //else run level update
+                    {
+                        CollisionTest();
+                        this.lvl.Update(gameTime);
+                    }
+
+                    if (ks.IsKeyDown(Keys.Escape))
+                    {
+                        EnableAllObjects(false);
+                        //cursor.cameraMode = false;
+                        cursor.ChangeMouseMode("menu");
+                        currentGameState = GameState.Paused;
+                        //btnPlay.isClicked = false;
+                    }
+
+                    break;
+                case GameState.Paused:
+
+                    if (btnPlay.isClicked)
+                    {
+                        EnableAllObjects(true);
+                        //cursor.cameraMode = true;
+                        cursor.ChangeMouseMode("play");
+                        btnPlay.isClicked = false;
+                        currentGameState = GameState.Playing;
+                    }
+                    if (btnQuit.isClicked)
+                    {
+                        Exit();
+                    }
+
+                    btnPlay.Update(mouse);
+                    btnQuit.Update(mouse);
+                    cursor.Update(gameTime);
+
+                    break;
             }
 
-            this.cursor.Update(gameTime);
+            if (ks.IsKeyDown(Keys.Down) && !ksold.IsKeyDown(Keys.Down))
+            {
+                Console.WriteLine("KEY PRESSED: the player just pressed down");
+            }
+            else if (ks.IsKeyDown(Keys.Down) && ksold.IsKeyDown(Keys.Down))
+            {
+                Console.WriteLine("KEY: the player is holding the key down");
+            }
+            else if (!ks.IsKeyDown(Keys.Down) && ksold.IsKeyDown(Keys.Down))
+            {
+                Console.WriteLine("KEY RELEASED: the player was holding the key down, but has just let it go");
+            }
 
-            this.player.Update(gameTime);
+            //save current keyboard state as the old state
+            ksold = ks;
 
             base.Update(gameTime);
         }
@@ -105,17 +266,263 @@ namespace TRAPT
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            this.spriteBatch.Begin();
+            GraphicsDevice.Clear(Color.Black);
 
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            switch (currentGameState)
+            {
+                case GameState.MainMenu:
+                    //start draw
+                    this.spriteBatch.Begin();
 
-            
-            this.player.Draw(this.spriteBatch);
+                    spriteBatch.Draw(Content.Load<Texture2D>("MainMenu"), new Microsoft.Xna.Framework.Rectangle(0, 0, screenWidth, screenHeight),
+                        Color.White);
+                    btnPlayTutorial.Draw(this.spriteBatch);  //draw the start button
+                    btnInstructions.Draw(this.spriteBatch);  //draw the instructions button
+                    cursor.Draw(this.spriteBatch);
+                    //end draw
+                    this.spriteBatch.End();
+                    break;
 
-            this.cursor.Draw(this.spriteBatch);
-            this.spriteBatch.End();
-            
+                case GameState.Instructions:
+                    //start draw
+                    this.spriteBatch.Begin();
+
+                    spriteBatch.Draw(Content.Load<Texture2D>("GameInstructions"), new Microsoft.Xna.Framework.Rectangle(0, 0, screenWidth, screenHeight),
+                        Color.White);
+                    cursor.Draw(this.spriteBatch);
+                    //end draw
+                    this.spriteBatch.End();
+                    break;
+
+                case GameState.Playing:
+
+                    //for each layer
+                    foreach (GameComponentCollection layer in layers)
+                    {
+                        //start a batch
+                        this.spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, camera.GetViewMatrix());
+                        //draw each component in the player
+                        foreach (DrawableGameComponent i in layer)
+                        {
+                            ((EnvironmentObj)i).Draw(this.spriteBatch);
+                        }
+                        //end the batch
+                        this.spriteBatch.End();
+                    }
+
+                    break;
+                case GameState.Paused:
+                    //start draw
+                    this.spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
+
+                    Color pauseBack = Color.Green;
+                    pauseBack.A = 128;
+                    spriteBatch.Draw(Content.Load<Texture2D>("paused"), new Microsoft.Xna.Framework.Rectangle(0, 0, screenWidth, screenHeight),
+                        pauseBack);
+                    btnPlay.Draw(this.spriteBatch);
+                    btnQuit.Draw(this.spriteBatch);
+                    cursor.Draw(this.spriteBatch);
+                    //end draw
+                    this.spriteBatch.End();
+                    break;
+            }
+
+            ////for each layer
+            //foreach (GameComponentCollection layer in layers)
+            //{
+            //    //start a batch
+            //    this.spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, camera.GetViewMatrix());
+            //    //draw each component in the player
+            //    foreach (DrawableGameComponent i in layer)
+            //    {
+            //        ((EnvironmentObj)i).Draw(this.spriteBatch);
+            //    }
+            //    //end the batch
+            //    this.spriteBatch.End();
+            //}
+
+            //this.spriteBatch.Begin();
+            //cursor.Draw(this.spriteBatch);
+            //this.spriteBatch.End();
+
             base.Draw(gameTime);
         }
+
+        #endregion
+
+        #region Our Methods
+        /// <summary>
+        /// check if a point is inside the game world.
+        /// </summary>
+        /// <param name="point"></param>
+        public bool IsInWorld(Vector2 point)
+        {
+            //default to false
+            bool result = false;
+            //if inside the drawing area
+            if (point.X >= 0 && point.Y >= 0
+                && point.X <= (tileLayer.mapWidth * GRID_CELL_SIZE) + 1 && point.Y <= (tileLayer.mapHeight * GRID_CELL_SIZE) + 1)
+            {
+                result = true;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Call to populate the locationTracker graph
+        /// </summary>
+        public static void PopulateGraph()
+        {
+            //width and height for graph are width of room / 128
+            int width = tileLayer.mapWidth + 1;
+            int height = tileLayer.mapHeight + 1;
+
+            // create a new location graph
+            locationTracker = new UGraphList<Cell>();
+
+            // add vertecies
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    //add a vertex to the graph for every cell
+                    locationTracker.AddVertex(new Cell(i, j));
+                }
+            }
+
+            //add edges
+            foreach (IVertex<Cell> v in locationTracker.EnumerateVertices())
+            {
+
+                //if cell below
+                if (v.Data.Y < height - 1)
+                {
+                    //make an edge between this and the one lower
+                    locationTracker.AddEdge(v.Data, new Cell(v.Data.X, v.Data.Y + 1));
+
+                    //if cell below and right or left
+                    if (v.Data.X >= 1)
+                    {
+                        //make an edge between this and the one to the left
+                        locationTracker.AddEdge(v.Data, new Cell(v.Data.X - 1, v.Data.Y + 1));
+                    }
+                    if (v.Data.X < width - 1)
+                    {
+                        //make an edge between this and the one to the left
+                        locationTracker.AddEdge(v.Data, new Cell(v.Data.X + 1, v.Data.Y + 1));
+                    }
+                }
+
+                //if cell right
+                if (v.Data.X < width - 1)
+                {
+                    //make an edge between this and the one to the left
+                    locationTracker.AddEdge(v.Data, new Cell(v.Data.X + 1, v.Data.Y));
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void CollisionTest()
+        {
+            foreach (GameComponent me in this.Components)
+            {
+                //only agents need to manage colliding with things.
+                if (me is Agent)
+                {
+                    Cell meCell = ((Agent)me).checkin;
+
+                    //create a list for collision checking
+                    List<GameComponentRef> toCollide = new List<GameComponentRef>();
+                    //and copy this cell's items into it
+                    //toCollide = (List<GameComponentRef>)toCollide.Concat((List<GameComponentRef>)meCell);
+                    toCollide.AddRange(meCell);
+                    //get a list of neighbouring cells
+                    foreach (IVertex<Cell> neighbour in locationTracker.EnumerateNeighbours(meCell))
+                    {
+                        //add each cells items to the collision list
+                        //toCollide = (List<GameComponentRef>)toCollide.Concat(neighbour.Data);
+                        toCollide.AddRange(neighbour.Data);
+                    }
+
+                    //for all found nearby items, check for collision
+                    foreach (GameComponentRef component in toCollide)
+                    {
+                        //do not collide with the current component 
+                        if (!me.Equals(component.item))
+                        {
+                            //if this is colliding with that
+                            if (((EnvironmentObj)me).IsColliding(component.item))
+                            {
+                                //throw new ApplicationException("hit!");
+                                //((EnvironmentObj)me).Collide(component.item);
+                                ((EnvironmentObj)me).imHitting.Add(component.item);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// call to enable or disable all objects in Game.Components
+        /// </summary>
+        /// <param name="on"></param>
+        public void EnableAllObjects(bool on)
+        {
+            if (on) //if we want to enable all
+            {
+                foreach (GameComponent i in this.Components)
+                {
+                    i.Enabled = true;
+                }
+            }
+            else //else disable all
+            {
+                foreach (GameComponent i in this.Components)
+                {
+                    i.Enabled = false;
+                }
+            }
+        }
+
+        public void ChangeLevel(string level)
+        {
+            RefreshLayers();
+            //layers[0] = new GameComponentCollection();
+            switch (level)
+            {
+                case "level1":
+                    this.lvl = new Level1(this);
+                    this.lvl.Initialize();
+                    break;
+                case "level2":
+                    this.lvl.Dispose();
+                    this.lvl = new Level2(this);
+                    this.lvl.Initialize();
+                    break;
+            }
+            
+        }
+
+        public void RefreshLayers()
+        {
+            //TODO: pull the splitting code i wrote in the old oe out and use it to make a layer building method.
+            layers[0] = new GameComponentCollection();
+            layers[1] = new GameComponentCollection();
+            layers[2] = new GameComponentCollection();
+            if (player != null)
+            {
+                layers[1].Add(player);
+            }
+            if (cursor != null)
+            {
+                layers[2].Add(cursor);
+            }
+        }
+        #endregion
     }
 }
