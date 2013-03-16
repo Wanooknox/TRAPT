@@ -58,7 +58,7 @@ namespace TRAPT
 
             //graphics.GraphicsDevice.PresentationParameters.
 
-            this.IsMouseVisible = true;
+            //this.IsMouseVisible = true;
             
 
             //this.Window.AllowUserResizing = false;
