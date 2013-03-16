@@ -98,6 +98,7 @@ namespace TRAPT
         /// </summary>
         private void SpeedUp()
         {
+            //speed = MAX_PLAYER_SPEED;
             // as long as we are below the maximum speed
             if (this.speed < MAX_PLAYER_SPEED)
             {
@@ -219,7 +220,7 @@ namespace TRAPT
         public override void Update(GameTime gameTime)
         {
             // Moving update:
-            KeyboardState ks = Keyboard.GetState();
+            ks = Keyboard.GetState();
             MouseState ms = Mouse.GetState();
 
             // Move faster or slower.
@@ -257,7 +258,7 @@ namespace TRAPT
             double delX = msInWorld.X - this.position.X;
             double delY = msInWorld.Y - this.position.Y;
             this.rotation = (float)(Math.Atan2(delY, delX) + (Math.PI / 2.0));
-            Console.WriteLine("Player angle change: " + delX + " " + delY);
+            //Console.WriteLine("Player angle change: " + delX + " " + delY);
 
             //if we have a gun and are clicking
             if (this.Weapon != null && ms.LeftButton == ButtonState.Pressed)
@@ -277,7 +278,7 @@ namespace TRAPT
             //Console.WriteLine(delX + " " + delY);
 
             ////////////////////////
-
+            
             // Include friction.
             // If our velocity (scalar magnitude of a vector = length of a vector) is greater than the effect of friction,
             // then friction should be applied in the opposite direction of the velocity.  
@@ -293,7 +294,7 @@ namespace TRAPT
                 this.velocity.X = MIN_PLAYER_SPEED;
                 this.velocity.Y = MIN_PLAYER_SPEED;
                 this.speed = MIN_PLAYER_SPEED;
-            }
+            } 
 
             // stop at edge of screen  
             //if (this.position.X + this.velocity.X < this.spriteWidth
@@ -344,6 +345,7 @@ namespace TRAPT
             this.position.X += this.velocity.X;
 
             
+            ksold = ks;
 
             base.Update(gameTime);
         }
@@ -547,12 +549,16 @@ namespace TRAPT
             else if (that is Weapon)
             {
                 if (((Weapon)that).Owner == null && this.Weapon == null)
+                //if (TraptMain.ks.IsKeyDown(Keys.R) && !TraptMain.ksold.IsKeyDown(Keys.R))
                 {
+                    
                     //KeyboardState ks = Keyboard.GetState();
-                    if (TraptMain.ks.IsKeyUp(Keys.R) && TraptMain.ksold.IsKeyDown(Keys.R))
+                    //if (((Weapon)that).Owner == null && this.Weapon == null)
+                    if (!ks.IsKeyDown(Keys.R) && ksold.IsKeyDown(Keys.R))
                     {
-                        ((Weapon)that).SetOwner(true, this);
-                        this.Weapon = (Weapon)that;
+                        ((Weapon)that).PickUp(true, this);
+                        //this.Weapon = (Weapon)that;
+                        Console.WriteLine("R key PRESSED");
                         //((Weapon)that).Owner = this;
                         //((Weapon)that).GetSprite();
                         //throw new ApplicationException("FUICK");

@@ -33,8 +33,7 @@ namespace TRAPT
         public Cursor(Game game)
             : base(game)
         {
-            //((TraptMain)game).
-            TraptMain.layers[2].Add(this);
+            //TraptMain.layers[2].Add(this);
             //game.Components.Add(this);
             // TODO: Construct any child components here
         }

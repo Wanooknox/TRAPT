@@ -30,6 +30,8 @@ namespace TRAPT
         // the image file to load the sprite(s) from
         protected Texture2D texture;
 
+        public KeyboardState ks, ksold;
+
         public List<EnvironmentObj> imHitting;
 
         private EventListener listener;

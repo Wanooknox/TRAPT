@@ -26,6 +26,7 @@ namespace TRAPT
         private Agent owner;
         //count down before next bullet can be shot.
         private TimeSpan delay = TimeSpan.Zero;
+        private bool justPickedUp = false;
         private Random projectileStrayer;
 
 
@@ -59,7 +60,7 @@ namespace TRAPT
         public Weapon(Game game)
             : base(game)
         {
-            TraptMain.layers[1].Add(this);
+            //TraptMain.layers[1].Add(this);
             // TODO: Construct any child components here
         }
         
@@ -178,18 +179,32 @@ namespace TRAPT
         /// </summary>
         /// <param name="pickup">true - pick up the gun, false - drop the gun</param>
         /// <param name="owner">the agent to attach the gun to</param>
-        public void SetOwner(bool pickup, Agent owner)
+        public void PickUp(bool pickup, Agent owner)
         {
-            if (pickup && owner != null)
+            if (pickup)
             {
+                //if owner has no weapon, pick up
                 if (owner.Weapon == null)
                 {
                     this.Owner = owner;
+                    this.Owner.Weapon = this;
                     //this.Owner.HasWeapon = true;
                     this.GetSprite();
                     this.CellPosition(false);
                     //this.delay = TimeSpan.FromMilliseconds(200);
                 }
+                else
+                {
+                    //force drop other gun
+                    owner.Weapon.Drop();
+                    //pick up this gun
+                    this.Owner = owner;
+                    this.Owner.Weapon = this;
+                    //this.Owner.HasWeapon = true;
+                    this.GetSprite();
+                    this.CellPosition(false);
+                }
+                justPickedUp = true;
             }
             else //drop gun
             {
@@ -266,6 +281,7 @@ namespace TRAPT
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+            ks = Keyboard.GetState();
             //if i have an owner
             if (owner != null)
             {
@@ -280,15 +296,19 @@ namespace TRAPT
                     this.delay -= gameTime.ElapsedGameTime;
                 }
 
-                //KeyboardState ks = Keyboard.GetState();
-                if (this.owner is Player && TraptMain.ks.IsKeyUp(Keys.R) && TraptMain.ksold.IsKeyDown(Keys.R))
+                if (!justPickedUp)
                 {
-                    this.Drop();
+                    if (this.owner is Player && !ks.IsKeyDown(Keys.R) && ksold.IsKeyDown(Keys.R))
+                    {
+                        this.Drop();
+                    }
                 }
+                else { justPickedUp = false; }
                 //TraptMain.ksold = ks;
             }
 
             //TODO: fix the location of the weapon object on every step, because it's an EnvironmentAgent
+            ksold = ks;
 
             base.Update(gameTime);
         }

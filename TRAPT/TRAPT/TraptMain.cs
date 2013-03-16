@@ -24,18 +24,20 @@ namespace TRAPT
         SpriteBatch spriteBatch;
 
         #region GameState
-        enum GameState
+        public enum GameState
         {
             MainMenu,
             Instructions,
             Playing,
             Paused,
+            Loading,
         }
         //Set gamestate
-        GameState currentGameState = GameState.MainMenu;
+        public static GameState currentGameState = GameState.MainMenu;
 
         Button btnPlayTutorial, btnInstructions;
         Level lvl;
+        public static string nextlvl;
         TimeSpan switchDelay = TimeSpan.Zero;
 
         //Pause stuff
@@ -55,7 +57,8 @@ namespace TRAPT
         public static Cursor cursor;
         public static Camera camera;
         public static Player player;
-        public static KeyboardState ks, ksold;
+        public KeyboardState ks, ksold;
+        //public static KeyboardState ks, ksold;
 
 
         #region XNA Built In
@@ -150,16 +153,13 @@ namespace TRAPT
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
-
-            // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed) this.Exit();
 
             //cursor.Update(gameTime);
 
             //get newest keyboard state
-            KeyboardState ks = Keyboard.GetState();
+            KeyboardState localKeys = Keyboard.GetState();
+            ks = localKeys;
             MouseState mouse = Mouse.GetState();
 
             //if (ks.IsKeyDown(Keys.Escape)) this.Exit();
@@ -171,13 +171,15 @@ namespace TRAPT
                     {
                         cursor.ChangeMouseMode("play");
                         btnPlayTutorial.isClicked = false;
-                        currentGameState = GameState.Playing;
+                        nextlvl = "level1";
+                        currentGameState = GameState.Loading;
                     }
                     if (btnInstructions.isClicked)
                     {
                         btnInstructions.isClicked = false;
                         currentGameState = GameState.Instructions;
                     }
+                    if (ks.IsKeyDown(Keys.Escape)) this.Exit();
 
                     btnPlayTutorial.Update(mouse);
                     btnInstructions.Update(mouse);
@@ -190,6 +192,8 @@ namespace TRAPT
                     {
                         currentGameState = GameState.MainMenu;
                     }
+                    if (ks.IsKeyDown(Keys.Escape)) this.Exit();
+
                     cursor.Update(gameTime);
                     //base.Update(gameTime);
                     break;
@@ -233,11 +237,23 @@ namespace TRAPT
                     {
                         Exit();
                     }
+                    if (ks.IsKeyDown(Keys.Escape) && !ksold.IsKeyDown(Keys.Escape)) this.Exit();
 
                     btnPlay.Update(mouse);
                     btnQuit.Update(mouse);
                     cursor.Update(gameTime);
 
+                    break;
+                case GameState.Loading:
+                    if (this.lvl == null)
+                    {
+                        //load next level
+                        //this.lvl = new Level1(this);
+                        //this.lvl.Initialize();
+                        //this.ChangeLevel(nextlvl);
+                    }
+                    this.ChangeLevel(nextlvl);
+                    currentGameState = GameState.Playing;
                     break;
             }
 
@@ -253,9 +269,9 @@ namespace TRAPT
             {
                 Console.WriteLine("KEY RELEASED: the player was holding the key down, but has just let it go");
             }
-
+            
             //save current keyboard state as the old state
-            ksold = ks;
+            ksold = localKeys;
 
             base.Update(gameTime);
         }
@@ -323,6 +339,12 @@ namespace TRAPT
                     btnQuit.Draw(this.spriteBatch);
                     cursor.Draw(this.spriteBatch);
                     //end draw
+                    this.spriteBatch.End();
+                    break;
+                case GameState.Loading:
+                    this.spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
+                    spriteBatch.Draw(Content.Load<Texture2D>("paused"), new Microsoft.Xna.Framework.Rectangle(0, 0, screenWidth, screenHeight),
+                        Color.White);
                     this.spriteBatch.End();
                     break;
             }
@@ -491,7 +513,7 @@ namespace TRAPT
 
         public void ChangeLevel(string level)
         {
-            RefreshLayers();
+            //RefreshLayers();
             //layers[0] = new GameComponentCollection();
             switch (level)
             {
@@ -500,7 +522,7 @@ namespace TRAPT
                     this.lvl.Initialize();
                     break;
                 case "level2":
-                    this.lvl.Dispose();
+                    this.lvl.Destory();
                     this.lvl = new Level2(this);
                     this.lvl.Initialize();
                     break;
@@ -508,19 +530,58 @@ namespace TRAPT
             
         }
 
-        public void RefreshLayers()
+        public void ConstructLayers()
         {
+            //foreach (GameComponentCollection layer in layers)
+            //{
+            //    //foreach (GameComponent i in layer)
+            //    for (int i = 0; i < layer.Count(); i++)
+            //    {
+            //        //if not the player
+            //        if (!(layer[i] is Player || layer[i] is Cursor))
+            //        {
+            //            ((GameComponent)layer[i]).Dispose();
+            //        }
+            //    }
+            //}
+
             //TODO: pull the splitting code i wrote in the old oe out and use it to make a layer building method.
             layers[0] = new GameComponentCollection();
             layers[1] = new GameComponentCollection();
             layers[2] = new GameComponentCollection();
-            if (player != null)
+            //if (player != null)
+            //{
+            //    layers[1].Add(player);
+            //}
+            //if (cursor != null)
+            //{
+            //    layers[2].Add(cursor);
+            //}
+
+            //GameComponentCollection[] layers = new GameComponentCollection[3];
+            //layers[0] = new GameComponentCollection();
+            //layers[1] = new GameComponentCollection();
+            //layers[2] = new GameComponentCollection();
+
+            foreach (GameComponent i in this.Components)
             {
-                layers[1].Add(player);
-            }
-            if (cursor != null)
-            {
-                layers[2].Add(cursor);
+                if (i is DrawableGameComponent && ((DrawableGameComponent)i).Visible)
+                {
+                    if (i is Tile)
+                    {
+                        layers[0].Add(i);
+                    }
+                    else if (i is Agent || i is Weapon || i is Projectile)
+                    {
+                        layers[1].Add(i);
+                    }
+                    else if (i is Cursor)
+                    {
+                        layers[2].Add(i);
+                    }
+                    
+                }
+
             }
         }
         #endregion

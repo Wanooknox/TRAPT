@@ -22,7 +22,7 @@ namespace TRAPT.Levels
         public Level(Game game)
             : base(game)
         {
-            this.listener = new EventListener(this);
+            //this.listener = new EventListener(this);
             // TODO: Construct any child components here
         }
 
@@ -32,7 +32,7 @@ namespace TRAPT.Levels
         /// </summary>
         public override void Initialize()
         {
-            // TODO: Add your initialization code here
+            ((TraptMain)Game).ConstructLayers();
 
             base.Initialize();
         }
@@ -46,6 +46,26 @@ namespace TRAPT.Levels
             // TODO: Add your update code here
 
             base.Update(gameTime);
+        }
+
+        public void Destory()
+        {
+            int count = Game.Components.Count();
+            //for all game components
+            for (int i = count-1; 0 <= i ; i--)
+            {
+                //if not a crucial component
+                if (!(Game.Components[i] is Player 
+                    || (Game.Components[i] is Weapon && ((Weapon)Game.Components[i]).Owner is Player)
+                    || Game.Components[i] is Cursor 
+                    || Game.Components[i] is Camera))
+                {
+                    //destroy it
+                    ((GameComponent)Game.Components[i]).Dispose();
+                }
+            }
+            //dispose of self
+            this.Dispose();
         }
     }
 

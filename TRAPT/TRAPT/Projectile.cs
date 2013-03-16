@@ -23,7 +23,7 @@ namespace TRAPT
         public Projectile(Game game)
             : base(game)
         {
-            //((TraptMain)game).layers[1].Add(this);
+            TraptMain.layers[1].Add(this);
             // TODO: Construct any child components here
         }
 

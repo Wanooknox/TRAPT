@@ -22,7 +22,7 @@ namespace TRAPT
         public Agent(Game game)
             : base(game)
         {
-            TraptMain.layers[1].Add(this);
+            //TraptMain.layers[1].Add(this);
             // TODO: Construct any child components here
         }
 

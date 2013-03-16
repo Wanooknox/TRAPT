@@ -33,7 +33,7 @@ namespace TRAPT
         public Tile(Game game)
             : base(game)
         {
-            TraptMain.layers[0].Add(this);
+            //TraptMain.layers[0].Add(this);
             // TODO: Construct any child components here
         }
 

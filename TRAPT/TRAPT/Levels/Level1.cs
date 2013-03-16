@@ -88,7 +88,9 @@ namespace TRAPT.Levels
             KeyboardState ks = Keyboard.GetState();
             if (ks.IsKeyDown(Keys.P))
             {
-                ((TraptMain)Game).ChangeLevel("level2");
+                //((TraptMain)Game).ChangeLevel("level2");
+                TraptMain.nextlvl = "level2";
+                TraptMain.currentGameState = TraptMain.GameState.Loading;
             }
 
             base.Update(gameTime);
