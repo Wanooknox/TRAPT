@@ -73,7 +73,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agent.cs" />
+    <Compile Include="AI_ViewCone.cs" />
+    <Compile Include="XMLObjectReader.cs" />
     <Compile Include="DummyEnemy.cs" />
+    <Compile Include="Enemy.cs" />
     <Compile Include="Graph\AGraph.cs" />
     <Compile Include="Graph\AGraphList.cs" />
     <Compile Include="Graph\AGraphMatrix.cs" />
@@ -94,7 +97,10 @@
     <Compile Include="Levels\Level.cs" />
     <Compile Include="Levels\Level1.cs" />
     <Compile Include="Levels\Level2.cs" />
+    <Compile Include="Line.cs" />
     <Compile Include="Mover.cs" />
+    <Compile Include="Path.cs" />
+    <Compile Include="PathNode.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -15,5 +15,12 @@ Content\spriteSheet.xnb
 Content\tileguide.xnb
 Content\walls.xnb
 Content\SpriteFont1.xnb
-Content\Map1.map
+Content\crosshairs.xnb
+Content\crosshairs2.xnb
+Content\loading.xnb
+Content\blueGuard.xnb
+Content\Pixel.xnb
+Content\Level1Map.map
 Content\newMap.map
+Content\EnemiesToPopulate.xml
+Content\Level1Objects.xml

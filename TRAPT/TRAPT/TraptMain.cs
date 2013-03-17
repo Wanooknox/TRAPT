@@ -15,6 +15,15 @@ using TRAPT.Levels;
 
 namespace TRAPT
 {
+    public enum GameState
+    {
+        MainMenu,
+        Instructions,
+        Playing,
+        Paused,
+        Loading,
+    }
+
     /// <summary>
     /// This is the main type for your game
     /// </summary>
@@ -24,14 +33,7 @@ namespace TRAPT
         SpriteBatch spriteBatch;
 
         #region GameState
-        public enum GameState
-        {
-            MainMenu,
-            Instructions,
-            Playing,
-            Paused,
-            Loading,
-        }
+        
         //Set gamestate
         public static GameState currentGameState = GameState.MainMenu;
 
@@ -39,6 +41,7 @@ namespace TRAPT
         Level lvl;
         public static string nextlvl;
         TimeSpan switchDelay = TimeSpan.Zero;
+        private bool loaddrawn = false;
 
         //Pause stuff
         bool paused = false;
@@ -52,11 +55,13 @@ namespace TRAPT
 
         public const int GRID_CELL_SIZE = 128;
         public static TileLayer tileLayer;
+        public static XMLObjectReader xmlReader;
         public static UGraphList<Cell> locationTracker;
         public static GameComponentCollection[] layers;
         public static Cursor cursor;
         public static Camera camera;
         public static Player player;
+        public static SpriteFont font;
         public KeyboardState ks, ksold;
         //public static KeyboardState ks, ksold;
 
@@ -90,6 +95,9 @@ namespace TRAPT
             //graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
+            //load the font
+            font = Content.Load<SpriteFont>("SpriteFont1");
+
             //Init camera
             camera = new Camera(this);
             camera.Initialize(GraphicsDevice.Viewport);
@@ -98,11 +106,12 @@ namespace TRAPT
             //Init cursor
             cursor = new Cursor(this);
             cursor.Initialize();
-            this.IsMouseVisible = true;
+            //this.IsMouseVisible = true;
 
             //map and location tracking
             tileLayer = new TileLayer(this);
-            //locationTracker = new UGraphList<Cell>();
+            //locationTracker = new UGraphList<Cell>(); // being done in PopulateGraph now 
+            xmlReader = new XMLObjectReader(this);
 
             //this.lvl = new Level1(this);
 
@@ -213,13 +222,18 @@ namespace TRAPT
                         this.lvl.Update(gameTime);
                     }
 
-                    if (ks.IsKeyDown(Keys.Escape))
+                    if (ks.IsKeyDown(Keys.Escape) && !ksold.IsKeyDown(Keys.Escape))
                     {
                         EnableAllObjects(false);
                         //cursor.cameraMode = false;
                         cursor.ChangeMouseMode("menu");
                         currentGameState = GameState.Paused;
                         //btnPlay.isClicked = false;
+                    }
+
+                    if (!ks.IsKeyDown(Keys.F1) && ksold.IsKeyDown(Keys.F1))
+                    {
+                        currentGameState = GameState.MainMenu;
                     }
 
                     break;
@@ -245,15 +259,12 @@ namespace TRAPT
 
                     break;
                 case GameState.Loading:
-                    if (this.lvl == null)
+                    if (loaddrawn)
                     {
-                        //load next level
-                        //this.lvl = new Level1(this);
-                        //this.lvl.Initialize();
-                        //this.ChangeLevel(nextlvl);
+                        this.ChangeLevel(nextlvl);
+                        loaddrawn = false;
+                        currentGameState = GameState.Playing;
                     }
-                    this.ChangeLevel(nextlvl);
-                    currentGameState = GameState.Playing;
                     break;
             }
 
@@ -329,7 +340,7 @@ namespace TRAPT
                     break;
                 case GameState.Paused:
                     //start draw
-                    this.spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
+                    this.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
                     Color pauseBack = Color.Green;
                     pauseBack.A = 128;
@@ -343,8 +354,10 @@ namespace TRAPT
                     break;
                 case GameState.Loading:
                     this.spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
-                    spriteBatch.Draw(Content.Load<Texture2D>("paused"), new Microsoft.Xna.Framework.Rectangle(0, 0, screenWidth, screenHeight),
+                    spriteBatch.Draw(Content.Load<Texture2D>("loading"), new Microsoft.Xna.Framework.Rectangle(0, 0, screenWidth, screenHeight),
                         Color.White);
+                    loaddrawn = true;
+                    //spriteBatch.DrawString(font, "Loading", new Vector2(GraphicsDevice.Viewport.Width - 
                     this.spriteBatch.End();
                     break;
             }

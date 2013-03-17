@@ -63,7 +63,7 @@ namespace TRAPT
             this.position.X = ms.X;
             this.position.Y = ms.Y;
 
-            if (this.cameraMode)
+            if (this.cameraMode) //modify position to account for camera rendering
             {
                 this.position = Vector2.Transform(this.position, Matrix.Invert(TraptMain.camera.GetViewMatrix()));
             }
@@ -85,11 +85,15 @@ namespace TRAPT
             if (mode.Equals("menu"))
             {
                 this.cursorImg = Game.Content.Load<Texture2D>("cursor");
+                this.destination.Width = this.cursorImg.Width;
+                this.destination.Height = this.cursorImg.Height;
                 this.cameraMode = false;
             }
             else // play mode
             {
-                this.cursorImg = Game.Content.Load<Texture2D>("face");
+                this.cursorImg = Game.Content.Load<Texture2D>("crosshairs");
+                this.destination.Width = this.cursorImg.Width;
+                this.destination.Height = this.cursorImg.Height;
                 this.cameraMode = true;
             }
 
@@ -98,9 +102,20 @@ namespace TRAPT
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            
+            if (this.cameraMode)
+            {
+                this.destination.X = (int)Math.Round(this.position.X - this.destination.Width / 2);
+                this.destination.Y = (int)Math.Round(this.position.Y - this.destination.Height / 2);
+            }
+            else
+            {
+                this.destination.X = (int)Math.Round(this.position.X);
+                this.destination.Y = (int)Math.Round(this.position.Y);
+            }
+
             //draw the cursor
-            spriteBatch.Draw(this.cursorImg, this.position, Color.White);
+            //spriteBatch.Draw(this.cursorImg, this.position, Color.White);
+            spriteBatch.Draw(this.cursorImg, this.Destination, Color.White);
         }
     }
 }

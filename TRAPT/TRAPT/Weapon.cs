@@ -12,16 +12,23 @@ using Graph;
 
 namespace TRAPT
 {
+    public enum WeaponType
+    {
+        SMG,
+        Shotgun,
+    }
+
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
     public class Weapon : Mover//Microsoft.Xna.Framework.GameComponent
     {
+        
         #region Attributes
         //number of bullets
         private int ammo;
         //type of gun
-        private string gunType;
+        private WeaponType wpnType;
         //agent that is using the gun
         private Agent owner;
         //count down before next bullet can be shot.
@@ -34,7 +41,7 @@ namespace TRAPT
         
         //private float rotation;
         //TACKING FIELDS
-        public Cell checkin;
+        //public Cell checkin;
         #endregion
 
         #region Properties
@@ -43,10 +50,10 @@ namespace TRAPT
             get { return ammo; }
             set { ammo = value; }
         }
-        public string GunType
+        public WeaponType WpnType
         {
-            get { return gunType; }
-            set { gunType = value; }
+            get { return wpnType; }
+            set { wpnType = value; }
         }
 
         public Agent Owner
@@ -70,7 +77,7 @@ namespace TRAPT
         /// Allows the game component to perform any initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
         /// </summary>
-        public virtual void Initialize(Vector2 position, int ammo, string gunType)
+        public virtual void Initialize(Vector2 position, int ammo, WeaponType wpnType)
         {
             this.DrawOrder = 300;
 
@@ -78,7 +85,7 @@ namespace TRAPT
 
             this.position = position;
             this.ammo = ammo;
-            this.gunType = gunType;
+            this.wpnType = wpnType;
 
             this.rotation = 0;
 
@@ -109,13 +116,13 @@ namespace TRAPT
             //if i don't have an owner
             if (owner == null)
             {
-                if (this.gunType.Equals("SMG"))
+                if (this.wpnType == WeaponType.SMG)
                 {
                     //load the one floor view of the rifle
                     this.source = new Rectangle(0, 0, 64, 106);
                     this.destination = new Rectangle(0, 0, 64, 106);
                 }
-                else if (this.gunType.Equals("shotgun"))
+                else if (this.wpnType == WeaponType.Shotgun)
                 {
                     //TODO: adjust numbers for the shotgun
                     //load the one floor view of the rifle
@@ -125,13 +132,13 @@ namespace TRAPT
             }
             else // i DO have an ower
             {
-                if (this.gunType.Equals("SMG"))
+                if (this.wpnType == WeaponType.SMG)
                 {
                     // load the in hads view for the rife
                     this.source = new Rectangle(64, 0, 108 - 64, 106);
                     this.destination = new Rectangle(64, 0, 108 - 64, 106);
                 }
-                else if (this.gunType.Equals("shotgun"))
+                else if (this.wpnType == WeaponType.Shotgun)
                 {
                     // load the in hads view for the rife
                     this.source = new Rectangle(64, 0, 108 - 64, 106);
@@ -229,20 +236,20 @@ namespace TRAPT
                     //&& ((this.Owner is Player && ms.LeftButton == ButtonState.Pressed)
                     //|| (this.Owner is DummyEnemy && ((DummyEnemy)this.Owner).shooting)))
                 {
-                    if (this.gunType.Equals("SMG"))
+                    if (this.wpnType == WeaponType.SMG)
                     {
                         Projectile bullet = new Projectile(Game);
-                        bullet.Initialize(this.position, 10.0f, this.rotation, this.gunType, ref this.projectileStrayer);
+                        bullet.Initialize(this.position, 10.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
                         //100 millisecond delay
                         this.delay = TimeSpan.FromMilliseconds(100);
                     }
-                    else if (this.gunType.Equals("shotgun"))
+                    else if (this.wpnType == WeaponType.Shotgun)
                     {
                         //fire 10 projectiles at once for the shotgun.
                         for (int i = 0; i < 10; i++)
                         {
                             Projectile bullet = new Projectile(Game);
-                            bullet.Initialize(this.position, 10.0f, this.rotation, this.gunType, ref this.projectileStrayer);
+                            bullet.Initialize(this.position, 10.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
                             //1500 millisecond delay
                             this.delay = TimeSpan.FromMilliseconds(1500);
                         }

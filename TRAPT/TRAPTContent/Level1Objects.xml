@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Level>
+  <Enemy>
+    <Path>
+      <node>
+        <x>13</x>
+        <y>2</y>
+        <dwell>0</dwell>
+      </node>
+      <node>
+        <x>13</x>
+        <y>4</y>
+        <dwell>0</dwell>
+      </node>
+    </Path>
+  </Enemy>
+</Level>

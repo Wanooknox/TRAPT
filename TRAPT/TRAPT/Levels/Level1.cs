@@ -17,7 +17,8 @@ namespace TRAPT.Levels
     /// </summary>
     public class Level1 : Level
     {
-        private string mapName = "Map1";
+        private string mapName = "Level1Map";
+        private string xmlName = "Level1Objects";
 
         Vector2 playerStart;
 
@@ -47,6 +48,8 @@ namespace TRAPT.Levels
             //this.tileLayer.Initialize(Content.Load<Texture2D>("spriteSheet"), Content.RootDirectory);
             TraptMain.tileLayer.OpenMap(mapName);
 
+            
+
             //adjust the valid area for the camera
             TraptMain.camera.Limits = new Rectangle(0, 0, TraptMain.tileLayer.mapWidth * TraptMain.GRID_CELL_SIZE, TraptMain.tileLayer.mapHeight * TraptMain.GRID_CELL_SIZE);
 
@@ -55,10 +58,12 @@ namespace TRAPT.Levels
             TraptMain.player = new Player(Game);
             TraptMain.player.Initialize(this.playerStart);
 
+            TraptMain.xmlReader.populateEnemiesFromXML(xmlName);
+
             //TEMP add a tester gun
             Vector2 gunStart = new Vector2((Game.GraphicsDevice.Viewport.Width / 4) * 3, (Game.GraphicsDevice.Viewport.Height / 4) * 3);
             this.testGun = new Weapon(Game);
-            this.testGun.Initialize(gunStart, 30, "SMG");
+            this.testGun.Initialize(gunStart, 30, WeaponType.SMG);
 
 
             base.Initialize();
@@ -90,7 +95,7 @@ namespace TRAPT.Levels
             {
                 //((TraptMain)Game).ChangeLevel("level2");
                 TraptMain.nextlvl = "level2";
-                TraptMain.currentGameState = TraptMain.GameState.Loading;
+                TraptMain.currentGameState = GameState.Loading;
             }
 
             base.Update(gameTime);

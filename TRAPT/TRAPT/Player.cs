@@ -14,13 +14,20 @@ using Microsoft.Xna.Framework.Media;
 
 namespace TRAPT
 {
+    public enum Power
+    {
+        None,
+        Shroud,
+        Fortify,
+    }
+
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
     public class Player : Agent//Microsoft.Xna.Framework.DrawableGameComponent
     {
         // PHYSICS FIELDS
-        private Vector2 prevPos;
+        private Vector2 prevPos, prevVel;
         //public Vector2 position;
         //public Vector2 velocity;
         //private float rotation;
@@ -34,6 +41,7 @@ namespace TRAPT
 
         bool colliding = false;
         EnvironmentObj collidingWith;
+        public Power power = Power.None;
 
         // CONTROLS
 
@@ -219,6 +227,8 @@ namespace TRAPT
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+            this.prevVel = Vector2.Zero + this.velocity;
+
             // Moving update:
             ks = Keyboard.GetState();
             MouseState ms = Mouse.GetState();
@@ -251,6 +261,38 @@ namespace TRAPT
                 SpeedUp();
                 //forward on x axis at rate of speed
                 this.velocity.X = (float)(this.speed);
+            }
+
+            if (!ks.IsKeyDown(Keys.Q) && ksold.IsKeyDown(Keys.Q))
+            {
+                switch (this.power)
+                {
+                    case Power.None:
+                        this.power = Power.Shroud;
+                        break;
+                    case Power.Fortify:
+                        this.power = Power.Shroud;
+                        break;
+                    case Power.Shroud:
+                        this.power = Power.None;
+                        break;
+                }
+                
+            }
+            else if (!ks.IsKeyDown(Keys.E) && ksold.IsKeyDown(Keys.E))
+            {
+                switch (this.power)
+                {
+                    case Power.None:
+                        this.power = Power.Fortify;
+                        break;
+                    case Power.Shroud:
+                        this.power = Power.Fortify;
+                        break;
+                    case Power.Fortify:
+                        this.power = Power.None;
+                        break;
+                }
             }
 
             Vector2 msInWorld = TraptMain.cursor.GetMouseInWorld();
@@ -332,17 +374,25 @@ namespace TRAPT
             //    }
             //}
 
-            
-            for (int i = 0; i < imHitting.Count(); i++)
+
+            int hitCount = imHitting.Count();
+            for (int i = hitCount - 1; 0 <= i; i--)
             {
                 this.Collide(imHitting[i]);
                 imHitting.RemoveAt(i);
             }
 
             // Apply the velocity to the position.
-            this.prevPos = this.position;
+            this.prevPos = Vector2.Zero + this.position;
             this.position.Y += this.velocity.Y;
             this.position.X += this.velocity.X;
+
+            //int hitCount = imHitting.Count();
+            //for (int i = hitCount - 1; 0 <= i; i--)
+            //{
+            //    this.Collide(imHitting[i]);
+            //    imHitting.RemoveAt(i);
+            //}
 
             
             ksold = ks;
@@ -352,8 +402,9 @@ namespace TRAPT
 
         public void DrawShroud(SpriteBatch spriteBatch)
         {
+            this.color = Color.Chartreuse;
             Random rand = new Random();
-            this.color.A = (byte)rand.Next(50);
+            this.color.A = (byte)rand.Next(25);
 
             //fray left
             this.destination.X = (int)Math.Round(this.position.X-rand.Next(3));
@@ -380,11 +431,11 @@ namespace TRAPT
 
         public void DrawFortify(SpriteBatch spriteBatch)
         {
+            this.color = Color.Black;
             Random rand = new Random();
             this.color.A = (byte)rand.Next(100,200);
-            this.color.R = 255;
 
-
+            //fray left
             this.destination.X = (int)Math.Round(this.position.X+rand.Next(3));
             this.destination.Y = (int)Math.Round(this.position.Y+rand.Next(3));
 
@@ -395,10 +446,21 @@ namespace TRAPT
                 this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
                 origin,
                 SpriteEffects.None, 0);
+
+            //fray right
+            this.destination.X = (int)Math.Round(this.position.X + rand.Next(3));
+            this.destination.Y = (int)Math.Round(this.position.Y + rand.Next(3));
+
+            // Draw the player's texture.  
+            spriteBatch.Draw(this.texture, this.destination, this.source, this.color,
+                this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
+                origin,
+                SpriteEffects.None, 0);
         }
 
         public void DrawNormal(SpriteBatch spriteBatch)
         {
+            this.color = Color.Chartreuse;
             this.color.A = 255;
 
             this.destination.X = (int)Math.Round(this.position.X);
@@ -420,6 +482,19 @@ namespace TRAPT
             //this.DrawShroud(spriteBatch);
             //this.DrawFortify(spriteBatch);
 
+            switch (this.power)
+            {
+                case Power.None:
+                    this.DrawNormal(spriteBatch);
+                    break;
+                case Power.Shroud:
+                    this.DrawShroud(spriteBatch);
+                    break;
+                case Power.Fortify:
+                    this.DrawFortify(spriteBatch);
+                    break;
+            }
+
             //TODO: Orgin is bad
             this.destination.X = (int)Math.Round(this.position.X - this.destination.Width / 2);
             this.destination.Y = (int)Math.Round(this.position.Y - this.destination.Height / 2);
@@ -438,14 +513,20 @@ namespace TRAPT
 
         public override bool IsColliding(EnvironmentObj that)
         {
-            Rectangle temp = this.destination;
+            //Rectangle collidingBox = new Rectangle(this.destination.X - (this.destination.Width / 2), this.destination.Y - (this.destination.Height / 2), this.destination.Width * 2, this.destination.Y * 2);
+            Rectangle collidingBox = this.destination;//.Inflate(32, 32);
+            collidingBox.Inflate(32, 32);
+            return collidingBox.Intersects(that.Destination);
+
+           /* Rectangle temp = this.destination;
 
             temp.X = (int)Math.Round(this.position.X + this.velocity.X - this.destination.Width / 2);
             temp.Y = (int)Math.Round(this.position.Y + this.velocity.Y - this.destination.Height / 2);
 
-            return temp.Intersects(that.Destination);
+            return temp.Intersects(that.Destination);*/
 
             //return this.destination.Intersects(that.Destination);
+            //return true;
         }
 
         //public override void Collide(EnvironmentObj that)
@@ -456,6 +537,12 @@ namespace TRAPT
 
         public override void Collide(EnvironmentObj that)
         {
+            
+
+
+
+
+
             //this.destination.X -= (int)(Math.Sign(this.velocity.X) * Math.Abs(this.velocity.X));//(int)Math.Round(this.velocity.X);
             //this.destination.Y -= (int)Math.Round(this.velocity.Y);
 
@@ -504,14 +591,19 @@ namespace TRAPT
 
                 if (this.velocity.X > 0 && prevDest.Intersects(that.Destination)) // object came from the left
                 {
-                    this.position.X = that.Destination.Left - (this.destination.Width/2)-1;
+                    //if position tracked by center of sprite, move position to be wall left - half my width
+                    //this.position.X = that.Destination.Left - (this.destination.Width / 2)-1;
+                    //if position tracked by top left corner, move position to be wall left - my width
+                    //this.position.X = that.Destination.Left - (this.destination.Width) - 1;
+                    this.position.X = prevPos.X;// -Math.Abs(prevVel.X);
 
                     //this.velocity.X = 0;
                     //this.position.X = prevPos.X;
                 }
                 else if (this.velocity.X < 0 && prevDest.Intersects(that.Destination)) // object came from the right
                 {
-                    this.position.X = that.Destination.Right + (this.destination.Width / 2)+1;
+                    //this.position.X = that.Destination.Right + (this.destination.Width / 2)+1;
+                    this.position.X = prevPos.X;// +Math.Abs(prevVel.X);
 
                     //this.velocity.X = 0;
                     //this.position.X = prevPos.X;                   
@@ -522,11 +614,13 @@ namespace TRAPT
 
                 if (this.velocity.Y > 0 && prevDest.Intersects(that.Destination)) // object came from the top
                 {
-                    this.position.Y = that.Destination.Top - (this.destination.Height/2)-1;
+                    //this.position.Y = that.Destination.Top - (this.destination.Height/2)-1;
+                    this.position.Y = prevPos.Y;// -Math.Abs(prevVel.Y);
                 }
                 else if (this.velocity.Y < 0 && prevDest.Intersects(that.Destination)) // object came from the bottom
                 {
-                    this.position.Y = that.Destination.Bottom + (this.destination.Height/2)+1;
+                    //this.position.Y = that.Destination.Bottom + (this.destination.Height/2)+1;
+                    this.position.Y = prevPos.Y;// +Math.Abs(prevVel.Y);
                 }
                 
 

@@ -17,7 +17,7 @@ namespace TRAPT
     /// </summary>
     public class Projectile : Agent//Microsoft.Xna.Framework.GameComponent
     {
-        private string projectileType;
+        private WeaponType projectileType;
         private Random strayRandomizer;
         
         public Projectile(Game game)
@@ -31,7 +31,7 @@ namespace TRAPT
         /// Allows the game component to perform any initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
         /// </summary>
-        public virtual void Initialize(Vector2 position, float speed, float direction, string projectileType, ref Random strayRandomizer)
+        public virtual void Initialize(Vector2 position, float speed, float direction, WeaponType projectileType, ref Random strayRandomizer)
         {
             this.DrawOrder = 250;
 
@@ -63,10 +63,10 @@ namespace TRAPT
             double strayRange;
             switch (this.projectileType)
             {
-                case "SMG":
+                case WeaponType.SMG:
                     strayRange = (Math.PI / 36);
                     break;
-                case "shotgun":
+                case WeaponType.Shotgun:
                     strayRange = (Math.PI / 10);
                     break;
                 default:
@@ -96,13 +96,13 @@ namespace TRAPT
         public void GetSprite()
         {
             //if a rifle shot.
-            if (this.projectileType.Equals("SMG"))
+            if (this.projectileType == WeaponType.SMG)
             {
                 //load the one floor view of the rifle
                 this.source = new Rectangle(0, 0, 17, 48);
                 this.destination = new Rectangle(0, 0, 17, 48);
             }
-            else if (this.projectileType.Equals("shotgun"))
+            else if (this.projectileType == WeaponType.Shotgun)
             {
                 //TODO: adjust values for the shotgun shell.
                 //load the one floor view of the rifle
@@ -121,7 +121,13 @@ namespace TRAPT
             this.position.X += this.velocity.X;
             this.position.Y += this.velocity.Y;
 
-            //TODO: delete bullets outside of the game world.
+            //deal with collisions
+            int hitCount = imHitting.Count();
+            for (int i = hitCount-1; 0 <= i; i--)
+            {
+                this.Collide(imHitting[i]);
+                imHitting.RemoveAt(i);
+            }
             //if not in the game world.
             if (!((TraptMain)Game).IsInWorld(this.position))
             {
@@ -141,6 +147,18 @@ namespace TRAPT
                 this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
                 origin,
                 SpriteEffects.None, 0);
+        }
+
+        public override void Collide(EnvironmentObj that)
+        {
+            //TODO: work on player object's collision resolution
+            if (that is WallTile)
+            {
+
+                this.Dispose(true);
+
+            }
+
         }
     }
 }

@@ -59,7 +59,7 @@ namespace TRAPT.Levels
             //TEMP add a tester gun
             Vector2 gunStart = new Vector2((Game.GraphicsDevice.Viewport.Width / 4) * 3, (Game.GraphicsDevice.Viewport.Height / 4) * 3);
             this.testGun = new Weapon(Game);
-            this.testGun.Initialize(gunStart, 30, "SMG");
+            this.testGun.Initialize(gunStart, 30, WeaponType.Shotgun);
 
 
             base.Initialize();
