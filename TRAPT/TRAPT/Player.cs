@@ -597,7 +597,7 @@ namespace TRAPT
                     //this.position.X = that.Destination.Left - (this.destination.Width) - 1;
                     this.position.X = prevPos.X;// -Math.Abs(prevVel.X);
 
-                    //this.velocity.X = 0;
+                    this.velocity.X = 0;
                     //this.position.X = prevPos.X;
                 }
                 else if (this.velocity.X < 0 && prevDest.Intersects(that.Destination)) // object came from the right
@@ -616,11 +616,15 @@ namespace TRAPT
                 {
                     //this.position.Y = that.Destination.Top - (this.destination.Height/2)-1;
                     this.position.Y = prevPos.Y;// -Math.Abs(prevVel.Y);
+
+                    //this.velocity.Y = 0;
                 }
                 else if (this.velocity.Y < 0 && prevDest.Intersects(that.Destination)) // object came from the bottom
                 {
                     //this.position.Y = that.Destination.Bottom + (this.destination.Height/2)+1;
                     this.position.Y = prevPos.Y;// +Math.Abs(prevVel.Y);
+
+                    //this.velocity.Y = 0;
                 }
                 
 
