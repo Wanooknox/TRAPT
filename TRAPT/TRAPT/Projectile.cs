@@ -19,6 +19,10 @@ namespace TRAPT
     {
         private WeaponType projectileType;
         private Random strayRandomizer;
+
+        //projectile lifespan
+        private float life;
+        private float age = 0;
         
         public Projectile(Game game)
             : base(game)
@@ -52,6 +56,20 @@ namespace TRAPT
             GetSprite();
             CalculateVelocity();
 
+            //determine projectile life
+            switch (this.projectileType)
+            {
+                case WeaponType.SMG:
+                    this.life = 1920;
+                    break;
+                case WeaponType.Shotgun:
+                    this.life = 360;
+                    break;
+                default:
+                    this.life = 10;
+                    break;
+            }
+
             base.Initialize();
         }
 
@@ -67,7 +85,7 @@ namespace TRAPT
                     strayRange = (Math.PI / 36);
                     break;
                 case WeaponType.Shotgun:
-                    strayRange = (Math.PI / 10);
+                    strayRange = (Math.PI / 18);
                     break;
                 default:
                     strayRange = (Math.PI / 360);
@@ -123,11 +141,22 @@ namespace TRAPT
 
             //deal with collisions
             int hitCount = imHitting.Count();
-            for (int i = hitCount-1; 0 <= i; i--)
+            for (int i = hitCount - 1; 0 <= i; i--)
             {
                 this.Collide(imHitting[i]);
                 imHitting.RemoveAt(i);
             }
+
+            //deal with lifespan
+            if (this.age <= this.life) //if still young
+            {
+                this.age += this.velocity.Length(); //age
+            }
+            else //else projectile should die
+            {
+                this.Dispose();
+            }
+
             //if not in the game world.
             if (!((TraptMain)Game).IsInWorld(this.position))
             {

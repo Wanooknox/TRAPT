@@ -12,8 +12,8 @@ using Microsoft.Xna.Framework.Media;
 
 namespace TRAPT
 {
-    // A delegate type for hooking up change notifications.
-    public delegate void ChangedEventHandler(object sender, EventArgs e);
+    //// A delegate type for hooking up change notifications.
+    //public delegate void ChangedEventHandler(object sender, EventArgs e);
 
     /// <summary>
     /// This is a game component that implements IUpdateable.
@@ -31,10 +31,11 @@ namespace TRAPT
         protected Texture2D texture;
 
         public KeyboardState ks, ksold;
+        public MouseState ms, msold;
 
         public List<EnvironmentObj> imHitting;
 
-        private EventListener listener;
+        
 
         public Vector2 Position
         {
@@ -52,7 +53,7 @@ namespace TRAPT
             : base(game)
         {
             game.Components.Add(this);
-            this.listener = new EventListener(this);
+            //this.listener = new EventListener(this);
             
             // TODO: Construct any child components here
         }
@@ -82,23 +83,6 @@ namespace TRAPT
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            //// Basic destination rectangle updating from last time. 
-            //this.destination.X = (int)Math.Round(this.position.X - this.destination.Width / 2);
-            //this.destination.Y = (int)Math.Round(this.position.Y - this.destination.Height / 2);
-
-            //// Draw the player's texture.  
-            //// The origin is the point inside the source rectangle to rotate around.
-            //Vector2 origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
-            //spriteBatch.Draw(this.texture, this.destination, this.source, this.color,
-            //    this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
-            //    origin,
-            //    SpriteEffects.None, 0);
-
-            //String debug = "Direction: " + this.direction * (180.0 / Math.PI)
-            //    + "\nVelocity: " + this.velocity
-            //    + "\nSpeed: " + this.speed;
-
-            //spriteBatch.DrawString(this.font, debug, origin, Color.White);
             
         }
 
@@ -109,52 +93,43 @@ namespace TRAPT
 
         public virtual void Collide(EnvironmentObj that)
         {
-            // change the velocites
-            //Vector2 swapV = new Vector2(that.velocity.X, that.velocity.Y);
-            //that.velocity.X = this.velocity.X * -1;
-            //that.velocity.Y = this.velocity.Y * -1;
-            //this.velocity.X = swapV.X;
-            //this.velocity.Y = swapV.Y;
-            ////and input new motion
-            //this.UpdateDirection();
-            //that.UpdateDirection();
-
+            
         }
 
 
     }
 
-    class EventListener
-    {
-        private EnvironmentObj obj;
+    //class EventListener
+    //{
+    //    private EnvironmentObj obj;
 
-        public EventListener(EnvironmentObj obj)
-        {
-            this.obj = obj;
-            // Add "ListChanged" to the Changed event on "List".
-            this.obj.Disposed += new EventHandler<EventArgs>(EObjDispose);
-                //.Changed += new ChangedEventHandler(ListChanged);
-        }
+    //    public EventListener(EnvironmentObj obj)
+    //    {
+    //        this.obj = obj;
+    //        // Add "ListChanged" to the Changed event on "List".
+    //        this.obj.Disposed += new EventHandler<EventArgs>(EObjDispose);
+    //            //.Changed += new ChangedEventHandler(ListChanged);
+    //    }
 
-        // This will be called whenever the list changes.
-        private void EObjDispose(object sender, EventArgs e)
-        {
-            Console.WriteLine("Disposed of:" + this.obj);
-            foreach (GameComponentCollection layer in TraptMain.layers)
-            {
-                if (layer.Contains(this.obj))
-                {
-                    layer.Remove(this.obj);
-                    //layer[layer.IndexOf(this.obj)].Dispose();
-                }
-            }
-        }
+    //    // This will be called whenever the list changes.
+    //    private void EObjDispose(object sender, EventArgs e)
+    //    {
+    //        Console.WriteLine("Disposed of:" + this.obj);
+    //        foreach (GameComponentCollection layer in TraptMain.layers)
+    //        {
+    //            if (layer.Contains(this.obj))
+    //            {
+    //                layer.Remove(this.obj);
+    //                //layer[layer.IndexOf(this.obj)].Dispose();
+    //            }
+    //        }
+    //    }
 
-        public void Detach()
-        {
-            // Detach the event and delete the list
-            this.obj.Disposed -= new EventHandler<EventArgs>(EObjDispose);
-            this.obj = null;
-        }
-    }
+    //    public void Detach()
+    //    {
+    //        // Detach the event and delete the list
+    //        this.obj.Disposed -= new EventHandler<EventArgs>(EObjDispose);
+    //        this.obj = null;
+    //    }
+    //}
 }

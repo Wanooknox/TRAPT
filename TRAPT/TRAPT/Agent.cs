@@ -22,6 +22,20 @@ namespace TRAPT
         // stats
         public int health;
 
+        // A "frame" is one frame of the animation; a box around the player within the spirte map. 
+        protected int frameCount = 0; // Which frame we are.  Values = {0, 1, 2}
+        protected int aniStart = 0; // the index of the first frame
+        protected int aniLength = 0; // the count of the frame on which to wrap on
+        protected int aniRate = 16; // # milliseconds between frames.
+        protected int aniRow = 0; // the row in the source to pull frames from
+        protected int frameWidth = 64; // how wide a frame is
+        protected int frameHeight = 64; // how tall a frame is.
+
+        // Keep a counter, to count the number of ticks since the last change of animation frame.
+        //int animationCount; // How many ticks since the last frame change.
+        //int animationMax = 10; // How many ticks to change frame after. 
+        TimeSpan animationTimer = TimeSpan.Zero;
+
         public Agent(Game game)
             : base(game)
         {
@@ -72,7 +86,39 @@ namespace TRAPT
             temp.Data.Add(new GameComponentRef(ref temp2));
             this.checkin = temp.Data;
 
+            this.UpdateAnimation(gameTime);
+
             base.Update(gameTime);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void UpdateAnimation(GameTime gameTime)
+        {
+
+            //if need new frame
+            if (this.animationTimer <= TimeSpan.Zero)
+            {
+                // if frames left in loop
+                if (this.frameCount < this.aniLength)
+                {
+                    //move to next frame
+                    this.frameCount++;
+                }
+                else //else last frame
+                {
+                    //loop "back to one"
+                    this.frameCount = 0;
+                }
+                this.animationTimer = TimeSpan.FromMilliseconds(this.aniRate);
+            }
+            this.animationTimer -= gameTime.ElapsedGameTime;
+
+            // Update the source rectangle, based on where in the animation we are.  
+            this.source.X = (this.aniStart + this.frameCount) * this.frameWidth;
+            this.source.Y = this.aniRow * this.frameHeight;
+
         }
     }
 }

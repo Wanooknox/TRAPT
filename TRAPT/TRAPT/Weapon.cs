@@ -239,17 +239,17 @@ namespace TRAPT
                     if (this.wpnType == WeaponType.SMG)
                     {
                         Projectile bullet = new Projectile(Game);
-                        bullet.Initialize(this.position, 10.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
+                        bullet.Initialize(this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
                         //100 millisecond delay
                         this.delay = TimeSpan.FromMilliseconds(100);
                     }
                     else if (this.wpnType == WeaponType.Shotgun)
                     {
                         //fire 10 projectiles at once for the shotgun.
-                        for (int i = 0; i < 10; i++)
+                        for (int i = 0; i < 5; i++)
                         {
                             Projectile bullet = new Projectile(Game);
-                            bullet.Initialize(this.position, 10.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
+                            bullet.Initialize(this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
                             //1500 millisecond delay
                             this.delay = TimeSpan.FromMilliseconds(1500);
                         }
