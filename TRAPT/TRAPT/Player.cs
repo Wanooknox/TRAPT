@@ -36,12 +36,22 @@ namespace TRAPT
         //float speed = 0f;
         private static float MAX_PLAYER_SPEED = 5f;
         private static float MIN_PLAYER_SPEED = 0f;
+
         //float friction = 0.25f;
         //float acceleration = 0.5f;
 
         bool colliding = false;
         EnvironmentObj collidingWith;
         public Power power = Power.None;
+
+        //stats
+        public int energy;
+        TimeSpan healthDelay = TimeSpan.Zero;
+        TimeSpan energyDelay = TimeSpan.Zero;
+        TimeSpan healthRegenDelay = TimeSpan.Zero;
+        TimeSpan energyRegenDelay = TimeSpan.Zero;
+        bool healthRegening = false;
+        
 
         // CONTROLS
 
@@ -82,6 +92,9 @@ namespace TRAPT
             this.position = position;
             this.prevPos = position;
             this.rotation = 0;
+
+            this.health = 100;
+            this.energy = 100;
             
 
             //calculate a random sprite color
@@ -295,6 +308,90 @@ namespace TRAPT
                 }
             }
 
+            //TEMP HEALTH MODFIER
+            if (ks.IsKeyDown(Keys.T) && !ksold.IsKeyDown(Keys.T))
+            {
+                this.health -= 10;
+                //this.healthRegenDelay = TimeSpan.FromMilliseconds(2000);
+            }
+
+            //if (this.health < 100 && this.healthRegenDelay <= TimeSpan.Zero && this.healthDelay <= TimeSpan.Zero)
+            //{
+            //    this.healthRegenDelay = TimeSpan.FromMilliseconds(2000);
+            //}
+
+
+            if (this.health < 100 && this.healthRegenDelay <= TimeSpan.Zero)
+            {
+                if (this.healthRegening == false)
+                {
+                    this.healthRegenDelay = TimeSpan.FromMilliseconds(2000);
+                    healthRegening = true;
+                }
+                if (this.healthDelay <= TimeSpan.Zero )
+                {
+                    this.health += 1;
+                    this.healthDelay = TimeSpan.FromMilliseconds(25);
+                    //this.healthRegening = true;
+                }
+            }
+            if (this.health >= 100)
+            {
+                this.health = 100;
+                this.healthRegening = false;
+            }
+            this.healthDelay -= gameTime.ElapsedGameTime;
+            this.healthRegenDelay -= gameTime.ElapsedGameTime;
+            TraptMain.hud.Health = this.health;
+
+            //update energy
+            if (this.energy > 0)
+            {
+                if (this.energyDelay <= TimeSpan.Zero)
+                {
+                    if (this.power == Power.Shroud)
+                    {
+                        this.energy -= 5;
+                        this.energyDelay = TimeSpan.FromMilliseconds(500);
+                        this.energyRegenDelay = TimeSpan.FromMilliseconds(2000);
+                    }
+                    else if (this.power == Power.Fortify)
+                    {
+                        this.energy -= 10;
+                        this.energyDelay = TimeSpan.FromMilliseconds(500);
+                        this.energyRegenDelay = TimeSpan.FromMilliseconds(2000);
+                    }
+                    else
+                    {
+                        if (this.energyRegenDelay <= TimeSpan.Zero && this.energy < 100)
+                        {
+                            this.energy += 1;
+                            this.energyDelay = TimeSpan.FromMilliseconds(25);
+                        }
+                    }
+                    
+                }
+                if (this.energy >= 100)
+                {
+                    this.energy = 100;
+                }
+            }
+            else //no energy left
+            {
+                this.power = Power.None;
+                if (this.energyRegenDelay <= TimeSpan.Zero && this.energy < 100)
+                {
+                    this.energy += 1;
+                    this.energyDelay = TimeSpan.FromMilliseconds(25);
+                }
+            }
+            //decrement delays
+            this.energyDelay -= gameTime.ElapsedGameTime;
+            this.energyRegenDelay -= gameTime.ElapsedGameTime;
+            TraptMain.hud.Energy = this.energy;
+            
+
+
             Vector2 msInWorld = TraptMain.cursor.GetMouseInWorld();
             //calculate visual rotation angle to look toward the mouse position
             double delX = msInWorld.X - this.position.X;
@@ -303,9 +400,17 @@ namespace TRAPT
             //Console.WriteLine("Player angle change: " + delX + " " + delY);
 
             //if we have a gun and are clicking
-            if (this.Weapon != null && ms.LeftButton == ButtonState.Pressed)
+            if (this.Weapon != null)
             {
-                this.Weapon.Shoot();
+                if (ms.LeftButton == ButtonState.Pressed)
+                {
+                    this.Weapon.Shoot();
+                }
+                TraptMain.hud.Ammo = this.Weapon.Ammo;
+            }
+            else
+            {
+                TraptMain.hud.Ammo = 0;
             }
 
             //////////////////////////////
@@ -597,7 +702,7 @@ namespace TRAPT
                     //this.position.X = that.Destination.Left - (this.destination.Width) - 1;
                     this.position.X = prevPos.X;// -Math.Abs(prevVel.X);
 
-                    this.velocity.X = 0;
+                    //this.velocity.X = 0;
                     //this.position.X = prevPos.X;
                 }
                 else if (this.velocity.X < 0 && prevDest.Intersects(that.Destination)) // object came from the right
@@ -616,15 +721,11 @@ namespace TRAPT
                 {
                     //this.position.Y = that.Destination.Top - (this.destination.Height/2)-1;
                     this.position.Y = prevPos.Y;// -Math.Abs(prevVel.Y);
-
-                    //this.velocity.Y = 0;
                 }
                 else if (this.velocity.Y < 0 && prevDest.Intersects(that.Destination)) // object came from the bottom
                 {
                     //this.position.Y = that.Destination.Bottom + (this.destination.Height/2)+1;
                     this.position.Y = prevPos.Y;// +Math.Abs(prevVel.Y);
-
-                    //this.velocity.Y = 0;
                 }
                 
 

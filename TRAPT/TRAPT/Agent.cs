@@ -19,6 +19,9 @@ namespace TRAPT
     {
         public Weapon Weapon { get; set; }
 
+        // stats
+        public int health;
+
         public Agent(Game game)
             : base(game)
         {

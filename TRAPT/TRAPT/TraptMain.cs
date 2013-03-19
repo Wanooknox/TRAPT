@@ -61,6 +61,7 @@ namespace TRAPT
         public static Cursor cursor;
         public static Camera camera;
         public static Player player;
+        public static HUD hud;
         public static SpriteFont font;
         public KeyboardState ks, ksold;
         //public static KeyboardState ks, ksold;
@@ -114,6 +115,8 @@ namespace TRAPT
             xmlReader = new XMLObjectReader(this);
 
             //this.lvl = new Level1(this);
+            hud = new HUD(this);
+            hud.Initialize();
 
             base.Initialize();
         }
@@ -336,6 +339,10 @@ namespace TRAPT
                         //end the batch
                         this.spriteBatch.End();
                     }
+
+                    this.spriteBatch.Begin();
+                    hud.Draw(this.spriteBatch);
+                    this.spriteBatch.End();
 
                     break;
                 case GameState.Paused:
