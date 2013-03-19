@@ -14,12 +14,15 @@ Content\simpleSprite128.xnb
 Content\spriteSheet.xnb
 Content\tileguide.xnb
 Content\walls.xnb
+Content\SpriteFont1.xnb
 Content\crosshairs.xnb
 Content\crosshairs2.xnb
 Content\loading.xnb
 Content\blueGuard.xnb
 Content\Pixel.xnb
-Content\SpriteFont1.xnb
+Content\backgr_bars.xnb
+Content\energybar.xnb
+Content\Healthbar.xnb
 Content\Level1Map.map
 Content\newMap.map
 Content\EnemiesToPopulate.xml
