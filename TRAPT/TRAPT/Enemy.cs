@@ -24,10 +24,10 @@ namespace TRAPT
         Texture2D texture;
         Rectangle destination;
         Rectangle source;
-        Vector2 pos = Vector2.Zero;
+        //Vector2 pos = Vector2.Zero;
         Vector2 velocity = Vector2.Zero;
         Vector2 velocityCap = new Vector2(5, 5);
-        float rotation;
+        //float rotation;
 
         AI_ViewCone viewCone;                               //The viewcone keeps track of the viewCone AND the cone for melee range detection
         Path path;                                          //Data structure for an Agent's pathNodes ( DIFFERENT THAN THE TUTORIAL'S )
@@ -46,6 +46,8 @@ namespace TRAPT
         AIstate currentState;
 
         Boolean instantDeath = false;
+        int HP = 100;                                               //Hit poitns
+        
 
         /// <summary>
         /// Constructor
@@ -91,8 +93,8 @@ namespace TRAPT
             pixelTexture = Game.Content.Load<Texture2D>("Pixel");
             viewCone = new AI_ViewCone(this.Game);
             texture = Game.Content.Load<Texture2D>("blueGuard");
-            pos = path.getCurrent().getPosition();
-            playerLineOfSight = new Line(this.pos, TraptMain.player.Position);
+            this.position = path.getCurrent().getPosition();
+            playerLineOfSight = new Line(this.position, TraptMain.player.Position);
             currentNode = path.getNext();
             dwellCounter = 0;
             currentState = AIstate.PATHING;
@@ -101,8 +103,10 @@ namespace TRAPT
             Random random = new Random();
             WeaponType rndType = (WeaponType)values.GetValue(random.Next(values.Length));
             Weapon randWpn = new Weapon(Game);
-            randWpn.Initialize(this.Position, 30, rndType);
-
+            randWpn.Initialize(this.position, 30, rndType);
+            randWpn.PickUp(true, this);
+            Console.WriteLine(this.Weapon);
+            
 
             base.Initialize();
         }
@@ -113,9 +117,14 @@ namespace TRAPT
         {
            // if(this.inLineOfSight() && intersectsViewCone(TraptMain.player.Destination))
             //Need to check if player is stealthed
-            if ( viewCone.intersectsViewCone(TraptMain.player.Destination))
+            if ( viewCone.intersectsViewCone(TraptMain.player.Destination, TraptMain.player.Position))
             {
                 currentState = AIstate.SEARCHING;
+            }
+
+            if (!viewCone.intersectsViewCone(TraptMain.player.Destination, TraptMain.player.Position))
+            {
+                currentState = AIstate.PATHING;
             }
       
             //Need to get all of the tiles along the line of the sprite to the character, check if any of them are walls, if they are.
@@ -126,35 +135,62 @@ namespace TRAPT
         {
            double currentTime = gameTime.TotalGameTime.Seconds;
            velocity = Vector2.Zero;
-           if (Vector2.Distance(pos, currentNode.getPosition()) < 25)
+           if (Vector2.Distance(this.position, currentNode.getPosition()) < 25)
            {
                dwellCounter = 0;
                currentNode = path.goNext();
            }
            
-           if (currentState != AIstate.DWELLING)
-           {
-               float dx = currentNode.getPosition().X - pos.X;
-               float dy = currentNode.getPosition().Y - pos.Y;
-               rotation = (float)(Math.Atan2(dy, dx) + Math.PI / 2);
+           float dx = currentNode.getPosition().X - this.position.X;
+           float dy = currentNode.getPosition().Y - this.position.Y;
+           rotation = (float)(Math.Atan2(dy, dx) + Math.PI / 2);
 
-               velocity.Y = (float)(acceleration + Math.Cos(rotation + Math.PI));
-               velocity.X = (float)(acceleration + Math.Sin(rotation));
-           }
-           else
-           {
-               dwellCounter++;
-           }
+           velocity.Y = (float)(acceleration + Math.Cos(rotation + Math.PI));
+           velocity.X = (float)(acceleration + Math.Sin(rotation));
+          
+        }
 
-           if (dwellCounter > currentNode.getDwell())
-           {
-               currentState = AIstate.PATHING;                                                               //May need to change this to accomodate different behavior
-           }
+        public void searchForPlayer(int playerX, int playerY)
+        {
+            int timeInCone = 0;
+            currentNode = new PathNode(playerX, playerY, 0);
+
+            float dx = currentNode.getPosition().X - this.position.X;
+            float dy = currentNode.getPosition().Y - this.position.Y;
+            rotation = (float)(Math.Atan2(dy, dx) + Math.PI / 2);
+
+            velocity.Y = (float)(acceleration + Math.Cos(rotation + Math.PI));
+            velocity.X = (float)(acceleration + Math.Sin(rotation));
+
+            
+
+        }
+
+        public void dwelling(int dwellHeartBeat)
+        {
+            if (dwellCounter <= dwellHeartBeat)
+            {
+                dwellCounter++;
+            }
+            if (dwellCounter > dwellHeartBeat)
+            {
+                dwellCounter = 0;
+                currentState = AIstate.PATHING;
+            }
+        }
+
+        public void firingWeapon()
+        {
+            if(Vector2.Distance(this.position, TraptMain.player.Position) < 250)
+            {
+                this.Weapon.Shoot();
+            }
+
         }
 
         public override void Update(GameTime gameTime)
         {
-            playerLineOfSight = new Line(this.pos, TraptMain.player.Position);
+            playerLineOfSight = new Line(this.position, TraptMain.player.Position);
            
 
             //checkLineOfSight();
@@ -170,15 +206,17 @@ namespace TRAPT
             if (currentState == AIstate.DWELLING)
             {
                 //ADD WHAT TO DO WHEN DWELLING
+                //this.dwelling(path.getPrevious().getDwell());
             }
             if (currentState == AIstate.ATTACKING)
             {
+                //this.firingWeapon();
                 //ADD WHAT TO DO WHEN ATTACKING
                 //Set a range in which the AI should fire it's weapon
             }
             if (currentState == AIstate.SEARCHING)
             {
-               
+                this.searchForPlayer((int) TraptMain.player.Position.X, (int)TraptMain.player.Position.Y);
              /* ADD WHAT TO DO WHEN SEARCHING FOR THE PLAYER
                 Go to the players coordinates unless line of sight is broken in the next tick/heartbeat
                 if Line of sight is broken, dwell at the last known location for X amount of time.
@@ -187,12 +225,14 @@ namespace TRAPT
                 local path planning*/
             }
 
-            pos.X += velocity.X;
-            pos.Y += velocity.Y;
+            this.position.X += velocity.X;
+            this.position.Y += velocity.Y;
             
             spriteCenter = new Vector2((this.texture.Width / 2),(this.texture.Height / 2));
-            viewCone.Update(gameTime, rotation, pos);
-            //this.checkViewCone();
+            viewCone.Update(gameTime, rotation, this.position);
+            this.checkViewCone();
+            Console.WriteLine(currentState);
+            //this.Weapon.Shoot();
             
             base.Update(gameTime);
         }
@@ -201,7 +241,7 @@ namespace TRAPT
         {
             playerLineOfSight.Draw(spriteBatch, pixelTexture);
             viewCone.Draw(spriteBatch);
-            spriteBatch.Draw(texture, pos, null, Color.White, (float)rotation, spriteCenter, 1, SpriteEffects.None, 0.0f);
+            spriteBatch.Draw(texture, this.position, null, Color.White, (float)rotation, spriteCenter, 1, SpriteEffects.None, 0.0f);
         }
     }
 }
