@@ -90,6 +90,8 @@ namespace TRAPT
 
         public void Initialize()
         {
+            this.DrawOrder = 450;
+
             pixelTexture = Game.Content.Load<Texture2D>("Pixel");
             viewCone = new AI_ViewCone(this.Game);
             texture = Game.Content.Load<Texture2D>("blueGuard");

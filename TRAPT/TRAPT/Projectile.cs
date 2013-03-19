@@ -149,6 +149,13 @@ namespace TRAPT
                 SpriteEffects.None, 0);
         }
 
+        public override bool IsColliding(EnvironmentObj that)
+        {
+            Rectangle collidingBox = this.destination;//.Inflate(32, 32);
+            collidingBox.Inflate(-8, -23);
+            return collidingBox.Intersects(that.Destination);
+        }
+
         public override void Collide(EnvironmentObj that)
         {
             //TODO: work on player object's collision resolution

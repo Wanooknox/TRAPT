@@ -82,15 +82,21 @@ namespace TRAPT
         public override void Initialize()
         {
             texH = Game.Content.Load<Texture2D>("Healthbar");
-            posH = new Vector2(30, 540);
+            //top right
+            posH = new Vector2(Game.GraphicsDevice.Viewport.Width - texH.Width - 30, 55);
+            //bottom right
+            //posH = new Vector2(Game.GraphicsDevice.Viewport.Width - texH.Width, Game.GraphicsDevice.Viewport.Height - texH.Height);
+            //new Vector2(30, 540);
             recH = new Rectangle(0, 0, texH.Width, texH.Height);
 
             texE = Game.Content.Load<Texture2D>("energybar");
-            posE = new Vector2(30, 570);
+            posE = new Vector2(Game.GraphicsDevice.Viewport.Width - texE.Width - 30, 80);
+            //posE = new Vector2(30, 570);
             recE = new Rectangle(0, 0, texE.Width, texE.Height);
 
             ammoFont = Game.Content.Load<SpriteFont>("SpriteFont1");
-            ammoPos = new Vector2(30, 540-25);
+            ammoPos = new Vector2(Game.GraphicsDevice.Viewport.Width - texH.Width - 30, 25);
+            //ammoPos = new Vector2(30, 540-25);
 
             backgrBars = Game.Content.Load<Texture2D>("backgr_bars");
 
@@ -113,13 +119,13 @@ namespace TRAPT
 
             // background
             Color backgrColor = new Color(100,100,100,200);
-            spriteBatch.Draw(backgrBars, new Vector2(posH.X - 10, posH.Y - 25), rec, backgrColor);
+            spriteBatch.Draw(backgrBars, new Vector2(posH.X - 10, posH.Y - 30), rec, backgrColor);
             
             // background for bars
             Rectangle backgrH = new Rectangle(0, 0, texH.Width, texH.Height);
             Rectangle backgrE = new Rectangle(0, 0, texE.Width, texE.Height);
             spriteBatch.Draw(texH, posH, backgrH, Color.Gray);
-            spriteBatch.Draw(texE, posE, backgrE, Color.Gray);
+            spriteBatch.Draw(texE, posE, backgrE, Color.Black);
 
             // bars
             recH.Width = (int) ( ((this.health + 0.0) / (MAX_HEALTH + 0.0)) * texH.Width);
@@ -129,7 +135,7 @@ namespace TRAPT
             
             // ammo
             Color textColor = Color.Yellow; 
-            spriteBatch.DrawString(ammoFont, ammo + "", ammoPos, textColor);
+            spriteBatch.DrawString(ammoFont, "Ammo: " + ammo, ammoPos, textColor);
         }
         // -----------------------------------
 

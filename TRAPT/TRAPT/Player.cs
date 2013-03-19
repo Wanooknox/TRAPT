@@ -26,6 +26,9 @@ namespace TRAPT
     /// </summary>
     public class Player : Agent//Microsoft.Xna.Framework.DrawableGameComponent
     {
+
+        double FPS;
+        GameTime gt;
         // PHYSICS FIELDS
         private Vector2 prevPos, prevVel;
         //public Vector2 position;
@@ -50,7 +53,6 @@ namespace TRAPT
         TimeSpan energyDelay = TimeSpan.Zero;
         TimeSpan healthRegenDelay = TimeSpan.Zero;
         TimeSpan energyRegenDelay = TimeSpan.Zero;
-        bool healthRegening = false;
         
 
         // CONTROLS
@@ -234,12 +236,160 @@ namespace TRAPT
         }
         #endregion
 
+        private void LookToMouse()
+        {
+            Vector2 msInWorld = TraptMain.cursor.GetMouseInWorld();
+            //calculate visual rotation angle to look toward the mouse position
+            double delX = msInWorld.X - this.position.X;
+            double delY = msInWorld.Y - this.position.Y;
+            this.rotation = (float)(Math.Atan2(delY, delX) + (Math.PI / 2.0));
+            //Console.WriteLine("Player angle change: " + delX + " " + delY);
+        }
+
+        /// <summary>
+        /// take of "damage" number of health points
+        /// </summary>
+        /// <param name="damage">how much health to lose.</param>
+        public void HurtPlayer(int damage)
+        {
+            this.health -= damage;
+            this.healthRegenDelay = TimeSpan.FromMilliseconds(5000);
+        }
+
+        /// <summary>
+        /// call to manage health: regen delay and regen
+        /// </summary>
+        private void ManageHealth(GameTime gameTime)
+        {
+            // less than full heath and no delay left before regen
+            if (this.health < 100 && this.healthRegenDelay <= TimeSpan.Zero)
+            {
+                //if we are not yet regening
+                //if (this.healthRegening == false)
+                //{
+                //    //set the delay BEFOR regen and go into regen mode
+                //    this.healthRegenDelay = TimeSpan.FromMilliseconds(2000);
+                //    healthRegening = true;
+                //}
+                //if health update delay < 0
+                if (this.healthDelay <= TimeSpan.Zero)
+                {
+                    //increment health and set wait before next increment
+                    this.health += 1;
+                    this.healthDelay = TimeSpan.FromMilliseconds(25);
+                }
+            }
+            //if full health
+            if (this.health >= 100)
+            {
+                //stop over flow 
+                this.health = 100;
+            }
+            //decrement delays and update hud value
+            this.healthDelay -= gameTime.ElapsedGameTime;
+            this.healthRegenDelay -= gameTime.ElapsedGameTime;
+            TraptMain.hud.Health = this.health;
+        }
+
+        /// <summary>
+        /// call to manage energy
+        /// </summary>
+        private void ManageEnergy(GameTime gameTime)
+        {
+            //if energy available
+            if (this.energy > 0)
+            {
+                // and no delay to use energy
+                if (this.energyDelay <= TimeSpan.Zero)
+                {
+                    //if in shroud
+                    if (this.power == Power.Shroud)
+                    {
+                        this.energy -= 1;
+                        this.energyDelay = TimeSpan.FromMilliseconds(200);
+                        this.energyRegenDelay = TimeSpan.FromMilliseconds(3000);
+                    }//else for fortify
+                    else if (this.power == Power.Fortify)
+                    {
+                        this.energy -= 1;
+                        this.energyDelay = TimeSpan.FromMilliseconds(50);
+                        this.energyRegenDelay = TimeSpan.FromMilliseconds(3000);
+                    }
+                    else //else no power
+                    {
+                        //is no regen delay and less than full energy
+                        if (this.energyRegenDelay <= TimeSpan.Zero && this.energy < 100)
+                        {
+                            this.energy += 1;
+                            this.energyDelay = TimeSpan.FromMilliseconds(25);
+                        }
+                    }
+
+                }
+                //cap the energy max
+                if (this.energy >= 100)
+                {
+                    this.energy = 100;
+                }
+            }
+            else //no energy left
+            {
+                this.power = Power.None;
+                if (this.energyRegenDelay <= TimeSpan.Zero && this.energy < 100)
+                {
+                    this.energy += 1;
+                    this.energyDelay = TimeSpan.FromMilliseconds(25);
+                }
+            }
+            //decrement delays
+            this.energyDelay -= gameTime.ElapsedGameTime;
+            this.energyRegenDelay -= gameTime.ElapsedGameTime;
+            TraptMain.hud.Energy = this.energy;
+        }
+
+        private void ManagePowers()
+        {
+            if (!ks.IsKeyDown(Keys.Q) && ksold.IsKeyDown(Keys.Q))
+            {
+                switch (this.power)
+                {
+                    case Power.None:
+                        this.power = Power.Shroud;
+                        break;
+                    case Power.Fortify:
+                        this.power = Power.Shroud;
+                        break;
+                    case Power.Shroud:
+                        this.power = Power.None;
+                        break;
+                }
+
+            }
+            else if (!ks.IsKeyDown(Keys.E) && ksold.IsKeyDown(Keys.E))
+            {
+                switch (this.power)
+                {
+                    case Power.None:
+                        this.power = Power.Fortify;
+                        break;
+                    case Power.Shroud:
+                        this.power = Power.Fortify;
+                        break;
+                    case Power.Fortify:
+                        this.power = Power.None;
+                        break;
+                }
+            }
+        }
+
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+            gt = gameTime;
+
             this.prevVel = Vector2.Zero + this.velocity;
 
             // Moving update:
@@ -276,128 +426,21 @@ namespace TRAPT
                 this.velocity.X = (float)(this.speed);
             }
 
-            if (!ks.IsKeyDown(Keys.Q) && ksold.IsKeyDown(Keys.Q))
-            {
-                switch (this.power)
-                {
-                    case Power.None:
-                        this.power = Power.Shroud;
-                        break;
-                    case Power.Fortify:
-                        this.power = Power.Shroud;
-                        break;
-                    case Power.Shroud:
-                        this.power = Power.None;
-                        break;
-                }
-                
-            }
-            else if (!ks.IsKeyDown(Keys.E) && ksold.IsKeyDown(Keys.E))
-            {
-                switch (this.power)
-                {
-                    case Power.None:
-                        this.power = Power.Fortify;
-                        break;
-                    case Power.Shroud:
-                        this.power = Power.Fortify;
-                        break;
-                    case Power.Fortify:
-                        this.power = Power.None;
-                        break;
-                }
-            }
+            this.ManagePowers();
 
             //TEMP HEALTH MODFIER
             if (ks.IsKeyDown(Keys.T) && !ksold.IsKeyDown(Keys.T))
             {
-                this.health -= 10;
-                //this.healthRegenDelay = TimeSpan.FromMilliseconds(2000);
+                this.HurtPlayer(10);
             }
 
-            //if (this.health < 100 && this.healthRegenDelay <= TimeSpan.Zero && this.healthDelay <= TimeSpan.Zero)
-            //{
-            //    this.healthRegenDelay = TimeSpan.FromMilliseconds(2000);
-            //}
-
-
-            if (this.health < 100 && this.healthRegenDelay <= TimeSpan.Zero)
-            {
-                if (this.healthRegening == false)
-                {
-                    this.healthRegenDelay = TimeSpan.FromMilliseconds(2000);
-                    healthRegening = true;
-                }
-                if (this.healthDelay <= TimeSpan.Zero )
-                {
-                    this.health += 1;
-                    this.healthDelay = TimeSpan.FromMilliseconds(25);
-                    //this.healthRegening = true;
-                }
-            }
-            if (this.health >= 100)
-            {
-                this.health = 100;
-                this.healthRegening = false;
-            }
-            this.healthDelay -= gameTime.ElapsedGameTime;
-            this.healthRegenDelay -= gameTime.ElapsedGameTime;
-            TraptMain.hud.Health = this.health;
+            //manage player health
+            this.ManageHealth(gameTime);
 
             //update energy
-            if (this.energy > 0)
-            {
-                if (this.energyDelay <= TimeSpan.Zero)
-                {
-                    if (this.power == Power.Shroud)
-                    {
-                        this.energy -= 5;
-                        this.energyDelay = TimeSpan.FromMilliseconds(500);
-                        this.energyRegenDelay = TimeSpan.FromMilliseconds(2000);
-                    }
-                    else if (this.power == Power.Fortify)
-                    {
-                        this.energy -= 10;
-                        this.energyDelay = TimeSpan.FromMilliseconds(500);
-                        this.energyRegenDelay = TimeSpan.FromMilliseconds(2000);
-                    }
-                    else
-                    {
-                        if (this.energyRegenDelay <= TimeSpan.Zero && this.energy < 100)
-                        {
-                            this.energy += 1;
-                            this.energyDelay = TimeSpan.FromMilliseconds(25);
-                        }
-                    }
-                    
-                }
-                if (this.energy >= 100)
-                {
-                    this.energy = 100;
-                }
-            }
-            else //no energy left
-            {
-                this.power = Power.None;
-                if (this.energyRegenDelay <= TimeSpan.Zero && this.energy < 100)
-                {
-                    this.energy += 1;
-                    this.energyDelay = TimeSpan.FromMilliseconds(25);
-                }
-            }
-            //decrement delays
-            this.energyDelay -= gameTime.ElapsedGameTime;
-            this.energyRegenDelay -= gameTime.ElapsedGameTime;
-            TraptMain.hud.Energy = this.energy;
-            
+            this.ManageEnergy(gameTime);
 
-
-            Vector2 msInWorld = TraptMain.cursor.GetMouseInWorld();
-            //calculate visual rotation angle to look toward the mouse position
-            double delX = msInWorld.X - this.position.X;
-            double delY = msInWorld.Y - this.position.Y;
-            this.rotation = (float)(Math.Atan2(delY, delX) + (Math.PI / 2.0));
-            //Console.WriteLine("Player angle change: " + delX + " " + delY);
+            this.LookToMouse();
 
             //if we have a gun and are clicking
             if (this.Weapon != null)
@@ -509,7 +552,7 @@ namespace TRAPT
         {
             this.color = Color.Chartreuse;
             Random rand = new Random();
-            this.color.A = (byte)rand.Next(25);
+            this.color.A = (byte)rand.Next(50);
 
             //fray left
             this.destination.X = (int)Math.Round(this.position.X-rand.Next(3));
@@ -582,8 +625,21 @@ namespace TRAPT
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            this.FPS = (gt.ElapsedGameTime.Milliseconds / 1000.0) * 100 *60;
+
+            ////waste time
+            //int n = 10;
+            //for (int i = 0; i < n; i++)
+            //{
+            //    for (int j = 0; j < n; j++)
+            //    {
+            //        //do nothing
+            //        Console.WriteLine("Waste Some Time " + i + " " + j);
+            //    }
+            //}
+
             // Basic destination rectangle updating from last time. 
-            this.DrawNormal(spriteBatch);
+            //this.DrawNormal(spriteBatch);
             //this.DrawShroud(spriteBatch);
             //this.DrawFortify(spriteBatch);
 
@@ -611,7 +667,8 @@ namespace TRAPT
                 + "\nVelocity: " + this.velocity
                 + "\nSpeed: " + this.speed
                 + "\nRotation: " + this.Rotation//.X + " " + this.Position.Y
-                + "\nStuff: " + Game.Components.Count;
+                + "\nStuff: " + Game.Components.Count
+                + "\nFPS: " + this.FPS;
 
             spriteBatch.DrawString(this.font, debug, new Vector2(0), Color.White);
         }
