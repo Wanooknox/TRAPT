@@ -49,6 +49,18 @@ namespace TRAPT
             set { this.destination = value; }
         }
 
+        protected float Depth
+        {
+            get
+            {
+                return 1.0f / this.DrawOrder;
+            }
+            set
+            {
+                this.DrawOrder = (int)value;
+            }
+        }
+
         public EnvironmentObj(Game game)
             : base(game)
         {

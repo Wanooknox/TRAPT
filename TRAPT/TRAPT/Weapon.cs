@@ -35,6 +35,7 @@ namespace TRAPT
         private TimeSpan delay = TimeSpan.Zero;
         private bool justPickedUp = false;
         private Random projectileStrayer;
+        private Color color = Color.White;
 
 
         //private Texture2D texture;
@@ -79,7 +80,7 @@ namespace TRAPT
         /// </summary>
         public virtual void Initialize(Vector2 position, int ammo, WeaponType wpnType)
         {
-            this.DrawOrder = 300;
+            this.DrawOrder = 350;
 
             this.texture = Game.Content.Load<Texture2D>("guns");
 
@@ -116,6 +117,7 @@ namespace TRAPT
             //if i don't have an owner
             if (owner == null)
             {
+                this.Depth = 200;
                 if (this.wpnType == WeaponType.SMG)
                 {
                     //load the one floor view of the rifle
@@ -132,6 +134,7 @@ namespace TRAPT
             }
             else // i DO have an ower
             {
+                this.Depth = 300;
                 if (this.wpnType == WeaponType.SMG)
                 {
                     // load the in hads view for the rife
@@ -305,7 +308,7 @@ namespace TRAPT
 
                 if (!justPickedUp)
                 {
-                    if (this.owner is Player && !ks.IsKeyDown(Keys.R) && ksold.IsKeyDown(Keys.R))
+                    if (this.owner is Player && !ks.IsKeyDown(Keys.F) && ksold.IsKeyDown(Keys.F))
                     {
                         this.Drop();
                     }
@@ -323,20 +326,116 @@ namespace TRAPT
         public override void Draw(SpriteBatch spriteBatch)
         {
 
-            this.destination.X = (int)Math.Round(this.position.X);
-            this.destination.Y = (int)Math.Round(this.position.Y);
+            //this.destination.X = (int)Math.Round(this.position.X);
+            //this.destination.Y = (int)Math.Round(this.position.Y);
 
-            Vector2 origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
-            spriteBatch.Draw(this.texture, this.destination, this.source, Color.White,
-                this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
-                origin,
-                SpriteEffects.None, 0);
+            //Vector2 origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
+            //spriteBatch.Draw(this.texture, this.destination, this.source, Color.White,
+            //    this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
+            //    origin,
+            //    SpriteEffects.None, 0);
+            if (this.Owner != null && this.Owner is Player)
+            {
+                switch (((Player)this.Owner).power)
+                {
+                    case Power.None:
+                        this.DrawNormal(spriteBatch);
+                        break;
+                    case Power.Shroud:
+                        this.DrawShroud(spriteBatch);
+                        break;
+                    case Power.Fortify:
+                        this.DrawFortify(spriteBatch);
+                        break;
+                }
+            }
+            else
+            {
+                this.DrawNormal(spriteBatch);
+            }
 
             //recenter the hit box
             this.destination.X = (int)Math.Round(this.position.X - this.destination.Width / 2);
             this.destination.Y = (int)Math.Round(this.position.Y - this.destination.Height / 2);
 
         }
+
+        #region Test Fancy Drawing
+        public void DrawShroud(SpriteBatch spriteBatch)
+        {
+            this.color = Color.White;
+            Random rand = new Random();
+            this.color.A = (byte)rand.Next(50);
+
+            //fray left
+            this.destination.X = (int)Math.Round(this.position.X - rand.Next(3));
+            this.destination.Y = (int)Math.Round(this.position.Y - rand.Next(3));
+
+            // Draw the player's texture.  
+            // The origin is the point inside the source rectangle to rotate around.
+            Vector2 origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
+            spriteBatch.Draw(this.texture, this.destination, this.source, this.color,
+                this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
+                origin,
+                SpriteEffects.None, this.Depth);
+
+            //fray right
+            this.destination.X = (int)Math.Round(this.position.X + rand.Next(3));
+            this.destination.Y = (int)Math.Round(this.position.Y + rand.Next(3));
+
+            // Draw the player's texture.  
+            spriteBatch.Draw(this.texture, this.destination, this.source, this.color,
+                this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
+                origin,
+                SpriteEffects.None, this.Depth);
+        }
+
+        public void DrawFortify(SpriteBatch spriteBatch)
+        {
+            this.color = Color.DarkGray;
+            Random rand = new Random();
+            this.color.A = (byte)rand.Next(100, 200);
+
+            //fray left
+            this.destination.X = (int)Math.Round(this.position.X + rand.Next(3));
+            this.destination.Y = (int)Math.Round(this.position.Y + rand.Next(3));
+
+            // Draw the player's texture.  
+            // The origin is the point inside the source rectangle to rotate around.
+            Vector2 origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
+            spriteBatch.Draw(this.texture, this.destination, this.source, this.color,
+                this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
+                origin,
+                SpriteEffects.None, this.Depth);
+
+            //fray right
+            this.destination.X = (int)Math.Round(this.position.X + rand.Next(3));
+            this.destination.Y = (int)Math.Round(this.position.Y + rand.Next(3));
+
+            // Draw the player's texture.  
+            spriteBatch.Draw(this.texture, this.destination, this.source, this.color,
+                this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
+                origin,
+                SpriteEffects.None, this.Depth);
+        }
+
+        public void DrawNormal(SpriteBatch spriteBatch)
+        {
+            this.color = Color.White;
+            this.color.A = 255;
+
+            this.destination.X = (int)Math.Round(this.position.X);
+            this.destination.Y = (int)Math.Round(this.position.Y);
+
+            // Draw the player's texture.  
+            // The origin is the point inside the source rectangle to rotate around.
+            Vector2 origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
+            spriteBatch.Draw(this.texture, this.destination, this.source, this.color,
+                this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
+                origin,
+                SpriteEffects.None, this.Depth);
+        }
+        #endregion
         #endregion
     }
 }

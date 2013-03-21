@@ -71,14 +71,14 @@ namespace TRAPT.Levels
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            GameComponentCollection currComponentState = new GameComponentCollection();
-            currComponentState.Concat(Game.Components);
-            foreach (GameComponent i in currComponentState)
-            {
+            //GameComponentCollection currComponentState = new GameComponentCollection();
+            //currComponentState.Concat(Game.Components);
+            //foreach (GameComponent i in currComponentState)
+            //{
 
-                i.Update(gameTime);
+            //    i.Update(gameTime);
 
-            }
+            //}
 
             MouseState ms = Mouse.GetState();
 

@@ -68,6 +68,9 @@ namespace TRAPT
         public MouseState ms, msold;
         //public static KeyboardState ks, ksold;
 
+        public SoundEffect bgMusic;
+        public SoundEffectInstance bgmInstance;
+
 
         #region XNA Built In
 
@@ -92,6 +95,11 @@ namespace TRAPT
         /// </summary>
         protected override void Initialize()
         {
+            bgMusic = Content.Load<SoundEffect>("Sound\\TitleTheme");
+            bgmInstance = bgMusic.CreateInstance();
+            bgmInstance.IsLooped = true;
+            bgmInstance.Play();
+
             //Screen stuff
             graphics.PreferredBackBufferWidth = screenWidth;
             graphics.PreferredBackBufferHeight = screenHeight;
@@ -186,6 +194,12 @@ namespace TRAPT
                     {
                         cursor.ChangeMouseMode("play");
                         btnPlay.isClicked = false;
+                        bgmInstance.Stop();
+                        bgMusic = Content.Load<SoundEffect>("Sound\\ambient4");
+                        bgmInstance = bgMusic.CreateInstance();
+                        bgmInstance.IsLooped = true;
+                        //bgMusic.Play();
+                        bgmInstance.Play();
                         nextlvl = "level1";
                         nextGameState = GameState.Playing;
                         currentGameState = GameState.Loading;
@@ -265,6 +279,14 @@ namespace TRAPT
                     {
                         btnMainMenu.isClicked = false;
                         nextlvl = "mainmenu";
+
+                        bgmInstance.Stop();
+                        bgMusic = Content.Load<SoundEffect>("Sound\\TitleTheme");
+                        bgmInstance = bgMusic.CreateInstance();
+                        bgmInstance.IsLooped = true;
+                        //bgMusic.Play();
+                        bgmInstance.Play();
+
                         nextGameState = GameState.MainMenu;
                         currentGameState = GameState.Loading;
                     }
@@ -345,12 +367,14 @@ namespace TRAPT
                     //for each layer
                     foreach (GameComponentCollection layer in layers)
                     {
+                        
                         //start a batch
                         this.spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, camera.GetViewMatrix());
                         //draw each component in the player
                         foreach (DrawableGameComponent i in layer)
                         {
-                            ((EnvironmentObj)i).Draw(this.spriteBatch);
+                            if (((EnvironmentObj)i).Visible)
+                                ((EnvironmentObj)i).Draw(this.spriteBatch);
                         }
                         //end the batch
                         this.spriteBatch.End();

@@ -37,6 +37,28 @@ namespace TRAPT.Levels
         /// </summary>
         public override void Initialize()
         {
+
+            //WHY DO I HAVE TO DO THIS!?
+
+            //Init camera
+            //TraptMain.camera.Dispose(); ;
+            //TraptMain.camera = new Camera(Game);
+            //TraptMain.camera.Initialize(Game.GraphicsDevice.Viewport);
+            ////camera.Limits = new Rectangle(0, 0, tileLayer.mapWidth * GRID_CELL_SIZE, tileLayer.mapHeight * GRID_CELL_SIZE);
+
+            ////Init cursor
+            //TraptMain.cursor.Dispose();
+            //TraptMain.cursor = new Cursor(Game);
+            //TraptMain.cursor.Initialize();
+            //TraptMain.cursor.ChangeMouseMode("play");
+            ////this.IsMouseVisible = true;
+
+            //TraptMain.camera.Enabled = true;
+            //TraptMain.cursor.Enabled = true;
+
+
+            //////////////////
+
             //get the size of the map
             TraptMain.tileLayer.ReadMapDimensions(mapName);
 
@@ -63,7 +85,7 @@ namespace TRAPT.Levels
             //TEMP add a tester gun
             Vector2 gunStart = new Vector2((Game.GraphicsDevice.Viewport.Width / 4) * 3, (Game.GraphicsDevice.Viewport.Height / 4) * 3);
             this.testGun = new Weapon(Game);
-            this.testGun.Initialize(gunStart, 30, WeaponType.SMG);
+            this.testGun.Initialize(gunStart, 200, WeaponType.SMG);
 
 
             base.Initialize();
@@ -75,14 +97,23 @@ namespace TRAPT.Levels
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            GameComponentCollection currComponentState = new GameComponentCollection();
-            currComponentState.Concat(Game.Components);
-            foreach (GameComponent i in currComponentState)
-            {
+            //WHY IS THIS UPDATE CALL SUDDENLY BREAKING THINGS!?
+            //THE GAME SEEMS TO HAVE STARTED AUTO CALLING UPDATE ON ALL OBJECTS...
+            //BUT ONLY ON NEW OBJECTS OR SOMETHING, BECAUSE WHEN YOU QUIT AND RESTART,
+            //THE CAMERA AND CURSOR GET FUCKED UP AND NEED TO BE RESET AS WELL. UGH!
+            //GameComponentCollection currComponentState = new GameComponentCollection();
+            ////currComponentState.Concat(Game.Components);
+            //for (int i = 0; i < Game.Components.Count(); i++)
+            //{
+            //    currComponentState.Add(Game.Components[i]);
+            //}
 
-                i.Update(gameTime);
+            //foreach (GameComponent i in currComponentState)
+            //{
 
-            }
+            //    i.Update(gameTime);
+
+            //}
 
             MouseState ms = Mouse.GetState();
 

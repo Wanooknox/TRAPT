@@ -90,7 +90,7 @@ namespace TRAPT
 
         public void Initialize()
         {
-            this.DrawOrder = 450;
+            this.DrawOrder = 400;
 
             pixelTexture = Game.Content.Load<Texture2D>("Pixel");
             viewCone = new AI_ViewCone(this.Game);
@@ -243,7 +243,16 @@ namespace TRAPT
         {
             playerLineOfSight.Draw(spriteBatch, pixelTexture);
             viewCone.Draw(spriteBatch);
-            spriteBatch.Draw(texture, this.position, null, Color.White, (float)rotation, spriteCenter, 1, SpriteEffects.None, 0.0f);
+            //spriteBatch.Draw(texture, this.position, null, Color.White, (float)rotation, spriteCenter, 1, SpriteEffects.None, 0.0f);
+
+            this.destination = this.texture.Bounds;
+            this.destination.X = (int)this.position.X;
+            this.destination.Y = (int)this.position.Y;
+            this.source = this.texture.Bounds;
+            spriteBatch.Draw(this.texture, this.destination, this.source, Color.White, 
+                this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
+                spriteCenter,
+                SpriteEffects.None, this.Depth);
         }
     }
 }

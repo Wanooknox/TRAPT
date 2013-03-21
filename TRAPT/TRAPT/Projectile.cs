@@ -20,6 +20,8 @@ namespace TRAPT
         private WeaponType projectileType;
         private Random strayRandomizer;
 
+        private SoundEffect shotSound;
+
         //projectile lifespan
         private float life;
         private float age = 0;
@@ -44,7 +46,7 @@ namespace TRAPT
 
             //location and speed of the bullet
             this.position = position;
-            this.speed = speed;
+            this.speed = (float)(speed + strayRandomizer.NextDouble());
 
             //angle the bullet flies in.
             this.rotation = direction;
@@ -56,19 +58,22 @@ namespace TRAPT
             GetSprite();
             CalculateVelocity();
 
-            //determine projectile life
+            //determine projectile life and sound
             switch (this.projectileType)
             {
                 case WeaponType.SMG:
                     this.life = 1920;
+                    this.shotSound = Game.Content.Load<SoundEffect>("Sound\\SMG");
                     break;
                 case WeaponType.Shotgun:
                     this.life = 360;
+                    this.shotSound = Game.Content.Load<SoundEffect>("Sound\\shotgun");
                     break;
                 default:
                     this.life = 10;
                     break;
             }
+            this.shotSound.Play(0.5f,0.0f,0.0f);
 
             base.Initialize();
         }
@@ -175,7 +180,7 @@ namespace TRAPT
             spriteBatch.Draw(this.texture, this.destination, this.source, Color.White,
                 this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
                 origin,
-                SpriteEffects.None, 0);
+                SpriteEffects.None, this.Depth);
         }
 
         public override bool IsColliding(EnvironmentObj that)

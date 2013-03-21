@@ -121,15 +121,15 @@ namespace TRAPT
                 this.spriteWidth, this.spriteHeight);
             this.source = new Rectangle(this.spriteStartX, this.spriteStartY, this.spriteWidth, this.spriteHeight);
 
-            this.texture = Game.Content.Load<Texture2D>("alien_SpriteSheet");
+            this.texture = Game.Content.Load<Texture2D>("alienAnimation");
             // font for printing debug info.
             this.font = Game.Content.Load<SpriteFont>("SpriteFont1");
             this.guideTex = Game.Content.Load<Texture2D>("tileguide");
 
             //animation
-            this.aniLength = 2;
+            this.aniLength = 5;
             this.aniRate = 333;
-            this.frameWidth = 73;
+            this.frameWidth = 64;
             
 
             base.Initialize();
@@ -477,10 +477,19 @@ namespace TRAPT
             if (this.meleeDelay <= TimeSpan.Zero)
                 //if (!this.doMelee && this.meleeDelay <= TimeSpan.Zero)
             {
+                this.aniStart = 0;
+                this.aniLength = 5;
+                if (this.Weapon != null) 
+                    this.Weapon.Visible = true;
                 if (ms.RightButton == ButtonState.Pressed && msold.RightButton == ButtonState.Released) //button just lifted
                 {
                     //set a melee time to indicate performing a melee
                     this.meleeDelay = TimeSpan.FromMilliseconds(300);
+                    this.aniStart = 6;
+                    this.aniLength = 0;
+                    this.frameCount = 0;
+                    if (this.Weapon != null) 
+                        this.Weapon.Visible = false;
                 }
             }
             else 
@@ -667,7 +676,10 @@ namespace TRAPT
 
         public void DrawFortify(SpriteBatch spriteBatch)
         {
-            this.color = Color.Black;
+            //this.color = Color.;
+            this.color.R = 50;
+            this.color.G = 50;
+            this.color.B = 50;
             Random rand = new Random();
             this.color.A = (byte)rand.Next(100,200);
 
@@ -708,7 +720,7 @@ namespace TRAPT
             spriteBatch.Draw(this.texture, this.destination, this.source, this.color,
                 this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
                 origin,
-                SpriteEffects.None, 0);
+                SpriteEffects.None, this.Depth);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -850,13 +862,13 @@ namespace TRAPT
                 if (this.velocity.X > 0 && prevDest.Intersects(that.Destination)) // object came from the left
                 {
                     //if position tracked by center of sprite, move position to be wall left - half my width
-                    //this.position.X = that.Destination.Left - (this.destination.Width / 2)-1;
+                    this.position.X = that.Destination.Left - (this.destination.Width / 2)-1;
                     //if position tracked by top left corner, move position to be wall left - my width
                     //this.position.X = that.Destination.Left - (this.destination.Width) - 1;
 
                     //Kinda good
                     //this.position.X = prevPos.X;// -Math.Abs(prevVel.X);
-                    this.position.X = prevPos.X - Math.Abs(velocity.X);
+                    //this.position.X = prevPos.X - Math.Abs(velocity.X);
 
                     //barrier on the right side of me
                     this.hBarrier = Barrier.Right;
@@ -866,11 +878,11 @@ namespace TRAPT
                 }
                 else if (this.velocity.X < 0 && prevDest.Intersects(that.Destination)) // object came from the right
                 {
-                    //this.position.X = that.Destination.Right + (this.destination.Width / 2)+1;
+                    this.position.X = that.Destination.Right + (this.destination.Width / 2)+1;
 
                     //Kinda good
                     //this.position.X = prevPos.X;// +Math.Abs(prevVel.X);
-                    this.position.X = prevPos.X +Math.Abs(velocity.X);
+                    //this.position.X = prevPos.X +Math.Abs(velocity.X);
 
                     //barrier on the left side of me
                     this.hBarrier = Barrier.Left;
@@ -884,22 +896,22 @@ namespace TRAPT
 
                 if (this.velocity.Y > 0 && prevDest.Intersects(that.Destination)) // object came from the top
                 {
-                    //this.position.Y = that.Destination.Top - (this.destination.Height/2)-1;
+                    this.position.Y = that.Destination.Top - (this.destination.Height/2)-1;
 
                     //Kinda good
                     //this.position.Y = prevPos.Y;// -Math.Abs(prevVel.Y);
-                    this.position.Y = prevPos.Y - Math.Abs(velocity.Y);
+                    //this.position.Y = prevPos.Y - Math.Abs(velocity.Y);
 
                     //barrier on the bottom side of me
                     this.vBarrier = Barrier.Bottom;
                 }
                 else if (this.velocity.Y < 0 && prevDest.Intersects(that.Destination)) // object came from the bottom
                 {
-                    //this.position.Y = that.Destination.Bottom + (this.destination.Height/2)+1;
+                    this.position.Y = that.Destination.Bottom + (this.destination.Height/2)+1;
 
                     //Kinda good
                     //this.position.Y = prevPos.Y;// +Math.Abs(prevVel.Y);
-                    this.position.Y = prevPos.Y + Math.Abs(velocity.Y);
+                    //this.position.Y = prevPos.Y + Math.Abs(velocity.Y);
 
                     //barrier on the top side of me
                     this.vBarrier = Barrier.Top;
@@ -930,7 +942,7 @@ namespace TRAPT
                     
                     //KeyboardState ks = Keyboard.GetState();
                     //if (((Weapon)that).Owner == null && this.Weapon == null)
-                    if (!ks.IsKeyDown(Keys.R) && ksold.IsKeyDown(Keys.R))
+                    if (!ks.IsKeyDown(Keys.F) && ksold.IsKeyDown(Keys.F))
                     {
                         ((Weapon)that).PickUp(true, this);
                         //this.Weapon = (Weapon)that;

@@ -14,7 +14,6 @@ Content\simpleSprite128.xnb
 Content\spriteSheet.xnb
 Content\tileguide.xnb
 Content\walls.xnb
-Content\SpriteFont1.xnb
 Content\crosshairs.xnb
 Content\crosshairs2.xnb
 Content\loading.xnb
@@ -24,6 +23,12 @@ Content\backgr_bars.xnb
 Content\energybar.xnb
 Content\Healthbar.xnb
 Content\alien_spriteSheet.xnb
+Content\alienAnimation.xnb
+Content\SpriteFont1.xnb
+Content\Sound\SMG.xnb
+Content\Sound\shotgun.xnb
+Content\Sound\ambient4.xnb
+Content\Sound\TitleTheme.xnb
 Content\Level1Map.map
 Content\newMap.map
 Content\EnemiesToPopulate.xml

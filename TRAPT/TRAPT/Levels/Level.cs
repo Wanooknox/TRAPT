@@ -32,6 +32,9 @@ namespace TRAPT.Levels
         /// </summary>
         public override void Initialize()
         {
+            TraptMain.camera.Enabled = true;
+            TraptMain.cursor.Enabled = true;
+
             ((TraptMain)Game).ConstructLayers();
 
             base.Initialize();
