@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{DDCC1496-AFB3-4879-A545-A50C2769F037}</ProjectGuid>
+    <ProjectGuid>{64C471EB-CA36-4149-83C0-F838608D63B7}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -14,7 +14,7 @@
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaProfile>Reach</XnaProfile>
-    <XnaCrossPlatformGroupID>17e5b8a7-7cd4-4918-a1d1-fefa2f79660f</XnaCrossPlatformGroupID>
+    <XnaCrossPlatformGroupID>1c8224b6-a4d8-4ade-a839-e79fdb97d410</XnaCrossPlatformGroupID>
     <XnaOutputType>Game</XnaOutputType>
     <ApplicationIcon>Game.ico</ApplicationIcon>
     <Thumbnail>GameThumbnail.png</Thumbnail>
@@ -72,13 +72,51 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Agent.cs" />
+    <Compile Include="AI_ViewCone.cs" />
+    <Compile Include="HUD.cs" />
+    <Compile Include="XMLObjectReader.cs" />
+    <Compile Include="DummyEnemy.cs" />
+    <Compile Include="Enemy.cs" />
+    <Compile Include="Graph\AGraph.cs" />
+    <Compile Include="Graph\AGraphList.cs" />
+    <Compile Include="Graph\AGraphMatrix.cs" />
+    <Compile Include="Button.cs" />
+    <Compile Include="Camera.cs" />
+    <Compile Include="Cell.cs" />
     <Compile Include="Cursor.cs" />
-    <Compile Include="Player3.cs" />
-    <Compile Include="Player2.cs" />
+    <Compile Include="Graph\DGraphList.cs" />
+    <Compile Include="Graph\DGraphMatrix.cs" />
+    <Compile Include="Graph\Edge.cs" />
+    <Compile Include="Graph\EdgeEqualityComparer.cs" />
+    <Compile Include="EnvironmentObj.cs" />
+    <Compile Include="FloorTile.cs" />
+    <Compile Include="GameComponentRef.cs" />
+    <Compile Include="Graph\IEdge.cs" />
+    <Compile Include="Graph\IGraph.cs" />
+    <Compile Include="Graph\IVertex.cs" />
+    <Compile Include="Levels\Level.cs" />
+    <Compile Include="Levels\Level1.cs" />
+    <Compile Include="Levels\Level2.cs" />
+    <Compile Include="Line.cs" />
+    <Compile Include="Mover.cs" />
+    <Compile Include="Path.cs" />
+    <Compile Include="PathNode.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Structure.cs" />
+    <Compile Include="Tile.cs" />
+    <Compile Include="TileLayer.cs" />
     <Compile Include="TraptMain.cs" />
+    <Compile Include="Graph\UGraphList.cs" />
+    <Compile Include="Graph\UGraphMatrix.cs" />
+    <Compile Include="Graph\Vertex.cs" />
+    <Compile Include="Graph\VertexPathTracker.cs" />
+    <Compile Include="Graph\VertexVisitTracker.cs" />
+    <Compile Include="WallTile.cs" />
+    <Compile Include="Weapon.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
