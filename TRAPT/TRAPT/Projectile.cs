@@ -17,6 +17,8 @@ namespace TRAPT
     /// </summary>
     public class Projectile : Agent//Microsoft.Xna.Framework.GameComponent
     {
+        private Agent owner;
+
         private WeaponType projectileType;
         private Random strayRandomizer;
 
@@ -37,9 +39,11 @@ namespace TRAPT
         /// Allows the game component to perform any initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
         /// </summary>
-        public virtual void Initialize(Vector2 position, float speed, float direction, WeaponType projectileType, ref Random strayRandomizer)
+        public virtual void Initialize(Agent owner, Vector2 position, float speed, float direction, WeaponType projectileType, ref Random strayRandomizer)
         {
             this.DrawOrder = 250;
+
+            this.owner = owner;
 
             //image holding all the bullets
             this.texture = Game.Content.Load<Texture2D>("projectiles");
@@ -62,12 +66,12 @@ namespace TRAPT
             switch (this.projectileType)
             {
                 case WeaponType.SMG:
-                    this.life = 1920;
-                    this.shotSound = Game.Content.Load<SoundEffect>("Sound\\SMG");
+                    this.life = 700;//1920;
+                    this.shotSound = Game.Content.Load<SoundEffect>("Sounds\\SMG");
                     break;
                 case WeaponType.Shotgun:
-                    this.life = 360;
-                    this.shotSound = Game.Content.Load<SoundEffect>("Sound\\shotgun");
+                    this.life = 500;//360;
+                    this.shotSound = Game.Content.Load<SoundEffect>("Sounds\\shotgun");
                     break;
                 default:
                     this.life = 10;
@@ -195,11 +199,18 @@ namespace TRAPT
             //TODO: work on player object's collision resolution
             if (that is WallTile)
             {
-
                 this.Dispose(true);
-
             }
-
+            else if (that is Player && !(owner is Player))
+            {
+                ((Player)that).HurtPlayer(2);
+                this.Dispose(true);
+            }
+            else if (that is Enemy && !(owner is Enemy))
+            {
+                ((Enemy)that).HurtEnemy(2);
+                this.Dispose(true);
+            }
         }
     }
 }

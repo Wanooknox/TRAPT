@@ -46,6 +46,14 @@ namespace TRAPT
         //private float rotation;
         //private float direction;
 
+        public override Vector2 WeaponPosition
+        {
+            get
+            {
+                return this.position;// +(new Vector2(10));
+            }
+        }
+
         //float speed = 0f;
         private static float MAX_PLAYER_SPEED = 5f;
         private static float MIN_PLAYER_SPEED = 0f;
@@ -63,7 +71,7 @@ namespace TRAPT
         public int energy;
         TimeSpan healthDelay = TimeSpan.Zero;
         TimeSpan energyDelay = TimeSpan.Zero;
-        TimeSpan healthRegenDelay = TimeSpan.Zero;
+        TimeSpan healthRegionDelay = TimeSpan.Zero;
         TimeSpan energyRegenDelay = TimeSpan.Zero;
         
 
@@ -148,9 +156,7 @@ namespace TRAPT
                 this.speed += this.acceleration;
             }
         }
-
         
-
         // these are experimental methods that are not being used right now
         #region Not Used
         /// <summary>
@@ -264,7 +270,7 @@ namespace TRAPT
             this.rotation = (float)(Math.Atan2(delY, delX) + (Math.PI / 2.0));
             //Console.WriteLine("Player angle change: " + delX + " " + delY);
         }
-
+        #region HUD methods
         /// <summary>
         /// take of "damage" number of health points
         /// </summary>
@@ -272,7 +278,7 @@ namespace TRAPT
         public void HurtPlayer(int damage)
         {
             this.health -= damage;
-            this.healthRegenDelay = TimeSpan.FromMilliseconds(5000);
+            this.healthRegionDelay = TimeSpan.FromMilliseconds(5000);
         }
 
         /// <summary>
@@ -281,7 +287,7 @@ namespace TRAPT
         private void ManageHealth(GameTime gameTime)
         {
             // less than full heath and no delay left before regen
-            if (this.health < 100 && this.healthRegenDelay <= TimeSpan.Zero)
+            if (this.health < 100 && this.healthRegionDelay <= TimeSpan.Zero)
             {
                 //if we are not yet regening
                 //if (this.healthRegening == false)
@@ -306,7 +312,7 @@ namespace TRAPT
             }
             //decrement delays and update hud value
             this.healthDelay -= gameTime.ElapsedGameTime;
-            this.healthRegenDelay -= gameTime.ElapsedGameTime;
+            this.healthRegionDelay -= gameTime.ElapsedGameTime;
             TraptMain.hud.Health = this.health;
         }
 
@@ -400,7 +406,8 @@ namespace TRAPT
                 }
             }
         }
-
+        #endregion
+    
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
@@ -412,6 +419,7 @@ namespace TRAPT
             // Moving update:
             ks = Keyboard.GetState();
             ms = Mouse.GetState();
+                    
 
             // Move faster or slower.
             if (ks.IsKeyDown(this.up))
@@ -446,10 +454,10 @@ namespace TRAPT
             this.ManagePowers();
 
             //TEMP HEALTH MODFIER
-            if (ks.IsKeyDown(Keys.T) && !ksold.IsKeyDown(Keys.T)) //key lifted
-            {
-                this.HurtPlayer(10);
-            }
+            //if (ks.IsKeyDown(Keys.T) && !ksold.IsKeyDown(Keys.T)) //key lifted
+            //{
+            //    this.HurtPlayer(10);
+            //}
 
             //manage player health
             this.ManageHealth(gameTime);
@@ -573,7 +581,7 @@ namespace TRAPT
                 imHitting.RemoveAt(i);
             }
 
-            //barrier resolution
+            //barrier resolution  (Stops him from not to get caught in a wall)
             if (this.hBarrier == Barrier.Right )
             {
                 if (this.velocity.X > 0)
@@ -807,12 +815,6 @@ namespace TRAPT
 
         public override void Collide(EnvironmentObj that)
         {
-            
-
-
-
-
-
             //this.destination.X -= (int)(Math.Sign(this.velocity.X) * Math.Abs(this.velocity.X));//(int)Math.Round(this.velocity.X);
             //this.destination.Y -= (int)Math.Round(this.velocity.Y);
 
@@ -957,6 +959,6 @@ namespace TRAPT
             
 
         }
-
+               
     }
 }

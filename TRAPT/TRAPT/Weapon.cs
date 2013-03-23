@@ -138,8 +138,8 @@ namespace TRAPT
                 if (this.wpnType == WeaponType.SMG)
                 {
                     // load the in hads view for the rife
-                    this.source = new Rectangle(64, 0, 108 - 64, 106);
-                    this.destination = new Rectangle(64, 0, 108 - 64, 106);
+                    this.source = new Rectangle(0, 0,  64, 106);
+                    this.destination = new Rectangle(0, 0,  64, 106);
                 }
                 else if (this.wpnType == WeaponType.Shotgun)
                 {
@@ -232,17 +232,13 @@ namespace TRAPT
         {
             if (this.delay <= TimeSpan.Zero)
             {
-                //MouseState ms = Mouse.GetState();
-
                 //if button clicked and have enough ammo
-                if (this.ammo > 0 )
-                    //&& ((this.Owner is Player && ms.LeftButton == ButtonState.Pressed)
-                    //|| (this.Owner is DummyEnemy && ((DummyEnemy)this.Owner).shooting)))
+                if (this.ammo > 0 )                    
                 {
                     if (this.wpnType == WeaponType.SMG)
                     {
                         Projectile bullet = new Projectile(Game);
-                        bullet.Initialize(this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
+                        bullet.Initialize(this.owner, this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
                         //100 millisecond delay
                         this.delay = TimeSpan.FromMilliseconds(100);
                     }
@@ -252,16 +248,45 @@ namespace TRAPT
                         for (int i = 0; i < 5; i++)
                         {
                             Projectile bullet = new Projectile(Game);
-                            bullet.Initialize(this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
+                            bullet.Initialize(this.owner, this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
                             //1500 millisecond delay
                             this.delay = TimeSpan.FromMilliseconds(1500);
                         }
-                    }
+                    }                    
                     //decrease ammo
                     this.ammo -= 1;
                 }
             }
         }
+
+        //This method is used for the guard shooting (currently has infinite ammo and shoots on a delay)
+        public void EnemyShoot()
+        {
+            if (this.delay <= TimeSpan.Zero)
+            {
+                if (this.wpnType == WeaponType.SMG)
+                {
+                    Projectile bullet = new Projectile(Game);
+                    bullet.Initialize(this.owner, this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
+                    //TraptMain.enemyBulletList.AddLast(bullet);
+                    //100 millisecond delay
+                    this.delay = TimeSpan.FromMilliseconds(850);    //delays how long inbetween the enemy can fire using the automatic gun
+                }
+                else if (this.wpnType == WeaponType.Shotgun)
+                {
+                    //fire 10 projectiles at once for the shotgun.
+                    for (int i = 0; i < 5; i++)
+                    {
+                        Projectile bullet = new Projectile(Game);
+                        bullet.Initialize(this.owner, this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
+                        //TraptMain.enemyBulletList.AddLast(bullet);
+                        //1500 millisecond delay
+                        this.delay = TimeSpan.FromMilliseconds(1500);
+                    }
+                }
+            }
+        }
+       
 
         /// <summary>
         /// call to drop the gun
@@ -295,8 +320,9 @@ namespace TRAPT
             //if i have an owner
             if (owner != null)
             {
-                this.position.X = owner.Position.X;
-                this.position.Y = owner.Position.Y;
+                //sets the gun position relative to the owner
+                this.position.X = owner.WeaponPosition.X;
+                this.position.Y = owner.WeaponPosition.Y;
                 this.rotation = owner.Rotation;
 
                 //if the shot delay is greater than zero

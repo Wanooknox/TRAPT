@@ -3,13 +3,13 @@
   <Enemy>
     <Path>
       <node>
-        <x>18</x>
+        <x>5</x>
         <y>4</y>
         <dwell>600</dwell>
       </node>
      <node>
-        <x>4</x>
-        <y>4</y>
+        <x>5</x>
+        <y>-1</y>
         <dwell>600</dwell>
       </node>
     </Path>

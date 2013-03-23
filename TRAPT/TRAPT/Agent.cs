@@ -19,6 +19,14 @@ namespace TRAPT
     {
         public Weapon Weapon { get; set; }
 
+        public virtual Vector2 WeaponPosition 
+        {
+            get
+            {
+                return this.position;
+            }
+        }
+
         // stats
         public int health;
 
@@ -120,5 +128,6 @@ namespace TRAPT
             this.source.Y = this.aniRow * this.frameHeight;
 
         }
+
     }
 }

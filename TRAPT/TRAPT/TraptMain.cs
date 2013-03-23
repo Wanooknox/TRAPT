@@ -32,6 +32,7 @@ namespace TRAPT
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        
         #region GameState
         
         //Set gamestate
@@ -95,7 +96,7 @@ namespace TRAPT
         /// </summary>
         protected override void Initialize()
         {
-            bgMusic = Content.Load<SoundEffect>("Sound\\TitleTheme");
+            bgMusic = Content.Load<SoundEffect>("TitleTheme");
             bgmInstance = bgMusic.CreateInstance();
             bgmInstance.IsLooped = true;
             bgmInstance.Play();
@@ -195,7 +196,7 @@ namespace TRAPT
                         cursor.ChangeMouseMode("play");
                         btnPlay.isClicked = false;
                         bgmInstance.Stop();
-                        bgMusic = Content.Load<SoundEffect>("Sound\\ambient4");
+                        bgMusic = Content.Load<SoundEffect>("ambient4");
                         bgmInstance = bgMusic.CreateInstance();
                         bgmInstance.IsLooped = true;
                         //bgMusic.Play();
@@ -281,7 +282,7 @@ namespace TRAPT
                         nextlvl = "mainmenu";
 
                         bgmInstance.Stop();
-                        bgMusic = Content.Load<SoundEffect>("Sound\\TitleTheme");
+                        bgMusic = Content.Load<SoundEffect>("TitleTheme");
                         bgmInstance = bgMusic.CreateInstance();
                         bgmInstance.IsLooped = true;
                         //bgMusic.Play();
@@ -307,18 +308,18 @@ namespace TRAPT
                     break;
             }
 
-            if (ks.IsKeyDown(Keys.Down) && !ksold.IsKeyDown(Keys.Down))
-            {
-                Console.WriteLine("KEY PRESSED: the player just pressed down");
-            }
-            else if (ks.IsKeyDown(Keys.Down) && ksold.IsKeyDown(Keys.Down))
-            {
-                Console.WriteLine("KEY: the player is holding the key down");
-            }
-            else if (!ks.IsKeyDown(Keys.Down) && ksold.IsKeyDown(Keys.Down))
-            {
-                Console.WriteLine("KEY RELEASED: the player was holding the key down, but has just let it go");
-            }
+            //if (ks.IsKeyDown(Keys.Down) && !ksold.IsKeyDown(Keys.Down))
+            //{
+            //    Console.WriteLine("KEY PRESSED: the player just pressed down");
+            //}
+            //else if (ks.IsKeyDown(Keys.Down) && ksold.IsKeyDown(Keys.Down))
+            //{
+            //    Console.WriteLine("KEY: the player is holding the key down");
+            //}
+            //else if (!ks.IsKeyDown(Keys.Down) && ksold.IsKeyDown(Keys.Down))
+            //{
+            //    Console.WriteLine("KEY RELEASED: the player was holding the key down, but has just let it go");
+            //}
             
             //save current keyboard state as the old state
             ksold = ks;
@@ -341,7 +342,7 @@ namespace TRAPT
                     //start draw
                     this.spriteBatch.Begin();
 
-                    spriteBatch.Draw(Content.Load<Texture2D>("MainMenu"), new Microsoft.Xna.Framework.Rectangle(0, 0, screenWidth, screenHeight),
+                    spriteBatch.Draw(Content.Load<Texture2D>("logoScreen"), new Microsoft.Xna.Framework.Rectangle(0, 0, screenWidth, screenHeight),
                         Color.White);
                     btnPlay.Draw(this.spriteBatch);  //draw the start button
                     btnInstructions.Draw(this.spriteBatch);  //draw the instructions button
