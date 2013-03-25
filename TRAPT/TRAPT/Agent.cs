@@ -26,6 +26,13 @@ namespace TRAPT
                 return this.position;
             }
         }
+        public virtual Vector2 WeaponOrigin
+        {
+            get
+            {
+                return new Vector2(32);
+            }
+        }
 
         // stats
         public int health;
@@ -85,10 +92,11 @@ namespace TRAPT
 
             IVertex<Cell> temp = TraptMain.locationTracker.GetVertex(new Cell(cellX, cellY));
             EnvironmentObj temp2 = this;
-            if (this.checkin != null)
-            {
-                this.checkin.Remove(new GameComponentRef(ref temp2));
-            }
+            ClearLocationCheckin();
+            //if (this.checkin != null)
+            //{
+            //    this.checkin.Remove(new GameComponentRef(ref temp2));
+            //}
 
             //add this object to the determined cell
             temp.Data.Add(new GameComponentRef(ref temp2));
@@ -97,6 +105,15 @@ namespace TRAPT
             this.UpdateAnimation(gameTime);
 
             base.Update(gameTime);
+        }
+
+        public void ClearLocationCheckin()
+        {
+            EnvironmentObj temp = this;
+            if (this.checkin != null)
+            {
+                this.checkin.Remove(new GameComponentRef(ref temp));
+            }
         }
 
         /// <summary>

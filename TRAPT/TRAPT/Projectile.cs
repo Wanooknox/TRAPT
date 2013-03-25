@@ -24,6 +24,8 @@ namespace TRAPT
 
         private SoundEffect shotSound;
 
+        private Texture2D collider;
+
         //projectile lifespan
         private float life;
         private float age = 0;
@@ -47,14 +49,21 @@ namespace TRAPT
 
             //image holding all the bullets
             this.texture = Game.Content.Load<Texture2D>("projectiles");
+            this.collider = Game.Content.Load<Texture2D>("bulletcollider");
 
-            //location and speed of the bullet
-            this.position = position;
-            this.speed = (float)(speed + strayRandomizer.NextDouble());
 
             //angle the bullet flies in.
             this.rotation = direction;
             this.direction = direction;
+
+            //location and speed of the bullet
+            this.position = position;
+
+            //this.position.Y += (float)(42 * Math.Cos(this.rotation + Math.PI));
+            //this.position.X += (float)(-12 * Math.Sin(this.rotation));
+            //return new Vector2(this.position.X + weapPos.X, this.position.Y + weapPos.Y);
+
+            this.speed = (float)(speed + strayRandomizer.NextDouble());
 
             this.projectileType = projectileType;
             this.strayRandomizer = strayRandomizer;
@@ -67,11 +76,11 @@ namespace TRAPT
             {
                 case WeaponType.SMG:
                     this.life = 700;//1920;
-                    this.shotSound = Game.Content.Load<SoundEffect>("Sounds\\SMG");
+                    this.shotSound = Game.Content.Load<SoundEffect>(@"Sound\SMG");
                     break;
                 case WeaponType.Shotgun:
                     this.life = 500;//360;
-                    this.shotSound = Game.Content.Load<SoundEffect>("Sounds\\shotgun");
+                    this.shotSound = Game.Content.Load<SoundEffect>(@"Sound\shotgun");
                     break;
                 default:
                     this.life = 10;
@@ -183,7 +192,12 @@ namespace TRAPT
             Vector2 origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
             spriteBatch.Draw(this.texture, this.destination, this.source, Color.White,
                 this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
-                origin,
+                this.owner.WeaponOrigin,
+                SpriteEffects.None, this.Depth);
+
+            spriteBatch.Draw(this.collider, this.destination, this.source, Color.White,
+                this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
+                this.owner.WeaponOrigin,
                 SpriteEffects.None, this.Depth);
         }
 
@@ -191,7 +205,26 @@ namespace TRAPT
         {
             Rectangle collidingBox = this.destination;//.Inflate(32, 32);
             collidingBox.Inflate(-8, -23);
+            //Vector2 pt = new Vector2(collidingBox.X, collidingBox.Y);
+            //pt = Vector2.Transform(pt,
+            //    Matrix.Invert(
+            //    Matrix.CreateRotationX(this.rotation)
+            //    )
+            //    );
+            //collidingBox.X = (int)pt.X;
+            //collidingBox.Y = (int)pt.Y;
             return collidingBox.Intersects(that.Destination);
+
+
+            //pt = Vector2.Transform(pt,
+            //    Matrix.CreateTranslation(new Vector3(this.owner.WeaponOrigin, 0))
+            //    );
+
+            //Vector2.Transform(new Vector2(collidingBox.X, collidingBox.Y),
+            //    Matrix.Invert(
+            //    Matrix.CreateRotationZ(this.rotation)
+            //    )
+            //    );
         }
 
         public override void Collide(EnvironmentObj that)

@@ -96,7 +96,7 @@ namespace TRAPT
         /// </summary>
         protected override void Initialize()
         {
-            bgMusic = Content.Load<SoundEffect>("TitleTheme");
+            bgMusic = Content.Load<SoundEffect>(@"Sound\TitleTheme");
             bgmInstance = bgMusic.CreateInstance();
             bgmInstance.IsLooped = true;
             bgmInstance.Play();
@@ -196,7 +196,7 @@ namespace TRAPT
                         cursor.ChangeMouseMode("play");
                         btnPlay.isClicked = false;
                         bgmInstance.Stop();
-                        bgMusic = Content.Load<SoundEffect>("ambient4");
+                        bgMusic = Content.Load<SoundEffect>(@"Sound\ambient4");
                         bgmInstance = bgMusic.CreateInstance();
                         bgmInstance.IsLooped = true;
                         //bgMusic.Play();
@@ -282,7 +282,7 @@ namespace TRAPT
                         nextlvl = "mainmenu";
 
                         bgmInstance.Stop();
-                        bgMusic = Content.Load<SoundEffect>("TitleTheme");
+                        bgMusic = Content.Load<SoundEffect>(@"Sound\TitleTheme");
                         bgmInstance = bgMusic.CreateInstance();
                         bgmInstance.IsLooped = true;
                         //bgMusic.Play();

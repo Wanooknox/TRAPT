@@ -36,7 +36,7 @@ namespace TRAPT
         private bool justPickedUp = false;
         private Random projectileStrayer;
         private Color color = Color.White;
-
+        private Vector2 origin;
 
         //private Texture2D texture;
         
@@ -121,15 +121,15 @@ namespace TRAPT
                 if (this.wpnType == WeaponType.SMG)
                 {
                     //load the one floor view of the rifle
-                    this.source = new Rectangle(0, 0, 64, 106);
-                    this.destination = new Rectangle(0, 0, 64, 106);
+                    this.source = new Rectangle(25, 22, 38 - 25, 78 - 22);
+                    this.destination = this.source;//new Rectangle(0, 0, 64, 106);
                 }
                 else if (this.wpnType == WeaponType.Shotgun)
                 {
                     //TODO: adjust numbers for the shotgun
                     //load the one floor view of the rifle
-                    this.source = new Rectangle(0, 0, 64, 106);
-                    this.destination = new Rectangle(0, 0, 64, 106);
+                    this.source = new Rectangle(79, 29, 95 - 79, 72 - 29);
+                    this.destination = this.source;//new Rectangle(0, 0, 64, 106);
                 }
             }
             else // i DO have an ower
@@ -137,15 +137,15 @@ namespace TRAPT
                 this.Depth = 300;
                 if (this.wpnType == WeaponType.SMG)
                 {
-                    // load the in hads view for the rife
-                    this.source = new Rectangle(0, 0,  64, 106);
-                    this.destination = new Rectangle(0, 0,  64, 106);
+                    // load the in hands view for the rife
+                    this.source = new Rectangle(25, 22, 95 - 79, 72 - 29);
+                    this.destination = this.source;//new Rectangle(0, 0, 64, 106);
                 }
                 else if (this.wpnType == WeaponType.Shotgun)
                 {
-                    // load the in hads view for the rife
-                    this.source = new Rectangle(64, 0, 108 - 64, 106);
-                    this.destination = new Rectangle(64, 0, 108 - 64, 106);
+                    // load the in hands view for the rife
+                    this.source = new Rectangle(25, 22, 38 - 25, 78 - 22);
+                    this.destination = this.source;//new Rectangle(0, 0, 64, 106);
                 }
             }
         }
@@ -238,7 +238,7 @@ namespace TRAPT
                     if (this.wpnType == WeaponType.SMG)
                     {
                         Projectile bullet = new Projectile(Game);
-                        bullet.Initialize(this.owner, this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
+                        bullet.Initialize(this.owner, this.position, 5.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
                         //100 millisecond delay
                         this.delay = TimeSpan.FromMilliseconds(100);
                     }
@@ -252,9 +252,13 @@ namespace TRAPT
                             //1500 millisecond delay
                             this.delay = TimeSpan.FromMilliseconds(1500);
                         }
-                    }                    
-                    //decrease ammo
-                    this.ammo -= 1;
+                    }
+                    //allow enemies to have unlimited ammo
+                    if (this.Owner is Player)
+                    {
+                        //decrease ammo
+                        this.ammo -= 1;
+                    }
                 }
             }
         }
@@ -293,21 +297,19 @@ namespace TRAPT
         /// </summary>
         public void Drop()
         {
-            //if we can drop the gun
-            if (this.delay <= TimeSpan.Zero)
-            {
-                //random angle
-                this.rotation = (float)((new Random()).NextDouble() * (Math.PI * 2));
-                //take away from owner
-                this.Owner.Weapon = null;
-                this.Owner = null;
-                this.GetSprite();
-                this.CellPosition(true);
+            //random angle
+            this.rotation = (float)((new Random()).NextDouble() * (Math.PI * 2));
+            //take away from owner
+            this.Owner.Weapon = null;
+            this.Owner = null;
+            //get no owner "on ground" sprite
+            this.GetSprite();
+            //declare location
+            this.CellPosition(true);
 
-                //this.SetOwner(false, new Agent(Game));
-                //destroy gun
-                //this.Dispose();
-            }
+            //this.SetOwner(false, new Agent(Game));
+            //destroy gun
+            //this.Dispose();
         }
 
         /// <summary>
@@ -455,10 +457,14 @@ namespace TRAPT
 
             // Draw the player's texture.  
             // The origin is the point inside the source rectangle to rotate around.
-            Vector2 origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
+            origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
+            //Vector2 origin = new Vector2(32, 25);
+            if (this.Owner != null)
+                this.origin = this.Owner.WeaponOrigin;
             spriteBatch.Draw(this.texture, this.destination, this.source, this.color,
                 this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
-                origin,
+                this.origin,
+                //this.Owner.WeaponOrigin,
                 SpriteEffects.None, this.Depth);
         }
         #endregion

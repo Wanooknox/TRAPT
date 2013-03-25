@@ -221,7 +221,13 @@ namespace TRAPT
             if (this.health <= 0)
             {
                 this.Weapon.Drop();
+                this.ClearLocationCheckin();
                 this.Dispose();
+            }
+            if (this.currentState != AIstate.SEARCHING 
+                && this.currentState != AIstate.ATTACKING)
+            {
+                this.currentState = AIstate.SEARCHING;
             }
         }
 
@@ -273,7 +279,7 @@ namespace TRAPT
             }
             if (currentState == AIstate.ATTACKING)
             {
-                this.Weapon.EnemyShoot();
+                this.Weapon.Shoot();
             }
 
             //Resolve collision

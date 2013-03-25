@@ -46,11 +46,23 @@ namespace TRAPT
         //private float rotation;
         //private float direction;
 
+        private Vector2 weapPos = new Vector2();
         public override Vector2 WeaponPosition
         {
             get
             {
-                return this.position;// +(new Vector2(10));
+                //weapPos.Y = (float)(42 * Math.Cos(this.rotation + Math.PI));
+                //weapPos.X = (float)(-12 * Math.Sin(this.rotation));
+                //return new Vector2(this.position.X + weapPos.X, this.position.Y + weapPos.Y);
+                return this.position;
+            }
+        }
+
+        public override Vector2 WeaponOrigin
+        {
+            get
+            {
+                return new Vector2(-12,42);
             }
         }
 
@@ -129,13 +141,14 @@ namespace TRAPT
                 this.spriteWidth, this.spriteHeight);
             this.source = new Rectangle(this.spriteStartX, this.spriteStartY, this.spriteWidth, this.spriteHeight);
 
-            this.texture = Game.Content.Load<Texture2D>("alienAnimation");
+            this.texture = Game.Content.Load<Texture2D>("alienAnimation2");
             // font for printing debug info.
             this.font = Game.Content.Load<SpriteFont>("SpriteFont1");
             this.guideTex = Game.Content.Load<Texture2D>("tileguide");
 
             //animation
-            this.aniLength = 5;
+            this.aniStart = 0;
+            this.aniLength = 8;
             this.aniRate = 333;
             this.frameWidth = 64;
             
@@ -486,14 +499,14 @@ namespace TRAPT
                 //if (!this.doMelee && this.meleeDelay <= TimeSpan.Zero)
             {
                 this.aniStart = 0;
-                this.aniLength = 5;
+                this.aniLength = 8;
                 if (this.Weapon != null) 
                     this.Weapon.Visible = true;
                 if (ms.RightButton == ButtonState.Pressed && msold.RightButton == ButtonState.Released) //button just lifted
                 {
                     //set a melee time to indicate performing a melee
                     this.meleeDelay = TimeSpan.FromMilliseconds(300);
-                    this.aniStart = 6;
+                    this.aniStart = 10;
                     this.aniLength = 0;
                     this.frameCount = 0;
                     if (this.Weapon != null) 
