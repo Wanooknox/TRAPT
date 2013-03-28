@@ -155,7 +155,7 @@ namespace TRAPT
             int distance = (int)Vector2.Distance(point1, point2);
             float angle = (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
             
-            spriteBatch.Draw(pixelTexture, new Rectangle((int)point1.X, (int)point1.Y, distance, 1), new Rectangle(0, 0, 1, 1), Color.Red, angle, Vector2.Zero, SpriteEffects.None, 0.0f);
+            spriteBatch.Draw(pixelTexture, new Rectangle((int)point1.X, (int)point1.Y, distance, 1), new Rectangle(0, 0, 1, 1), Color.Lime, angle, Vector2.Zero, SpriteEffects.None, 0.0f);
 
         }
 

@@ -170,7 +170,9 @@ namespace TRAPT
 
             float dx = currentNode.getPosition().X - this.position.X;
             float dy = currentNode.getPosition().Y - this.position.Y;
-            rotation = (float)(Math.Atan2(dy, dx) + Math.PI / 2);
+            rotation = (float)(Math.Atan2(dy, dx) + Math.PI / 2);            
+
+            
 
             velocity.Y = (float)(acceleration + Math.Cos(rotation + Math.PI));
             velocity.X = (float)(acceleration + Math.Sin(rotation));
@@ -222,6 +224,7 @@ namespace TRAPT
             {
                 this.Weapon.Drop();
                 this.ClearLocationCheckin();
+                this.isDead = true;
                 this.Dispose();
             }
             if (this.currentState != AIstate.SEARCHING 

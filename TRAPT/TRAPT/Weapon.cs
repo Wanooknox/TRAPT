@@ -128,7 +128,7 @@ namespace TRAPT
                 {
                     //TODO: adjust numbers for the shotgun
                     //load the one floor view of the rifle
-                    this.source = new Rectangle(79, 29, 95 - 79, 72 - 29);
+                    this.source = new Rectangle(25, 22, 95 - 79, 72 - 29);
                     this.destination = this.source;//new Rectangle(0, 0, 64, 106);
                 }
             }
@@ -238,7 +238,7 @@ namespace TRAPT
                     if (this.wpnType == WeaponType.SMG)
                     {
                         Projectile bullet = new Projectile(Game);
-                        bullet.Initialize(this.owner, this.position, 5.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
+                        bullet.Initialize(this.owner, this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
                         //100 millisecond delay
                         this.delay = TimeSpan.FromMilliseconds(100);
                     }
@@ -458,9 +458,9 @@ namespace TRAPT
             // Draw the player's texture.  
             // The origin is the point inside the source rectangle to rotate around.
             origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
-            //Vector2 origin = new Vector2(32, 25);
-            if (this.Owner != null)
-                this.origin = this.Owner.WeaponOrigin;
+            //origin = new Vector2(32, 25);
+            //if (this.Owner != null)
+            //    this.origin = this.Owner.WeaponOrigin;
             spriteBatch.Draw(this.texture, this.destination, this.source, this.color,
                 this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
                 this.origin,
@@ -468,6 +468,21 @@ namespace TRAPT
                 SpriteEffects.None, this.Depth);
         }
         #endregion
+
+        public string TipString()
+        {
+            string tip = "[F] ";
+            switch (this.WpnType)
+            {
+                case WeaponType.SMG:
+                    tip += "SMG";
+                    break;
+                case WeaponType.Shotgun:
+                    tip += "Shotgun";
+                    break;
+            }
+            return tip + " (" + this.ammo + ")";
+        }
         #endregion
     }
 }

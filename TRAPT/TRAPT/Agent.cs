@@ -26,16 +26,12 @@ namespace TRAPT
                 return this.position;
             }
         }
-        public virtual Vector2 WeaponOrigin
-        {
-            get
-            {
-                return new Vector2(32);
-            }
-        }
+        //public virtual Vector2 WeaponOrigin
+        //{ get { return new Vector2(32); } }
 
         // stats
         public int health;
+        protected bool isDead = false;
 
         // A "frame" is one frame of the animation; a box around the player within the spirte map. 
         protected int frameCount = 0; // Which frame we are.  Values = {0, 1, 2}
@@ -86,23 +82,22 @@ namespace TRAPT
         {
             // TODO: Add your update code here
 
-            // determine this object's cell position
-            int cellX = (int)(this.position.X / 128);
-            int cellY = (int)(this.position.Y / 128);
+            if (!isDead)
+            {
+                // determine this object's cell position
+                int cellX = (int)(this.position.X / 128);
+                int cellY = (int)(this.position.Y / 128);
 
-            IVertex<Cell> temp = TraptMain.locationTracker.GetVertex(new Cell(cellX, cellY));
-            EnvironmentObj temp2 = this;
-            ClearLocationCheckin();
-            //if (this.checkin != null)
-            //{
-            //    this.checkin.Remove(new GameComponentRef(ref temp2));
-            //}
+                IVertex<Cell> temp = TraptMain.locationTracker.GetVertex(new Cell(cellX, cellY));
+                EnvironmentObj temp2 = this;
+                ClearLocationCheckin();
 
-            //add this object to the determined cell
-            temp.Data.Add(new GameComponentRef(ref temp2));
-            this.checkin = temp.Data;
+                //add this object to the determined cell
+                temp.Data.Add(new GameComponentRef(ref temp2));
+                this.checkin = temp.Data;
 
-            this.UpdateAnimation(gameTime);
+                this.UpdateAnimation(gameTime);
+            }
 
             base.Update(gameTime);
         }
