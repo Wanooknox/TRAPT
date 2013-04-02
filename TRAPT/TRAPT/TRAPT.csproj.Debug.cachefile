@@ -14,7 +14,6 @@ Content\simpleSprite128.xnb
 Content\spriteSheet.xnb
 Content\tileguide.xnb
 Content\walls.xnb
-Content\SpriteFont1.xnb
 Content\crosshairs.xnb
 Content\crosshairs2.xnb
 Content\loading.xnb
@@ -27,14 +26,16 @@ Content\alienAnimation.xnb
 Content\guardAnimation_New.xnb
 Content\logoScreen.xnb
 Content\guns2.xnb
+Content\alienAnimation2.xnb
+Content\bulletcollider.xnb
+Content\useIcon.xnb
+Content\SpriteFont1.xnb
 Content\Sound\ambient4.xnb
 Content\Sound\shotgun.xnb
 Content\Sound\SMG.xnb
 Content\Sound\TitleTheme.xnb
 Content\Sound\TitleTheme-song.xnb
-Content\alienAnimation2.xnb
-Content\bulletcollider.xnb
-Content\useIcon.xnb
+Content\mapTiles.xnb
 Content\Sound\TitleTheme-song.wma
 Content\Level1Map.map
 Content\newMap.map
