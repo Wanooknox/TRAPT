@@ -3,27 +3,28 @@
   <Enemy>
     <Path>
       <node>
-        <x>4</x>
+        <x>5</x>
         <y>4</y>
-        <dwell>0</dwell>
+        <dwell>600</dwell>
       </node>
      <node>
-        <x>10</x>
-        <y>4</y>
-        <dwell>1</dwell>
+        <x>5</x>
+        <y>-1</y>
+        <dwell>600</dwell>
       </node>
     </Path>
   </Enemy>
-  <!-- <Enemy>
+  <!--
+  <Enemy>
     <Path>
       <node>
-        <x>15</x>
-        <y>4</y>
+        <x>3</x>
+        <y>5</y>
         <dwell>0</dwell>
       </node>
       <node>
         <x>13</x>
-        <y>4</y>
+        <y>5</y>
         <dwell>0</dwell>
       </node>
     </Path>
@@ -31,7 +32,7 @@
   <Enemy>
     <Path>
       <node>
-        <x>5</x>
+        <x>2</x>
         <y>2</y>
         <dwell>0</dwell>
       </node>

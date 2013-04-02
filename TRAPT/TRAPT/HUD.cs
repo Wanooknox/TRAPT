@@ -23,7 +23,7 @@ namespace TRAPT
         int health;
         int energy;
         int ammo;
-        int healthlost;
+        //int healthlost;
 
         public int Health
         {
@@ -40,6 +40,7 @@ namespace TRAPT
           get { return ammo; }
           set { ammo = value; }
         }
+        public string ContextTip { get; set; }
 
         Texture2D texH;
         Rectangle recH;
@@ -49,10 +50,15 @@ namespace TRAPT
         Rectangle recE;
         Vector2 posE;
 
+        //popup tips
+        Texture2D texT;
+        Rectangle recT;
+        Vector2 posT;
+
         Texture2D backgrBars;
 
         SpriteFont ammoFont;
-        String ammoStr;
+        //String ammoStr;
         Vector2 ammoPos;
 
         // energy timer and regen timers
@@ -93,6 +99,11 @@ namespace TRAPT
             posE = new Vector2(Game.GraphicsDevice.Viewport.Width - texE.Width - 30, 80);
             //posE = new Vector2(30, 570);
             recE = new Rectangle(0, 0, texE.Width, texE.Height);
+
+            texT = Game.Content.Load<Texture2D>("useIcon");
+            posT = new Vector2(Game.GraphicsDevice.Viewport.Width/2, Game.GraphicsDevice.Viewport.Height/6);
+            recT = new Rectangle(0, 0, texT.Width, texT.Height);
+            this.ContextTip = "";
 
             ammoFont = Game.Content.Load<SpriteFont>("SpriteFont1");
             ammoPos = new Vector2(Game.GraphicsDevice.Viewport.Width - texH.Width - 30, 25);
@@ -136,6 +147,21 @@ namespace TRAPT
             // ammo
             Color textColor = Color.Yellow; 
             spriteBatch.DrawString(ammoFont, "Ammo: " + ammo, ammoPos, textColor);
+
+            //context tip
+            if (this.ContextTip != "") //if have context
+            {
+                // show context tip
+                int tipWidth = texT.Width + this.ContextTip.Length * 10;
+
+                posT.X = (Game.GraphicsDevice.Viewport.Width/2) - (tipWidth / 2);
+                spriteBatch.Draw(texT, posT, recT, Color.White);
+                spriteBatch.DrawString(ammoFont, this.ContextTip, new Vector2(posT.X + texT.Width + 10, posT.Y), Color.White);
+
+                this.ContextTip = ""; //n context
+            }
+
+
         }
         // -----------------------------------
 

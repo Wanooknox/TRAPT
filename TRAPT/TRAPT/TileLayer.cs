@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using Microsoft.Xna.Framework;
+using Graph;
 
 namespace TRAPT
 {
@@ -23,6 +24,14 @@ namespace TRAPT
         {
             get { return mapData; }
             set { mapData = value; }
+        }
+
+        private UGraphList<PathNode> transitionGrid;
+
+        public UGraphList<PathNode> TransitionGrid
+        {
+            get { return transitionGrid; }
+            set { transitionGrid = value; }
         }
         #endregion
 
@@ -51,7 +60,7 @@ namespace TRAPT
             string path = contentPath + @"\" + MapName + ".map";
             //string path = MapName + ".map";
             //string path = Game.Content.Load<string>(MapName);
-
+            this.transitionGrid = new UGraphList<PathNode>();
             //check if file exists
             using (StreamReader sr = new StreamReader(path))
             {
@@ -94,12 +103,13 @@ namespace TRAPT
                                     if (type == 1) //if wall
                                     {
                                         mapData[currentX, currentY - 1] = new WallTile(Game);
-                                        mapData[currentX, currentY - 1].Initialize(new Vector2(currentX, currentY - 1), this.texture, 1);
+                                        mapData[currentX, currentY - 1].Initialize(new Vector2(currentX, currentY - 1), this.texture, 0, 0);
                                     }
                                     else if (type == 0) //if floor
                                     {
                                         mapData[currentX, currentY - 1] = new FloorTile(Game);
-                                        mapData[currentX, currentY - 1].Initialize(new Vector2(currentX, currentY - 1), this.texture, 0);
+                                        mapData[currentX, currentY - 1].Initialize(new Vector2(currentX, currentY - 1), this.texture, 0, 0);
+                                        this.transitionGrid.AddVertex(new PathNode(currentX, currentY - 1, 0));
                                     }
                                 }
                                 
@@ -112,6 +122,53 @@ namespace TRAPT
                         }
                     }
                     currentY++;
+                }
+            }
+
+            //do texture transformations
+            for (int i = 0; i < this.mapWidth; i++)
+            {
+                for (int j = 0; j < this.mapHeight; j++)
+                {
+                    if (this.MapData[i, j] != null)
+                    {
+                        ((Tile)this.mapData[i, j]).CheckAroundMe();
+                    }
+                }
+            }
+
+            //do transition node grid
+            foreach (IVertex<PathNode> v in this.transitionGrid.EnumerateVertices())
+            {
+
+                //if cell below
+                if (v.Data.position.Y < mapHeight - 1)
+                //if (this.transitionGrid.HasVertex(new PathNode((int)v.Data.position.X, (int)v.Data.position.Y + 1, 0)))
+                {
+                    if (this.transitionGrid.HasVertex(new PathNode((int)v.Data.position.X, (int)v.Data.position.Y + 1, 0)))
+                    {
+                        //make an edge between this and the one lower
+                        this.transitionGrid.AddEdge(v.Data, new PathNode((int)v.Data.position.X, (int)v.Data.position.Y + 1, 0));
+                    }
+
+                    //if cell below and right or left
+                    if (this.transitionGrid.HasVertex(new PathNode((int)v.Data.position.X - 1, (int)v.Data.position.Y + 1,0)))//(v.Data.position.X >= 1)
+                    {
+                        //make an edge between this and the one to the left
+                        this.transitionGrid.AddEdge(v.Data, new PathNode((int)v.Data.position.X - 1, (int)v.Data.position.Y + 1,0));
+                    }
+                    if (this.transitionGrid.HasVertex(new PathNode((int)v.Data.position.X + 1, (int)v.Data.position.Y + 1,0)))//(v.Data.position.X < mapWidth - 1)
+                    {
+                        //make an edge between this and the one to the left
+                        this.transitionGrid.AddEdge(v.Data, new PathNode((int)v.Data.position.X + 1, (int)v.Data.position.Y + 1,0));
+                    }
+                }
+
+                //if cell right
+                if (this.transitionGrid.HasVertex(new PathNode((int)v.Data.position.X + 1, (int)v.Data.position.Y,0)))//(v.Data.position.X < mapWidth - 1)
+                {
+                    //make an edge between this and the one to the left
+                    this.transitionGrid.AddEdge(v.Data, new PathNode((int)v.Data.position.X + 1, (int)v.Data.position.Y,0));
                 }
             }
         }

@@ -66,7 +66,7 @@ namespace TRAPT.Levels
             TraptMain.PopulateGraph();
 
             //load the map
-            TraptMain.tileLayer.Initialize("simpleSprite128", Game.Content.RootDirectory);
+            TraptMain.tileLayer.Initialize("mapTiles", Game.Content.RootDirectory);
             //this.tileLayer.Initialize(Content.Load<Texture2D>("spriteSheet"), Content.RootDirectory);
             TraptMain.tileLayer.OpenMap(mapName);
 
@@ -76,7 +76,7 @@ namespace TRAPT.Levels
             TraptMain.camera.Limits = new Rectangle(0, 0, TraptMain.tileLayer.mapWidth * TraptMain.GRID_CELL_SIZE, TraptMain.tileLayer.mapHeight * TraptMain.GRID_CELL_SIZE);
 
             //initialize the player
-            this.playerStart = new Vector2(450, 300);
+            this.playerStart = new Vector2(7424, 4224);
             TraptMain.player = new Player(Game);
             TraptMain.player.Initialize(this.playerStart);
 

@@ -44,7 +44,7 @@ namespace TRAPT
 
         public override int GetHashCode()
         {
-            string temp = this.X + this.Y + "";
+            string temp = this.X + "," + this.Y + "";
             return temp.GetHashCode();
         }
 

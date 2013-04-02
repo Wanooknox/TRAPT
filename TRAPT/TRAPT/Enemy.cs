@@ -22,7 +22,7 @@ namespace TRAPT
         //const Vector2 NORTH = new Vector2(0, -1);
         //Values responsible for drawing
 
-          enum wallSide { UP, DOWN, LEFT, RIGHT, UNKNOWN };
+        enum wallSide { UP, DOWN, LEFT, RIGHT, UNKNOWN };
 
         Vector2 spriteCenter;
         //Texture2D texture;
@@ -33,7 +33,7 @@ namespace TRAPT
         Vector2 velocityCap = new Vector2(5, 5);
         //float rotation;
 
-      
+
         AI_ViewCone viewCone;                               //The viewcone keeps track of the viewCone AND the cone for melee range detection
         Path path;                                          //Data structure for an Agent's pathNodes ( DIFFERENT THAN THE TUTORIAL'S )
         //Vector2 playerPosition;                             //The position of the human player
@@ -83,7 +83,7 @@ namespace TRAPT
             path = new Path();
         }
         #endregion
-        
+
         #region Set Methods
         public void setPath(Path p)
         {
@@ -113,7 +113,7 @@ namespace TRAPT
             this.position = path.getCurrent().getPosition();
 
             this.prevPos = this.position;
-            
+
             this.source = new Rectangle(this.spriteStartX, this.spriteStartY, this.spriteWidth, this.spriteHeight);
             this.destination = source;
             this.destination.X = (int)this.position.X;
@@ -129,26 +129,26 @@ namespace TRAPT
             Weapon randWpn = new Weapon(Game);
             randWpn.Initialize(this.position, 30, rndType);
             randWpn.PickUp(true, this);
-           // Console.WriteLine(this.Weapon);
+            // Console.WriteLine(this.Weapon);
 
             //animation
             this.aniLength = 2;
             this.aniRate = 333;
-            this.frameWidth = 64;  
-          
+            this.frameWidth = 64;
+
             //Intialize Bug2
             //InitializeBug2(position);
 
             base.Initialize();
         }
 
-       /* private void InitializeBug2(Vector2 position)
-        {
-            bug2.Initialize(64/4, new Vector2(position.X, position.Y));
-        }*/
+        /* private void InitializeBug2(Vector2 position)
+         {
+             bug2.Initialize(64/4, new Vector2(position.X, position.Y));
+         }*/
 
         //this needs to be implemented....
-             private wallSide getWallSide(WallTile w, Vector2 enemyPosition)
+        private wallSide getWallSide(WallTile w, Vector2 enemyPosition)
         {
             Vector2 wallCenter = new Vector2((w.Position.X + (128 / 2)), (w.Position.Y + (128 / 2)));
             wallSide returnSide = wallSide.UNKNOWN;
@@ -175,12 +175,12 @@ namespace TRAPT
 
         public void lookingAround(float tempRotation)
         {
-            float upper = tempRotation + ((float) Math.PI/6);
+            float upper = tempRotation + ((float)Math.PI / 6);
             float lower = tempRotation - ((float)Math.PI / 6);
 
             if (this.rotation < upper)
             {
-                this.rotation += ((float)Math.PI/36);
+                this.rotation += ((float)Math.PI / 36);
             }
         }
 
@@ -199,25 +199,25 @@ namespace TRAPT
         {
 
             //This code was an attempt for checking line of site of enemy and player in the viewcone
-           /* if (viewCone. && LineOfSightBroken(this.playerLineOfSight))
-            {
-                Console.WriteLine("Resetting aiState");
-                currentState = AIstate.PATHING;
-                //Console.WriteLine("CurrentState: " + currentState.ToString());
-            }
-            else
-            {
-                //Need to check if player is stealthed
-                if (TraptMain.player.power == Power.Shroud)
-                {
-                    currentState = AIstate.PATHING;
-                }
+            /* if (viewCone. && LineOfSightBroken(this.playerLineOfSight))
+             {
+                 Console.WriteLine("Resetting aiState");
+                 currentState = AIstate.PATHING;
+                 //Console.WriteLine("CurrentState: " + currentState.ToString());
+             }
+             else
+             {
+                 //Need to check if player is stealthed
+                 if (TraptMain.player.power == Power.Shroud)
+                 {
+                     currentState = AIstate.PATHING;
+                 }
 
-                else if (!viewCone.intersectsViewCone(TraptMain.player.Destination))
-                {
-                    currentState = AIstate.PATHING;
-                }
-            }   */
+                 else if (!viewCone.intersectsViewCone(TraptMain.player.Destination))
+                 {
+                     currentState = AIstate.PATHING;
+                 }
+             }   */
 
             if (viewCone.intersectsViewCone(TraptMain.player.Destination) && TraptMain.player.power == Power.Shroud)
             {
@@ -238,23 +238,23 @@ namespace TRAPT
 
         public bool LineOfSightBroken(Line LoS)
         {
-           /* bool result = false;
+            /* bool result = false;
 
-            //foreach neighboring cell around the position of the enemy
-            foreach (IVertex<Cell> neighbour in TraptMain.locationTracker.EnumerateNeighbours(this.checkin))
-            {
-                foreach (GameComponentRef obstacle in neighbour.Data)  //foreach gamecomponent obstacle
-                {
-                    if (obstacle.item is WallTile) //if obstacle is a walltile
-                    {
-                        if (LoS.intersects(obstacle.item.Destination)) //if it line of sight intersects a wall tile 
-                        {
-                            result = true;
-                        }
-                    }
-                }
-            }
-            return result;*/
+             //foreach neighboring cell around the position of the enemy
+             foreach (IVertex<Cell> neighbour in TraptMain.locationTracker.EnumerateNeighbours(this.checkin))
+             {
+                 foreach (GameComponentRef obstacle in neighbour.Data)  //foreach gamecomponent obstacle
+                 {
+                     if (obstacle.item is WallTile) //if obstacle is a walltile
+                     {
+                         if (LoS.intersects(obstacle.item.Destination)) //if it line of sight intersects a wall tile 
+                         {
+                             result = true;
+                         }
+                     }
+                 }
+             }
+             return result;*/
 
             List<WallTile> obstacles = this.GetNearest8WallTiles();
             foreach (WallTile w in obstacles)
@@ -312,8 +312,8 @@ namespace TRAPT
 
 
                 /*  BUG2 implementation */
-             
-               
+
+
                 //create a list of the nearest 8 cells surrounding the enemy
 
 
@@ -376,7 +376,7 @@ namespace TRAPT
                 this.isDead = true;
                 this.Dispose(true);
             }
-            if (this.currentState != AIstate.SEARCHING 
+            if (this.currentState != AIstate.SEARCHING
                 && this.currentState != AIstate.ATTACKING)
             {
                 this.currentState = AIstate.SEARCHING;
@@ -387,16 +387,16 @@ namespace TRAPT
         {
             obstacles = this.GetNearest8WallTiles();
             playerLineOfSight = new Line(this.position, TraptMain.player.Position);
-                        
+
             //check how far away the enemy is from the alien sprite
             float distBetweenThem = Vector2.Distance(this.position, TraptMain.player.Position);
 
-           
+
             //this.destination.X = (int)this.position.X;
             //this.destination.Y = (int)this.position.Y;
 
             this.prevPos = this.position;
-            
+
             //CheckViewCones and Line of sight before desiding which state should be active.
             //Still have not implemented updating of sprite animation, that will need to be switched around
             if (currentState == AIstate.PATHING)
@@ -405,15 +405,15 @@ namespace TRAPT
                 /**
                  * We need to implement some local path planning here if not on the path... Not quite sure how to do it.*/
             }
-          /*  if (currentState == AIstate.DWELLING)
-            {
-                Console.WriteLine("In dwelling state(me)");
-                this.dwellCounter = 5;
-                this.dwelling(path.getPrevious().getDwell());
-                //ADD WHAT TO DO WHEN DWELLING
-                //this.dwelling(path.getPrevious().getDwell());
-                //go to node and stay for some number of seconds (looking around) and start pathing again
-            }   */        
+            /*  if (currentState == AIstate.DWELLING)
+              {
+                  Console.WriteLine("In dwelling state(me)");
+                  this.dwellCounter = 5;
+                  this.dwelling(path.getPrevious().getDwell());
+                  //ADD WHAT TO DO WHEN DWELLING
+                  //this.dwelling(path.getPrevious().getDwell());
+                  //go to node and stay for some number of seconds (looking around) and start pathing again
+              }   */
             if (currentState == AIstate.SEARCHING)
             {
                 /* ADD WHAT TO DO WHEN SEARCHING FOR THE PLAYER
@@ -428,7 +428,7 @@ namespace TRAPT
 
                 this.SearchForPlayer((int)TraptMain.player.Position.X, (int)TraptMain.player.Position.Y);
 
-                if (distBetweenThem < 400)   currentState = AIstate.ATTACKING;
+                if (distBetweenThem < 400) currentState = AIstate.ATTACKING;
             }
             if (currentState == AIstate.ATTACKING)
             {
@@ -465,10 +465,10 @@ namespace TRAPT
             viewCone.Update(gameTime, rotation, this.position);
             this.CheckViewCone();
             this.CheckMeleeCone();
-            
+
             base.Update(gameTime);
         }
-              
+
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -486,41 +486,41 @@ namespace TRAPT
                 SpriteEffects.None, this.Depth);
 
             //re-center hit box
-            this.destination.X = (int)this.position.X -this.source.Width / 2;
-            this.destination.Y = (int)this.position.Y- this.source.Height / 2;
+            this.destination.X = (int)this.position.X - this.source.Width / 2;
+            this.destination.Y = (int)this.position.Y - this.source.Height / 2;
         }
 
 
         public override void Collide(EnvironmentObj that)
-        {            
+        {
             if (that is WallTile)
-            {                           
-                 obstacles = GetNearest8WallTiles();
+            {
+                obstacles = GetNearest8WallTiles();
 
                 //if there are wall tiles in the list of obstacles
-                 if (obstacles.Count != 0)
-                 {
-                     isStuck = true;
-                     foreach (WallTile w in obstacles)
-                     {
-                         if (this.getWallSide(w, this.position) == wallSide.LEFT)
-                         {
-                             this.position.X += 5;
-                         }
-                         else if(this.getWallSide(w, this.position) == wallSide.RIGHT)
-                         {
-                             this.position.X -= 5;
-                         }
-                         else if (this.getWallSide(w, this.position) == wallSide.UP)
-                         {
-                             this.position.Y += 5;
-                         }
-                         else if (this.getWallSide(w, this.position) == wallSide.DOWN)
-                         {
-                             this.position.Y -= 5;
-                         }
-                     }
-                 }
+                if (obstacles.Count != 0)
+                {
+                    isStuck = true;
+                    foreach (WallTile w in obstacles)
+                    {
+                        if (this.getWallSide(w, this.position) == wallSide.LEFT)
+                        {
+                            this.position.X += 5;
+                        }
+                        else if (this.getWallSide(w, this.position) == wallSide.RIGHT)
+                        {
+                            this.position.X -= 5;
+                        }
+                        else if (this.getWallSide(w, this.position) == wallSide.UP)
+                        {
+                            this.position.Y += 5;
+                        }
+                        else if (this.getWallSide(w, this.position) == wallSide.DOWN)
+                        {
+                            this.position.Y -= 5;
+                        }
+                    }
+                }
             }
             else if (that is Player)
             {
@@ -544,5 +544,5 @@ namespace TRAPT
             return temp;
         }
         #endregion
-    }        
+    }
 }

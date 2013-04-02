@@ -27,7 +27,7 @@ namespace TRAPT
         /// Allows the game component to perform any initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
         /// </summary>
-        public override void Initialize(Vector2 position, string textureStr, int tileCount)
+        public override void Initialize(Vector2 position, string textureStr, int tileCount, int tileRow)
         {
             this.DrawOrder = 0;
             //this.textureName = "walls";
@@ -35,7 +35,7 @@ namespace TRAPT
             position.X = position.X * 128;
             position.Y = position.Y * 128;
 
-            base.Initialize(position, textureStr ,tileCount);
+            base.Initialize(position, textureStr , tileCount, 1);
         }
 
         /// <summary>

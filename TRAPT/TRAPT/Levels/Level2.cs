@@ -43,7 +43,7 @@ namespace TRAPT.Levels
             TraptMain.PopulateGraph();
 
             //load the map
-            TraptMain.tileLayer.Initialize("simpleSprite128", Game.Content.RootDirectory);
+            TraptMain.tileLayer.Initialize("mapTiles", Game.Content.RootDirectory);
             //this.tileLayer.Initialize(Content.Load<Texture2D>("spriteSheet"), Content.RootDirectory);
             TraptMain.tileLayer.OpenMap(mapName);
 
