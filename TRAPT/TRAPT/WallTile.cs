@@ -12,7 +12,6 @@ using Microsoft.Xna.Framework.Media;
 
 namespace TRAPT
 {
-    
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
@@ -31,7 +30,7 @@ namespace TRAPT
         /// Allows the game component to perform any initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
         /// </summary>
-        public override void Initialize(Vector2 position, string textureStr, int tileCount, int tileRow)
+        public override void Initialize(Vector2 position, string textureStr, int tileCount)
         {
             this.DrawOrder = 1000;
             //this.textureName = "walls";
@@ -39,12 +38,30 @@ namespace TRAPT
             position.X = position.X * 128;
             position.Y = position.Y * 128;
 
+            ////cheack around me
+            ////int mapSize = TraptMain.tileLayer.mapWidth * TraptMain.tileLayer.mapHeight;
+            //// create a checking rectangle above
+            //Rectangle projection = this.Destination;
+            //projection.Inflate(-16, 0);
+            //projection.Y -= 32;
+            ////move through map grid
+            //for (int i = 0; i < TraptMain.tileLayer.mapWidth; i++)
+            //{
+            //    for (int j = 0; j < TraptMain.tileLayer.mapHeight; j++)
+            //    {
+            //        //if the projection hits another wall
+            //        if (TraptMain.tileLayer.MapData[i, j] != null && projection.Intersects(TraptMain.tileLayer.MapData[i, j].Destination))
+            //        {
+
+            //        }
+            //    }
+            //}
+            
+
             //this.Visible = true;
 
-            base.Initialize(position, textureStr, tileCount, 0);
+            base.Initialize(position, textureStr, tileCount);
         }
-
-        
 
         /// <summary>
         /// Allows the game component to update itself.

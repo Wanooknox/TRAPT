@@ -9,16 +9,20 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+using Graph;
 
 namespace TRAPT
 {
     /// <summary>
-    /// This is a game component that implements IUpdateable.
+    /// This is a game component that implemets IUpdateable.
     /// </summary>
     public class Enemy : Agent
     {
+        #region Class Variables
         //const Vector2 NORTH = new Vector2(0, -1);
         //Values responsible for drawing
+
+          enum wallSide { UP, DOWN, LEFT, RIGHT, UNKNOWN };
 
         Vector2 spriteCenter;
         //Texture2D texture;
@@ -34,13 +38,15 @@ namespace TRAPT
         Path path;                                          //Data structure for an Agent's pathNodes ( DIFFERENT THAN THE TUTORIAL'S )
         //Vector2 playerPosition;                             //The position of the human player
         Boolean lineOfSight;                                //Flag for L o S
+        public bool followPath = false;
+
+        bool isStuck = false;
 
         Line playerLineOfSight;
         Texture2D pixelTexture;
 
-        private PathNode currentNode = new PathNode(0, 0, 0);
-        private int dwellCounter;                           //For keeping track of the time the AI has spent at a node
-
+        protected PathNode currentNode = new PathNode(0, 0, 0);
+        bool dwelling = false;
         float acceleration = 0.01f;
 
         enum AIstate { DWELLING, SEARCHING, ATTACKING, PATHING };   //Enumerated type for keeping track of AI States
@@ -57,7 +63,16 @@ namespace TRAPT
 
         Vector2 prevPos;
 
+        private TimeSpan dwellTimeSpan = TimeSpan.Zero;
+        #endregion
 
+        /** Bug 2 Variables  **/
+        public bool useBug2 = true;
+        public static List<WallTile> obstacles;
+
+        public static UGraphList<Cell> locationTracker;
+
+        #region Constructor
         /// <summary>
         /// Constructor
         /// </summary>
@@ -67,21 +82,8 @@ namespace TRAPT
         {
             path = new Path();
         }
-
-        /// <summary>
-        /// ToString to check the Nodes of a specific agent
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            String temp = "Agent's Nodes: \n";
-            foreach (PathNode p in path)
-            {
-                temp += p.ToString() + "\n";
-            }
-            return temp;
-        }
-
+        #endregion
+        
         #region Set Methods
         public void setPath(Path p)
         {
@@ -119,7 +121,6 @@ namespace TRAPT
 
             playerLineOfSight = new Line(this.position, TraptMain.player.Position);
             currentNode = path.getNext();
-            dwellCounter = 0;
             currentState = AIstate.PATHING;
 
             Array values = Enum.GetValues(typeof(WeaponType));
@@ -128,60 +129,233 @@ namespace TRAPT
             Weapon randWpn = new Weapon(Game);
             randWpn.Initialize(this.position, 30, rndType);
             randWpn.PickUp(true, this);
-            Console.WriteLine(this.Weapon);
+           // Console.WriteLine(this.Weapon);
 
             //animation
             this.aniLength = 2;
             this.aniRate = 333;
-            this.frameWidth = 64;            
+            this.frameWidth = 64;  
+          
+            //Intialize Bug2
+            //InitializeBug2(position);
 
             base.Initialize();
         }
 
-        //Working on this, viewCone methods not yet implemented
-
-        private void checkViewCone()
+       /* private void InitializeBug2(Vector2 position)
         {
-            // if(this.inLineOfSight() && intersectsViewCone(TraptMain.player.Destination))
-            //Need to check if player is stealthed
-            if (viewCone.intersectsViewCone(TraptMain.player.Destination, TraptMain.player.Position))
-            {
-                currentState = AIstate.SEARCHING;                
-            }
+            bug2.Initialize(64/4, new Vector2(position.X, position.Y));
+        }*/
 
-            if (!viewCone.intersectsViewCone(TraptMain.player.Destination, TraptMain.player.Position))
+        //this needs to be implemented....
+             private wallSide getWallSide(WallTile w, Vector2 enemyPosition)
+        {
+            Vector2 wallCenter = new Vector2((w.Position.X + (128 / 2)), (w.Position.Y + (128 / 2)));
+            wallSide returnSide = wallSide.UNKNOWN;
+
+            if (enemyPosition.X <= wallCenter.X)
+            {
+                returnSide = wallSide.RIGHT;
+            }
+            else if (enemyPosition.X >= wallCenter.X)
+            {
+                returnSide = wallSide.LEFT;
+            }
+            else if (enemyPosition.Y <= wallCenter.Y)
+            {
+                returnSide = wallSide.UP;
+            }
+            else if (enemyPosition.Y >= wallCenter.Y)
+            {
+                returnSide = wallSide.DOWN;
+            }
+            return returnSide;
+        }
+
+
+        public void lookingAround(float tempRotation)
+        {
+            float upper = tempRotation + ((float) Math.PI/6);
+            float lower = tempRotation - ((float)Math.PI / 6);
+
+            if (this.rotation < upper)
+            {
+                this.rotation += ((float)Math.PI/36);
+            }
+        }
+
+        //Working on this, viewCone methods not yet implemented
+        /*private bool CheckLOS()
+        {
+            foreach ( WallTile w in obstacles ){
+                if(this.playerLineOfSight.intersects(w.Destination)){
+                    return false;
+                }
+            }
+            return true;
+        }*/
+
+        private void CheckViewCone()
+        {
+
+            //This code was an attempt for checking line of site of enemy and player in the viewcone
+           /* if (viewCone. && LineOfSightBroken(this.playerLineOfSight))
+            {
+                Console.WriteLine("Resetting aiState");
+                currentState = AIstate.PATHING;
+                //Console.WriteLine("CurrentState: " + currentState.ToString());
+            }
+            else
+            {
+                //Need to check if player is stealthed
+                if (TraptMain.player.power == Power.Shroud)
+                {
+                    currentState = AIstate.PATHING;
+                }
+
+                else if (!viewCone.intersectsViewCone(TraptMain.player.Destination))
+                {
+                    currentState = AIstate.PATHING;
+                }
+            }   */
+
+            if (viewCone.intersectsViewCone(TraptMain.player.Destination) && TraptMain.player.power == Power.Shroud)
             {
                 currentState = AIstate.PATHING;
+            }
+            else if (LineOfSightBroken(playerLineOfSight) && viewCone.intersectsViewCone(TraptMain.player.Destination))
+            {
+                currentState = AIstate.PATHING;
+            }
+            else if (!LineOfSightBroken(playerLineOfSight) && viewCone.intersectsViewCone(TraptMain.player.Destination))
+            {
+                currentState = AIstate.SEARCHING;
             }
 
             //Need to get all of the tiles along the line of the sprite to the character, check if any of them are walls, if they are.
             //Set line of sight to false
         }
-        
-        public void traversePath(GameTime gameTime)
+
+        public bool LineOfSightBroken(Line LoS)
         {
-            double currentTime = gameTime.TotalGameTime.Seconds;
-            velocity = Vector2.Zero;
-            if (Vector2.Distance(this.position, currentNode.getPosition()) < 25)
+           /* bool result = false;
+
+            //foreach neighboring cell around the position of the enemy
+            foreach (IVertex<Cell> neighbour in TraptMain.locationTracker.EnumerateNeighbours(this.checkin))
             {
-                dwellCounter = 0;
-                currentNode = path.goNext();
+                foreach (GameComponentRef obstacle in neighbour.Data)  //foreach gamecomponent obstacle
+                {
+                    if (obstacle.item is WallTile) //if obstacle is a walltile
+                    {
+                        if (LoS.intersects(obstacle.item.Destination)) //if it line of sight intersects a wall tile 
+                        {
+                            result = true;
+                        }
+                    }
+                }
             }
+            return result;*/
 
-            float dx = currentNode.getPosition().X - this.position.X;
-            float dy = currentNode.getPosition().Y - this.position.Y;
-            rotation = (float)(Math.Atan2(dy, dx) + Math.PI / 2);            
+            List<WallTile> obstacles = this.GetNearest8WallTiles();
+            foreach (WallTile w in obstacles)
+            {
+                if (playerLineOfSight.intersects(w.Destination))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
-            
-
-            velocity.Y = (float)(acceleration + Math.Cos(rotation + Math.PI));
-            velocity.X = (float)(acceleration + Math.Sin(rotation));
+        private bool PlayerInsideEnemyViewCone()
+        {
+            if (viewCone.intersectsViewCone(TraptMain.player.Destination))
+                return true;
+            else
+                return false;
 
         }
 
-        public void searchForPlayer(int playerX, int playerY)
+        private void CheckMeleeCone()
         {
-            int timeInCone = 0;
+            if (viewCone.intersectsMeleeCone(TraptMain.player.Destination) && (TraptMain.player.meleeDelay > TimeSpan.Zero))
+            {
+                this.HurtEnemy(Int32.MaxValue);
+            }
+        }
+
+        public void TraversePath(GameTime gameTime)
+        {
+            velocity = Vector2.Zero;
+            float tempRotation = 0;
+            if (Vector2.Distance(this.position, currentNode.getPosition()) < 25)
+            {
+                this.dwellTimeSpan = TimeSpan.FromSeconds(currentNode.getDwell());
+                tempRotation = this.rotation;
+                currentNode = path.goNext();
+            }
+
+            if (dwellTimeSpan >= TimeSpan.Zero)
+            {
+                dwelling = true;
+                this.lookingAround(tempRotation);
+                dwellTimeSpan -= gameTime.ElapsedGameTime;
+            }
+            else
+            {
+                Console.WriteLine("CurrentNode.X: " + currentNode.getPosition().X + " CurrentNode.y: " + currentNode.getPosition().Y);
+                dwelling = false;
+                float dx = currentNode.getPosition().X - this.position.X;
+                float dy = currentNode.getPosition().Y - this.position.Y;
+                rotation = (float)(Math.Atan2(dy, dx) + Math.PI / 2);
+
+
+
+                /*  BUG2 implementation */
+             
+               
+                //create a list of the nearest 8 cells surrounding the enemy
+
+
+                if (isStuck)
+                {
+                    velocity.Y = 0;
+                    velocity.X = 0;
+                }
+                else
+                {
+                    velocity.Y = (float)(acceleration + Math.Cos(rotation + Math.PI));
+                    velocity.X = (float)(acceleration + Math.Sin(rotation));
+                }
+            }
+        }
+
+        /*This method will get the 8 surrounding wall tiles for the enemy.*/
+        private List<WallTile> GetNearest8WallTiles()
+        {
+            //create a temporary list of wall tiles to return
+            List<WallTile> temp = new List<WallTile>();
+
+            //foreach neighboring cell around the position of the enemy
+            foreach (IVertex<Cell> neighbour in TraptMain.locationTracker.EnumerateNeighbours(this.checkin))
+            {
+                //foreach gamecomponent obstacle
+                foreach (GameComponentRef obstacle in neighbour.Data)
+                {
+                    //if it is a wall tile add it to the list 
+                    if (obstacle.item is WallTile)
+                    {
+                        //add it to the list
+                        temp.Add((WallTile)obstacle.item);
+                    }
+                }
+            }
+            return temp;
+        }
+
+        public void SearchForPlayer(int playerX, int playerY)
+        {
+            //int timeInCone = 0;
             currentNode = new PathNode(playerX, playerY, 0);
 
             float dx = currentNode.getPosition().X - this.position.X;
@@ -190,31 +364,6 @@ namespace TRAPT
 
             velocity.Y = (float)(acceleration + Math.Cos(rotation + Math.PI));
             velocity.X = (float)(acceleration + Math.Sin(rotation));
-
-
-
-        }
-
-        public void dwelling(int dwellHeartBeat)
-        {
-            if (dwellCounter <= dwellHeartBeat)
-            {
-                dwellCounter++;
-            }
-            if (dwellCounter > dwellHeartBeat)
-            {
-                dwellCounter = 0;
-                currentState = AIstate.PATHING;
-            }
-        }
-
-        public bool CheckLineOfSight( Line lineOfSight)
-        {
-            bool result = false;
-
-            //if( lineOfSight.intersects
-
-            return result;
         }
 
         public void HurtEnemy(int damage)
@@ -225,7 +374,7 @@ namespace TRAPT
                 this.Weapon.Drop();
                 this.ClearLocationCheckin();
                 this.isDead = true;
-                this.Dispose();
+                this.Dispose(true);
             }
             if (this.currentState != AIstate.SEARCHING 
                 && this.currentState != AIstate.ATTACKING)
@@ -236,6 +385,7 @@ namespace TRAPT
 
         public override void Update(GameTime gameTime)
         {
+            obstacles = this.GetNearest8WallTiles();
             playerLineOfSight = new Line(this.position, TraptMain.player.Position);
                         
             //check how far away the enemy is from the alien sprite
@@ -251,11 +401,11 @@ namespace TRAPT
             //Still have not implemented updating of sprite animation, that will need to be switched around
             if (currentState == AIstate.PATHING)
             {
-                traversePath(gameTime);
+                TraversePath(gameTime);
                 /**
                  * We need to implement some local path planning here if not on the path... Not quite sure how to do it.*/
             }
-            if (currentState == AIstate.DWELLING)
+          /*  if (currentState == AIstate.DWELLING)
             {
                 Console.WriteLine("In dwelling state(me)");
                 this.dwellCounter = 5;
@@ -263,7 +413,7 @@ namespace TRAPT
                 //ADD WHAT TO DO WHEN DWELLING
                 //this.dwelling(path.getPrevious().getDwell());
                 //go to node and stay for some number of seconds (looking around) and start pathing again
-            }           
+            }   */        
             if (currentState == AIstate.SEARCHING)
             {
                 /* ADD WHAT TO DO WHEN SEARCHING FOR THE PLAYER
@@ -276,12 +426,27 @@ namespace TRAPT
                 //check if player line of sight has been broken by a wall object
                 //CheckLineOfSight(playerLineOfSight);
 
-                this.searchForPlayer((int)TraptMain.player.Position.X, (int)TraptMain.player.Position.Y);
+                this.SearchForPlayer((int)TraptMain.player.Position.X, (int)TraptMain.player.Position.Y);
 
                 if (distBetweenThem < 400)   currentState = AIstate.ATTACKING;
             }
             if (currentState == AIstate.ATTACKING)
             {
+                CheckViewCone();
+                if (this.Weapon.WpnType == WeaponType.Shotgun)
+                {
+                    if (distBetweenThem < 100)
+                    {
+                        this.velocity = Vector2.Zero;
+                    }
+                }
+                else if (this.Weapon.WpnType == WeaponType.SMG)
+                {
+                    if (distBetweenThem < 300)
+                    {
+                        this.velocity = Vector2.Zero;
+                    }
+                }
                 this.Weapon.Shoot();
             }
 
@@ -298,7 +463,8 @@ namespace TRAPT
 
             spriteCenter = new Vector2((this.source.Width / 2), (this.source.Height / 2));
             viewCone.Update(gameTime, rotation, this.position);
-            this.checkViewCone();
+            this.CheckViewCone();
+            this.CheckMeleeCone();
             
             base.Update(gameTime);
         }
@@ -308,13 +474,11 @@ namespace TRAPT
         {
             playerLineOfSight.Draw(spriteBatch, pixelTexture);
             viewCone.Draw(spriteBatch);
-            //spriteBatch.Draw(texture, this.position, null, Color.White, (float)rotation, spriteCenter, 1, SpriteEffects.None, 0.0f);
 
             //this.destination = this.texture.Bounds;
             this.destination.X = (int)this.position.X;// -this.source.Width / 2;
             this.destination.Y = (int)this.position.Y;// -this.source.Height / 2;
-            //this.source = texture.Bounds;
-            
+            //this.source = texture.Bounds;            
 
             spriteBatch.Draw(this.texture, this.destination, this.source, Color.White,
                 this.Rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
@@ -331,34 +495,54 @@ namespace TRAPT
         {            
             if (that is WallTile)
             {                           
-                this.velocity.X = 0;
-                this.velocity.Y = 0;
+                 obstacles = GetNearest8WallTiles();
 
-               // Rectangle prevDest = this.destination;
-                //prevDest.Y = (int)Math.Round(this.prevPos.Y - this.destination.Height / 2);
-
-                //if (this.velocity.X > 0 && prevDest.Intersects(that.Destination)) // object came from the left
-                //{                    
-                //    this.position.X = that.Destination.Left - (this.destination.Width / 2) - 1;                   
-                //}
-                //else if (this.velocity.X < 0 && prevDest.Intersects(that.Destination)) // object came from the right
-                //{
-                //    this.position.X = that.Destination.Right + (this.destination.Width / 2) + 1;          
-                //}
-              
-                //if (this.velocity.Y > 0 && prevDest.Intersects(that.Destination)) // object came from the top
-                //{
-                //    this.position.Y = that.Destination.Top - (this.destination.Height / 2) - 1;
-                //}
-                //else if (this.velocity.Y < 0 && prevDest.Intersects(that.Destination)) // object came from the bottom
-                //{
-                //    this.position.Y = that.Destination.Bottom + (this.destination.Height / 2) + 1;
-                //}
+                //if there are wall tiles in the list of obstacles
+                 if (obstacles.Count != 0)
+                 {
+                     isStuck = true;
+                     foreach (WallTile w in obstacles)
+                     {
+                         if (this.getWallSide(w, this.position) == wallSide.LEFT)
+                         {
+                             this.position.X += 5;
+                         }
+                         else if(this.getWallSide(w, this.position) == wallSide.RIGHT)
+                         {
+                             this.position.X -= 5;
+                         }
+                         else if (this.getWallSide(w, this.position) == wallSide.UP)
+                         {
+                             this.position.Y += 5;
+                         }
+                         else if (this.getWallSide(w, this.position) == wallSide.DOWN)
+                         {
+                             this.position.Y -= 5;
+                         }
+                     }
+                 }
             }
             else if (that is Player)
             {
-                //do something
+                this.velocity.X = 0;
+                this.velocity.Y = 0;
             }
         }
+
+        #region ToString
+        /// <summary>
+        /// ToString to check the Nodes of a specific agent
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            String temp = "Agent's Nodes: \n";
+            foreach (PathNode p in path)
+            {
+                temp += p.ToString() + "\n";
+            }
+            return temp;
+        }
+        #endregion
     }        
 }

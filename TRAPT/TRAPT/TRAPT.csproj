@@ -74,10 +74,12 @@
   <ItemGroup>
     <Compile Include="Agent.cs" />
     <Compile Include="AI_ViewCone.cs" />
+    <None Include="Bug2.cs" />
+    <Compile Include="Bug2_v2.cs" />
+    <Compile Include="Enemy.cs" />
     <Compile Include="HUD.cs" />
     <Compile Include="XMLObjectReader.cs" />
     <Compile Include="DummyEnemy.cs" />
-    <Compile Include="Enemy.cs" />
     <Compile Include="Graph\AGraph.cs" />
     <Compile Include="Graph\AGraphList.cs" />
     <Compile Include="Graph\AGraphMatrix.cs" />

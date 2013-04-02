@@ -25,7 +25,6 @@ namespace TRAPT
         private SoundEffect shotSound;
 
         private Texture2D collider;
-        private Rectangle collidingBox;
 
         //projectile lifespan
         private float life;
@@ -87,7 +86,7 @@ namespace TRAPT
                     this.life = 10;
                     break;
             }
-            this.shotSound.Play(0.4f,0.0f,0.0f);
+            this.shotSound.Play(0.5f,0.0f,0.0f);
 
             base.Initialize();
         }
@@ -173,6 +172,7 @@ namespace TRAPT
             }
             else //else projectile should die
             {
+                this.isDead = true;
                 this.Dispose();
             }
 
@@ -193,28 +193,19 @@ namespace TRAPT
             Vector2 origin = new Vector2(this.source.Width / 2, this.source.Height / 2);
             spriteBatch.Draw(this.texture, this.destination, this.source, Color.White,
                 this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
-                //this.owner.WeaponOrigin,
-                origin,
+                this.owner.WeaponOrigin,
                 SpriteEffects.None, this.Depth);
 
-            //spriteBatch.Draw(this.collider, this.destination, this.source, Color.White,
-            //    this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
-            //    this.owner.WeaponOrigin,
-            //    SpriteEffects.None, this.Depth);
-
-            //Line hbleft = new Line(new Vector2(collidingBox.Left, collidingBox.Top), new Vector2(collidingBox.Left, collidingBox.Bottom));
-            //hbleft.Draw(spriteBatch, pixelTexture);
-            //Line hbtop = new Line(new Vector2(collidingBox.Left, collidingBox.Top), new Vector2(collidingBox.Right, collidingBox.Top));
-            //hbtop.Draw(spriteBatch, pixelTexture);
+            spriteBatch.Draw(this.collider, this.destination, this.source, Color.White,
+                this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
+                this.owner.WeaponOrigin,
+                SpriteEffects.None, this.Depth);
         }
 
         public override bool IsColliding(EnvironmentObj that)
         {
-            collidingBox = this.destination;//.Inflate(32, 32);
-            //collidingBox.Inflate(-8, -24);
-            collidingBox.Width = 1;
-            collidingBox.Height = 1;
-
+            Rectangle collidingBox = this.destination;//.Inflate(32, 32);
+            collidingBox.Inflate(-8, -23);
             //Vector2 pt = new Vector2(collidingBox.X, collidingBox.Y);
             //pt = Vector2.Transform(pt,
             //    Matrix.Invert(

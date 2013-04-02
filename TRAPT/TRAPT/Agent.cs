@@ -26,12 +26,16 @@ namespace TRAPT
                 return this.position;
             }
         }
-        //public virtual Vector2 WeaponOrigin
-        //{ get { return new Vector2(32); } }
+        public virtual Vector2 WeaponOrigin
+        {
+            get
+            {
+                return new Vector2(32);
+            }
+        }
 
         // stats
         public int health;
-        protected bool isDead = false;
 
         // A "frame" is one frame of the animation; a box around the player within the spirte map. 
         protected int frameCount = 0; // Which frame we are.  Values = {0, 1, 2}
@@ -46,6 +50,8 @@ namespace TRAPT
         //int animationCount; // How many ticks since the last frame change.
         //int animationMax = 10; // How many ticks to change frame after. 
         TimeSpan animationTimer = TimeSpan.Zero;
+
+        protected bool isDead = false;
 
         public Agent(Game game)
             : base(game)
@@ -81,7 +87,6 @@ namespace TRAPT
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
-
             if (!isDead)
             {
                 // determine this object's cell position
@@ -95,9 +100,9 @@ namespace TRAPT
                 //add this object to the determined cell
                 temp.Data.Add(new GameComponentRef(ref temp2));
                 this.checkin = temp.Data;
-
-                this.UpdateAnimation(gameTime);
             }
+
+            this.UpdateAnimation(gameTime);
 
             base.Update(gameTime);
         }

@@ -21,13 +21,13 @@ namespace TRAPT
         
         //Circle viewConeCircle;
         Vector2 leftPoint;
-        Vector2 leftMidPoint1, leftMidPoint2, leftMidPoint3, leftMidPoint4, leftMidPoint5, leftMidPoint6;
+      //  Vector2 leftMidPoint1, leftMidPoint2, leftMidPoint3, leftMidPoint4, leftMidPoint5, leftMidPoint6;
         Vector2 rightPoint;
-        Vector2 rightMidPoint1, rightMidPoint2, rightMidPoint3, rightMidPoint4, rightMidPoint5, rightMidPoint6;
+      //  Vector2 rightMidPoint1, rightMidPoint2, rightMidPoint3, rightMidPoint4, rightMidPoint5, rightMidPoint6;
         Line leftSideViewCone;
         Line rightSideViewCone;
         Line frontLine;
-        Line midLine1, midLine2, midLine3, midLine4, midLine5, midLine6;
+       // Line midLine1, midLine2, midLine3, midLine4, midLine5, midLine6;
         double viewConeLAngle;
         double viewConeRAngle;
 
@@ -42,8 +42,17 @@ namespace TRAPT
 
         Vector2 enemyPosition;
 
-        const int vcRADIUS = 600;
+        const int vcRADIUS = 450;
         const int mcRADIUS = 50;
+
+        Vector2 leftMidPoint;
+        Vector2 rightMidPoint;
+        Vector2 centerLeftPoint;
+        Vector2 centerRightPoint;
+        Line leftMidLine;
+        Line centerLeftLine;
+        Line centerRightLine;
+        Line rightMidLine;
 
         public AI_ViewCone(Game game) : base(game)
         {
@@ -61,7 +70,7 @@ namespace TRAPT
             leftSideViewCone = new Line(center, leftPoint);
             rightSideViewCone = new Line(center, rightPoint);
             frontLine = new Line(leftPoint, rightPoint);
-
+            /*
             //Testing
             leftMidPoint1 = new Vector2((float)(((center.X + (vcRADIUS / 2)) * Math.Cos(playerRotation - Math.PI / 8))), (float)((center.Y + (vcRADIUS / 2)) * Math.Sin(playerRotation - Math.PI / 8)));
             rightMidPoint1 = new Vector2((float)((center.X + (vcRADIUS / 2)) * Math.Cos(playerRotation + Math.PI / 8)), (float)((center.Y + (vcRADIUS / 2)) * Math.Sin(playerRotation + Math.PI / 8)));
@@ -87,7 +96,7 @@ namespace TRAPT
             leftMidPoint6 = new Vector2((float)(((center.X + (vcRADIUS / 2)) * Math.Cos(playerRotation - Math.PI / 8))), (float)((center.Y + (vcRADIUS / 2)) * Math.Sin(playerRotation - Math.PI / 8)));
             rightMidPoint6 = new Vector2((float)((center.X + (vcRADIUS / 2)) * Math.Cos(playerRotation + Math.PI / 8)), (float)((center.Y + (vcRADIUS / 2)) * Math.Sin(playerRotation + Math.PI / 8)));
             midLine6 = new Line(leftMidPoint6, rightMidPoint6);
-
+            */
 
 
             float dYLPoint = leftPoint.Y - center.Y;
@@ -123,7 +132,8 @@ namespace TRAPT
 
 
             //ViewCone book-keeping/Orientation/whatnot
-            float playerRotation = rotation + ((float)(3 * (Math.PI / 2)));
+           // float playerRotation = rotation + ((float)(3 * (Math.PI / 2)));
+            float playerRotation = rotation - ((float)(Math.PI / 2));
             leftPoint = new Vector2((float)(center.X + (vcRADIUS * (Math.Cos(playerRotation - Math.PI / 10)))), (float)(center.Y + vcRADIUS * (Math.Sin(playerRotation - Math.PI / 10))));          //Attaining a point on a circle's circumfrance - LEFT SIDE
             rightPoint = new Vector2((float)(center.X + vcRADIUS * (Math.Cos(playerRotation + Math.PI / 10))), (float)(center.Y + vcRADIUS * (Math.Sin(playerRotation + Math.PI / 10))));           //Attaining a point on a circle's circumfrance - RIGHT SIDE
             leftSideViewCone = new Line(center, leftPoint);                 //Setting lines to make the sides of the viewcone, colision will happen with the lines themselves
@@ -131,10 +141,20 @@ namespace TRAPT
             frontLine = new Line(leftPoint, rightPoint);                    //Setting the line for the front of the viewcone.
 
 
-            //Testing
+            leftMidPoint = new Vector2((float)(center.X + ((vcRADIUS) * (Math.Cos(playerRotation - Math.PI / 18)))), (float)(center.Y + (vcRADIUS) * (Math.Sin(playerRotation - Math.PI / 18))));
+            centerLeftPoint = new Vector2((float)(center.X + (vcRADIUS) * (Math.Cos(playerRotation - Math.PI / 60))), (float)(center.Y + (vcRADIUS) * (Math.Sin(playerRotation - Math.PI /60))));
+            centerRightPoint = new Vector2((float)(center.X + (vcRADIUS) * (Math.Cos(playerRotation + Math.PI / 60))), (float)(center.Y + (vcRADIUS) * (Math.Sin(playerRotation + Math.PI/60))));
+            rightMidPoint = new Vector2((float)(center.X + (vcRADIUS) * (Math.Cos(playerRotation + Math.PI / 18))), (float)(center.Y + (vcRADIUS) * (Math.Sin(playerRotation + Math.PI / 18))));
+
+            leftMidLine = new Line(center, leftMidPoint);
+            rightMidLine = new Line(center, rightMidPoint);
+            centerLeftLine = new Line(center, centerLeftPoint);
+            centerRightLine = new Line(center, centerRightPoint);
+
+           /* //Testing
             leftMidPoint1 = new Vector2((float)(center.X + ((vcRADIUS / 3) * (Math.Cos(playerRotation - Math.PI / 10)))), (float)(center.Y + (vcRADIUS / 3) * (Math.Sin(playerRotation - Math.PI / 10))));
             rightMidPoint1 = new Vector2((float)(center.X + (vcRADIUS / 3) * (Math.Cos(playerRotation + Math.PI / 10))), (float)(center.Y + (vcRADIUS / 3) * (Math.Sin(playerRotation + Math.PI / 10))));
-            midLine1 = new Line(leftMidPoint1, rightMidPoint1);
+           
 
             leftMidPoint2 = new Vector2((float)(center.X + ((vcRADIUS / 2.2) * (Math.Cos(playerRotation - Math.PI / 10)))), (float)(center.Y + (vcRADIUS/ 2.2) * (Math.Sin(playerRotation - Math.PI / 10))));
             rightMidPoint2 = new Vector2((float)(center.X + (vcRADIUS / 2.2) * (Math.Cos(playerRotation + Math.PI / 10))), (float)(center.Y + (vcRADIUS / 2.2) * (Math.Sin(playerRotation + Math.PI / 10))));
@@ -154,7 +174,7 @@ namespace TRAPT
 
             leftMidPoint6 = new Vector2((float)(center.X + ((vcRADIUS / 1.15) * (Math.Cos(playerRotation - Math.PI / 10)))), (float)(center.Y + (vcRADIUS / 1.15) * (Math.Sin(playerRotation - Math.PI / 10))));
             rightMidPoint6 = new Vector2((float)(center.X + (vcRADIUS / 1.15) * (Math.Cos(playerRotation + Math.PI / 10))), (float)(center.Y + (vcRADIUS / 1.15) * (Math.Sin(playerRotation + Math.PI / 10))));
-            midLine6 = new Line(leftMidPoint6, rightMidPoint6);
+            midLine6 = new Line(leftMidPoint6, rightMidPoint6);*/
 
 
 
@@ -200,15 +220,15 @@ namespace TRAPT
          * The parameter to this method needs to be changed to the player object.
          * From there we need to obtain the the bounding box. And do collision....
          * */
-        public Boolean intersectsViewCone(Rectangle playerRectangle, Vector2 playerPosition)
+        public Boolean intersectsViewCone(Rectangle playerRectangle)
         {
-            float dX = playerPosition.Y - enemyPosition.Y;
-            float dY = playerPosition.X - enemyPosition.X;
+           // float dX = playerPosition.Y - enemyPosition.Y;
+           // float dY = playerPosition.X - enemyPosition.X;
             //float dX = enemyPosition.Y - playerPosition.Y;
             //float dY = enemyPosition.X - playerPosition.X;
 
 
-            double angle = (Math.Atan2(dY, dX) - Math.PI/2);
+           // double angle = (Math.Atan2(dY, dX) - Math.PI/2);
 
 
            //Console.WriteLine("Angle to player: " + angle);
@@ -217,13 +237,17 @@ namespace TRAPT
 
             if (leftSideViewCone.intersects(playerRectangle) ||                     //Checking for intersection of an edge of the viewcone
                 rightSideViewCone.intersects(playerRectangle)||
-                frontLine.intersects(playerRectangle)        ||
+                /*frontLine.intersects(playerRectangle)        ||
                 midLine1.intersects(playerRectangle)         || 
                 midLine2.intersects(playerRectangle)         ||
                 midLine3.intersects(playerRectangle)         ||
                 midLine4.intersects(playerRectangle)         ||
                 midLine5.intersects(playerRectangle)         ||
-                midLine6.intersects(playerRectangle)
+                midLine6.intersects(playerRectangle)*/
+                leftMidLine.intersects(playerRectangle)      ||
+                centerLeftLine.intersects(playerRectangle)   ||
+                centerRightLine.intersects(playerRectangle)  ||
+                rightMidLine.intersects(playerRectangle)
                 )
             {
 
@@ -255,14 +279,19 @@ namespace TRAPT
         public void Draw(SpriteBatch spriteBatch){
             leftSideViewCone.Draw(spriteBatch, lineTexture);
             rightSideViewCone.Draw(spriteBatch, lineTexture);
-            frontLine.Draw(spriteBatch, lineTexture);
+            //frontLine.Draw(spriteBatch, lineTexture);
 
-            midLine1.Draw(spriteBatch, lineTexture);
-            midLine2.Draw(spriteBatch, lineTexture);
-            midLine3.Draw(spriteBatch, lineTexture);
-            midLine4.Draw(spriteBatch, lineTexture);
-            midLine5.Draw(spriteBatch, lineTexture);
-            midLine6.Draw(spriteBatch, lineTexture);
+           // midLine1.Draw(spriteBatch, lineTexture);
+           // midLine2.Draw(spriteBatch, lineTexture);
+           // midLine3.Draw(spriteBatch, lineTexture);
+           // midLine4.Draw(spriteBatch, lineTexture);
+           // midLine5.Draw(spriteBatch, lineTexture);
+           // midLine6.Draw(spriteBatch, lineTexture);
+
+            centerLeftLine.Draw(spriteBatch, lineTexture);
+            centerRightLine.Draw(spriteBatch, lineTexture);
+            leftMidLine.Draw(spriteBatch, lineTexture);
+            rightMidLine.Draw(spriteBatch, lineTexture);
 
             leftSideMeleeCone.Draw(spriteBatch, lineTexture);
             rightSideMeleeCone.Draw(spriteBatch, lineTexture);

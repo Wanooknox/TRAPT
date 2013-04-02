@@ -35,7 +35,7 @@ namespace TRAPT
 
         public List<EnvironmentObj> imHitting;
 
-        protected Texture2D pixelTexture;
+        
 
         public Vector2 Position
         {
@@ -78,7 +78,6 @@ namespace TRAPT
         {
             // TODO: Add your initialization code here
             imHitting = new List<EnvironmentObj>();
-            pixelTexture = Game.Content.Load<Texture2D>("Pixel");
 
             base.Initialize();
         }

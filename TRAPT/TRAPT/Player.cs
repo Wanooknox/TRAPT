@@ -51,16 +51,20 @@ namespace TRAPT
         {
             get
             {
-                int offset = 25;
-                weapPos.Y = (float)(offset * Math.Cos(this.rotation + Math.PI));
-                weapPos.X = (float)(offset * Math.Sin(this.rotation));
-                return new Vector2(this.position.X + weapPos.X, this.position.Y + weapPos.Y);
-                //return this.position;
+                //weapPos.Y = (float)(42 * Math.Cos(this.rotation + Math.PI));
+                //weapPos.X = (float)(-12 * Math.Sin(this.rotation));
+                //return new Vector2(this.position.X + weapPos.X, this.position.Y + weapPos.Y);
+                return this.position;
             }
         }
 
-        //public override Vector2 WeaponOrigin
-        //{ get { return new Vector2(-12,42); } }
+        public override Vector2 WeaponOrigin
+        {
+            get
+            {
+                return new Vector2(-12,42);
+            }
+        }
 
         //float speed = 0f;
         private static float MAX_PLAYER_SPEED = 5f;
@@ -90,7 +94,7 @@ namespace TRAPT
         protected Keys left = Keys.A;
         protected Keys right = Keys.D;
         // melee delay
-        TimeSpan meleeDelay = TimeSpan.Zero;
+        public TimeSpan meleeDelay = TimeSpan.Zero;
         public bool doMelee = false;
 
 
@@ -145,7 +149,7 @@ namespace TRAPT
             //animation
             this.aniStart = 0;
             this.aniLength = 8;
-            this.aniRate = 167;
+            this.aniRate = 333;
             this.frameWidth = 64;
             
 
@@ -424,6 +428,9 @@ namespace TRAPT
         public override void Update(GameTime gameTime)
         {
             this.prevVel = Vector2.Zero + this.velocity;
+
+            //GamePadState gps = new GamePadState();
+
 
             // Moving update:
             ks = Keyboard.GetState();
@@ -778,7 +785,7 @@ namespace TRAPT
             this.destination.Y = (int)Math.Round(this.position.Y - this.destination.Height / 2);
 
             //reference for where the hitbox is.
-            //spriteBatch.Draw(this.guideTex, this.Destination, Color.White);
+            spriteBatch.Draw(this.guideTex, this.Destination, Color.White);
 
             String debug = "Destination: " + this.Destination//this.direction * (180.0/Math.PI)
                 + "\nVelocity: " + this.velocity
@@ -870,7 +877,6 @@ namespace TRAPT
                 Rectangle prevDest = this.destination;
                 prevDest.Y = (int)Math.Round(this.prevPos.Y - this.destination.Height / 2);
 
-                //if (this.destination.Right > that.Destination.Left && this.destination.Right < that.Destination.Center.X) // object came from the left
                 if (this.velocity.X > 0 && prevDest.Intersects(that.Destination)) // object came from the left
                 {
                     //if position tracked by center of sprite, move position to be wall left - half my width
@@ -888,7 +894,6 @@ namespace TRAPT
                     //this.velocity.X = 0;
                     //this.position.X = prevPos.X;
                 }
-                //else if (this.destination.Left < that.Destination.Right && this.destination.Left > that.Destination.Center.X) // object came from the right
                 else if (this.velocity.X < 0 && prevDest.Intersects(that.Destination)) // object came from the right
                 {
                     this.position.X = that.Destination.Right + (this.destination.Width / 2)+1;
@@ -907,7 +912,6 @@ namespace TRAPT
                 prevDest = this.destination;
                 prevDest.X = (int)Math.Round(this.prevPos.X - this.destination.Width / 2);
 
-                //if (this.destination.Bottom > that.Destination.Top && this.destination.Bottom < that.Destination.Center.Y) // object came from the top
                 if (this.velocity.Y > 0 && prevDest.Intersects(that.Destination)) // object came from the top
                 {
                     this.position.Y = that.Destination.Top - (this.destination.Height/2)-1;
@@ -919,10 +923,9 @@ namespace TRAPT
                     //barrier on the bottom side of me
                     this.vBarrier = Barrier.Bottom;
                 }
-                //else if (this.destination.Top < that.Destination.Bottom && this.destination.Top > that.Destination.Center.Y) // object came from the top
                 else if (this.velocity.Y < 0 && prevDest.Intersects(that.Destination)) // object came from the bottom
                 {
-                    this.position.Y = that.Destination.Bottom + (this.destination.Height / 2) + 1;
+                    this.position.Y = that.Destination.Bottom + (this.destination.Height/2)+1;
 
                     //Kinda good
                     //this.position.Y = prevPos.Y;// +Math.Abs(prevVel.Y);
@@ -954,7 +957,7 @@ namespace TRAPT
                 if (((Weapon)that).Owner == null && this.Weapon == null)
                 //if (TraptMain.ks.IsKeyDown(Keys.R) && !TraptMain.ksold.IsKeyDown(Keys.R))
                 {
-                    TraptMain.hud.ContextTip = ((Weapon)that).TipString();
+                    
                     //KeyboardState ks = Keyboard.GetState();
                     //if (((Weapon)that).Owner == null && this.Weapon == null)
                     if (!ks.IsKeyDown(Keys.F) && ksold.IsKeyDown(Keys.F))
