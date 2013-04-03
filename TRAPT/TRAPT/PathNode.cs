@@ -9,90 +9,96 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
-public class PathNode : IComparable<PathNode>
+namespace TRAPT
 {
-
-    private int dwell;                                      //time the agent sits at the current node
-    public Vector2 position = Vector2.Zero;
-
-
-    public static int ARRIVED = 25;
-    public static int WIDTH = 10;
-    public static int HEIGHT = 10;
-
-    
-
-	public PathNode(int xPos, int yPos, int dwell )
-	{
-        position.X = xPos;
-        position.Y = yPos;
-        this.dwell = dwell;
-	}
-
-    public Vector2 getPosition()
+    public class PathNode : IComparable<PathNode>
     {
-        return position;
-    }
 
-    public int getDwell()
-    {
-        return dwell;
-    }
+        private int dwell;                                      //time the agent sits at the current node
+        public Vector2 position = Vector2.Zero;
 
-    public override string ToString()
-    {
-        return "Position: ( " + position.X + " , " + position.Y + " ), Dwell Time: " + dwell;
-    }
 
-    public override int GetHashCode()
-    {
-        string temp = this.position.X + "," + this.position.Y + "";
-        return temp.GetHashCode();
-    }
+        public static int ARRIVED = 25;
+        public static int WIDTH = 10;
+        public static int HEIGHT = 10;
 
-    public override bool Equals(Object other)
-    {
-        bool result = false;
-        if (other is PathNode)
+        private Dot debugDot;
+
+        public PathNode(int xPos, int yPos, int dwell)
         {
-            result = this.position.X == ((PathNode)other).position.X && this.position.Y == ((PathNode)other).position.Y;
+            position.X = xPos;
+            position.Y = yPos;
+            this.dwell = dwell;
+
+            //debugDot = new Dot(TraptMain.cursor.Game);
+            //debugDot.Initialize(this.position);
         }
-        return result;
-    }
 
-    public int CompareTo(PathNode other)
-    {
-        int result = 1;
-        //if the y is higher, we are greater
-        if (this.position.Y > other.position.Y)
+        public Vector2 getPosition()
         {
-            result = 1;
+            return position;
         }
-        //if the y is lower we are lower
-        else if (this.position.Y < other.position.Y)
+
+        public int getDwell()
         {
-            result = -1;
+            return dwell;
         }
-        //if y is equal, compare x
-        else //if (this.Y == other.Y)
+
+        public override string ToString()
         {
-            //if x is greater we are greater
-            if (this.position.X > other.position.X)
+            return "Position: ( " + position.X + " , " + position.Y + " ), Dwell Time: " + dwell;
+        }
+
+        public override int GetHashCode()
+        {
+            string temp = this.position.X + "," + this.position.Y + "";
+            return temp.GetHashCode();
+        }
+
+        public override bool Equals(Object other)
+        {
+            bool result = false;
+            if (other is PathNode)
+            {
+                result = this.position.X == ((PathNode)other).position.X && this.position.Y == ((PathNode)other).position.Y;
+            }
+            return result;
+        }
+
+        public int CompareTo(PathNode other)
+        {
+            int result = 1;
+            //if the y is higher, we are greater
+            if (this.position.Y > other.position.Y)
             {
                 result = 1;
             }
-            //if x is lower we are lower
-            else if (this.position.X < other.position.X)
+            //if the y is lower we are lower
+            else if (this.position.Y < other.position.Y)
             {
                 result = -1;
             }
-            //else we are identical.
-            else //if (this.X == other.X)
+            //if y is equal, compare x
+            else //if (this.Y == other.Y)
             {
-                result = 0;
+                //if x is greater we are greater
+                if (this.position.X > other.position.X)
+                {
+                    result = 1;
+                }
+                //if x is lower we are lower
+                else if (this.position.X < other.position.X)
+                {
+                    result = -1;
+                }
+                //else we are identical.
+                else //if (this.X == other.X)
+                {
+                    result = 0;
+                }
             }
-        }
 
-        return result;
+            return result;
+        }
     }
 }

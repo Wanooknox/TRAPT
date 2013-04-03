@@ -38,7 +38,7 @@ namespace TRAPT
                 next = 0;
             }
 
-            return this.ElementAt(current);
+            return this.ElementAt(next);
         }
 
         /// <summary>

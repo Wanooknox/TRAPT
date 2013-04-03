@@ -36,6 +36,7 @@ namespace TRAPT
 
         AI_ViewCone viewCone;                               //The viewcone keeps track of the viewCone AND the cone for melee range detection
         Path path;                                          //Data structure for an Agent's pathNodes ( DIFFERENT THAN THE TUTORIAL'S )
+        Path anotherway;
         //Vector2 playerPosition;                             //The position of the human player
         Boolean lineOfSight;                                //Flag for L o S
         public bool followPath = false;
@@ -46,6 +47,7 @@ namespace TRAPT
         Texture2D pixelTexture;
 
         protected PathNode currentNode = new PathNode(0, 0, 0);
+        PathNode goalNode = new PathNode(0, 0, 0);
         bool dwelling = false;
         float acceleration = 0.01f;
 
@@ -130,6 +132,7 @@ namespace TRAPT
             randWpn.Initialize(this.position, 30, rndType);
             randWpn.PickUp(true, this);
             // Console.WriteLine(this.Weapon);
+            anotherway = new Path();
 
             //animation
             this.aniLength = 2;
@@ -286,15 +289,47 @@ namespace TRAPT
 
         public void TraversePath(GameTime gameTime)
         {
+
+           // Console.WriteLine(currentNode);
+
+            if (isStuck)
+            {
+                if (anotherway.Count() == 0)
+                {
+                    anotherway = GraphToPath(
+                        (AGraph<PathNode>)TraptMain.tileLayer.TransitionGrid.ShortestWeightedPath(
+                        new PathNode((int)position.X / 128, (int)position.Y / 128, 0),
+                        new PathNode((int)currentNode.position.X / 128, (int)currentNode.position.Y / 128, 0)));
+                }
+                PathNode temp = anotherway.First.Value;
+                anotherway.RemoveFirst();
+                goalNode = currentNode;
+                currentNode = new PathNode((int)temp.position.X * 128 +64, (int)temp.position.Y * 128 +64, 0);
+                isStuck = false;
+            }
+
+
             velocity = Vector2.Zero;
             float tempRotation = 0;
             if (Vector2.Distance(this.position, currentNode.getPosition()) < 25)
             {
                 this.dwellTimeSpan = TimeSpan.FromSeconds(currentNode.getDwell());
-                tempRotation = this.rotation;
-                currentNode = path.goNext();
+                tempRotation = this.rotation;                
+               
+                if (anotherway.Count() <= 0)
+                {
+                    goalNode = path.goNext();
+                }
+                else
+                {
+                    PathNode temp = anotherway.First.Value;
+                    anotherway.RemoveFirst();
+                    //goalNode = currentNode;
+                    goalNode = new PathNode((int)temp.position.X * 128 + 64, (int)temp.position.Y * 128 + 64, 0);
+                }
+                currentNode = goalNode;
             }
-
+           
             if (dwellTimeSpan >= TimeSpan.Zero)
             {
                 dwelling = true;
@@ -303,7 +338,7 @@ namespace TRAPT
             }
             else
             {
-                Console.WriteLine("CurrentNode.X: " + currentNode.getPosition().X + " CurrentNode.y: " + currentNode.getPosition().Y);
+                //Console.WriteLine("CurrentNode.X: " + currentNode.getPosition().X + " CurrentNode.y: " + currentNode.getPosition().Y);
                 dwelling = false;
                 float dx = currentNode.getPosition().X - this.position.X;
                 float dy = currentNode.getPosition().Y - this.position.Y;
@@ -313,14 +348,26 @@ namespace TRAPT
 
                 /*  BUG2 implementation */
 
+                //TraptMain.tileLayer.TransitionGrid.
+
 
                 //create a list of the nearest 8 cells surrounding the enemy
 
 
                 if (isStuck)
                 {
-                    velocity.Y = 0;
-                    velocity.X = 0;
+                    
+                    //velocity.Y = 0;
+                    //velocity.X = 0;
+                    //if (anotherway.Count() == 0)
+                    //{
+                    //    anotherway = GraphToPath(
+                    //        TraptMain.tileLayer.TransitionGrid.ShortestWeightedPath(
+                    //        new PathNode((int)position.X / 128, (int)position.Y / 128, 0), new PathNode((int)currentNode.position.X / 128, (int)currentNode.position.Y / 128, 0)));
+                    //}
+                    //PathNode temp = anotherway.First.Value;
+                    //anotherway.RemoveFirst();
+                    //currentNode = new PathNode((int)temp.position.X*128, (int)temp.position.Y*128, 0);
                 }
                 else
                 {
@@ -328,6 +375,26 @@ namespace TRAPT
                     velocity.X = (float)(acceleration + Math.Sin(rotation));
                 }
             }
+        }
+
+        private Path GraphToPath(AGraph<PathNode> graph)
+        {
+            Path result = new Path();
+            foreach (IVertex<PathNode> node in graph.EnumerateVertices(new PathNode((int)position.X / 128, (int)position.Y / 128, 0)))
+            {
+                result.AddLast(node.Data);
+                //foreach gamecomponent obstacle
+                //foreach (GameComponentRef obstacle in neighbour.Data)
+                //{
+                //    //if it is a wall tile add it to the list 
+                //    if (obstacle.item is WallTile)
+                //    {
+                //        //add it to the list
+                //        temp.Add((WallTile)obstacle.item);
+                //    }
+                //}
+            }
+            return result;
         }
 
         /*This method will get the 8 surrounding wall tiles for the enemy.*/

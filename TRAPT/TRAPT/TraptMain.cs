@@ -644,6 +644,7 @@ namespace TRAPT
                     {
                         layers[2].Add(i);
                     }
+                    else { layers[2].Add(i); }
                     
                 }
 

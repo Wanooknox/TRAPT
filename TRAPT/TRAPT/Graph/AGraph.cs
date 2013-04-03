@@ -10,6 +10,7 @@ namespace Graph
     {
         #region Attributes
         protected List<IVertex<T>> vertices;
+        public List<IVertex<T>> depthVertices;
         protected Dictionary<T, int> revLookup;
 
         protected int numEdges;
@@ -78,6 +79,19 @@ namespace Graph
         public IEnumerable<IVertex<T>> EnumerateVertices()
         {
             return vertices;
+        }
+
+        public IEnumerable<IVertex<T>> EnumerateVertices(T start)
+        {
+            IVertex<T> vStart = GetVertex(start);
+            depthVertices = new List<IVertex<T>>();
+            DeptFirstTraversal(start, AddDepthVert);
+            return depthVertices;
+        }
+
+        public void AddDepthVert(T data)
+        {
+            depthVertices.Add(GetVertex(data));
         }
 
         public abstract IEnumerable<IVertex<T>> EnumerateNeighbours(T data);

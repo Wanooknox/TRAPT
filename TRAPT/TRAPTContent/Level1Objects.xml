@@ -3,14 +3,14 @@
   <Enemy>
     <Path>
       <node>
-        <x>5</x>
-        <y>4</y>
-        <dwell>600</dwell>
+        <x>52</x>
+        <y>32</y>
+        <dwell>2</dwell>
       </node>
      <node>
-        <x>5</x>
-        <y>-1</y>
-        <dwell>600</dwell>
+        <x>62</x>
+        <y>32</y>
+        <dwell>2</dwell>
       </node>
     </Path>
   </Enemy>

@@ -76,7 +76,7 @@ namespace TRAPT.Levels
             TraptMain.camera.Limits = new Rectangle(0, 0, TraptMain.tileLayer.mapWidth * TraptMain.GRID_CELL_SIZE, TraptMain.tileLayer.mapHeight * TraptMain.GRID_CELL_SIZE);
 
             //initialize the player
-            this.playerStart = new Vector2(7424, 4224);
+            this.playerStart = new Vector2(65*128, 33*128);
             TraptMain.player = new Player(Game);
             TraptMain.player.Initialize(this.playerStart);
 
