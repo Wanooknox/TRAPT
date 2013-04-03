@@ -50,6 +50,7 @@ namespace TRAPT
         PathNode goalNode = new PathNode(0, 0, 0);
         bool dwelling = false;
         float acceleration = 0.01f;
+        
 
         enum AIstate { DWELLING, SEARCHING, ATTACKING, PATHING };   //Enumerated type for keeping track of AI States
         AIstate currentState;
@@ -108,6 +109,7 @@ namespace TRAPT
             this.DrawOrder = 400;
 
             this.health = 10;
+            this.speed = 1.5f;
 
             pixelTexture = Game.Content.Load<Texture2D>("Pixel");
             viewCone = new AI_ViewCone(this.Game);
@@ -222,12 +224,14 @@ namespace TRAPT
                  }
              }   */
 
+
             if (viewCone.intersectsViewCone(TraptMain.player.Destination) && TraptMain.player.power == Power.Shroud)
             {
                 currentState = AIstate.PATHING;
             }
             else if (LineOfSightBroken(playerLineOfSight) && viewCone.intersectsViewCone(TraptMain.player.Destination))
             {
+                this.anotherway = new Path();
                 currentState = AIstate.PATHING;
             }
             else if (!LineOfSightBroken(playerLineOfSight) && viewCone.intersectsViewCone(TraptMain.player.Destination))
@@ -371,8 +375,10 @@ namespace TRAPT
                 }
                 else
                 {
-                    velocity.Y = (float)(acceleration + Math.Cos(rotation + Math.PI));
-                    velocity.X = (float)(acceleration + Math.Sin(rotation));
+                    //velocity.Y = (float)(acceleration + Math.Cos(rotation + Math.PI));
+                    //velocity.X = (float)(acceleration + Math.Sin(rotation));
+                    this.velocity.Y = (float)(this.speed * Math.Cos(this.rotation + Math.PI));
+                    this.velocity.X = (float)(this.speed * Math.Sin(this.rotation));
                 }
             }
         }
@@ -429,8 +435,10 @@ namespace TRAPT
             float dy = currentNode.getPosition().Y - this.position.Y;
             rotation = (float)(Math.Atan2(dy, dx) + Math.PI / 2);
 
-            velocity.Y = (float)(acceleration + Math.Cos(rotation + Math.PI));
-            velocity.X = (float)(acceleration + Math.Sin(rotation));
+            //velocity.Y = (float)(acceleration + Math.Cos(rotation + Math.PI));
+            //velocity.X = (float)(acceleration + Math.Sin(rotation));
+            this.velocity.Y = (float)(this.speed * Math.Cos(this.rotation + Math.PI));
+            this.velocity.X = (float)(this.speed * Math.Sin(this.rotation));
         }
 
         public void HurtEnemy(int damage)
@@ -524,9 +532,10 @@ namespace TRAPT
                 this.Collide(imHitting[i]);
                 imHitting.RemoveAt(i);
             }
-
+            
             this.position.X += velocity.X;
             this.position.Y += velocity.Y;
+            this.prevPos = this.position;
 
             spriteCenter = new Vector2((this.source.Width / 2), (this.source.Height / 2));
             viewCone.Update(gameTime, rotation, this.position);
@@ -570,21 +579,26 @@ namespace TRAPT
                     isStuck = true;
                     foreach (WallTile w in obstacles)
                     {
-                        if (this.getWallSide(w, this.position) == wallSide.LEFT)
+                        wallSide bar = this.getWallSide(w, this.position);
+                        if (bar == wallSide.LEFT)
                         {
                             this.position.X += 5;
+                            //this.position.X = this.prevPos.X;
                         }
-                        else if (this.getWallSide(w, this.position) == wallSide.RIGHT)
+                        else if (bar == wallSide.RIGHT)
                         {
                             this.position.X -= 5;
+                            //this.position.X = this.prevPos.X;
                         }
-                        else if (this.getWallSide(w, this.position) == wallSide.UP)
+                        else if (bar == wallSide.UP)
                         {
                             this.position.Y += 5;
+                            //this.position.Y = this.prevPos.Y;
                         }
-                        else if (this.getWallSide(w, this.position) == wallSide.DOWN)
+                        else if (bar == wallSide.DOWN)
                         {
                             this.position.Y -= 5;
+                            //this.position.Y = this.prevPos.Y;
                         }
                     }
                 }

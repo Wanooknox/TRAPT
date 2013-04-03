@@ -68,7 +68,7 @@ namespace Graph
         {
             if (!HasVertex(data))
             {
-                throw new ApplicationException("No such vertex");
+               throw new ApplicationException("No such vertex");
             }
             int index = revLookup[data];
             return vertices[index];

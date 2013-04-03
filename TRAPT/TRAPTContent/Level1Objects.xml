@@ -4,7 +4,7 @@
     <Path>
       <node>
         <x>52</x>
-        <y>32</y>
+        <y>31</y>
         <dwell>2</dwell>
       </node>
      <node>
@@ -14,33 +14,60 @@
       </node>
     </Path>
   </Enemy>
-  <!--
   <Enemy>
     <Path>
       <node>
-        <x>3</x>
-        <y>5</y>
-        <dwell>0</dwell>
+        <x>28</x>
+        <y>26</y>
+        <dwell>2</dwell>
       </node>
       <node>
-        <x>13</x>
-        <y>5</y>
-        <dwell>0</dwell>
+        <x>87</x>
+        <y>28</y>
+        <dwell>2</dwell>
       </node>
     </Path>
   </Enemy>
   <Enemy>
     <Path>
       <node>
-        <x>2</x>
-        <y>2</y>
-        <dwell>0</dwell>
+        <x>87</x>
+        <y>27</y>
+        <dwell>2</dwell>
       </node>
       <node>
-        <x>13</x>
-        <y>2</y>
-        <dwell>0</dwell>
+        <x>27</x>
+        <y>17</y>
+        <dwell>2</dwell>
       </node>
     </Path>
-  </Enemy>-->
+  </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>26</x>
+        <y>16</y>
+        <dwell>2</dwell>
+      </node>
+      <node>
+        <x>17</x>
+        <y>16</y>
+        <dwell>2</dwell>
+      </node>
+    </Path>
+  </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>28</x>
+        <y>86</y>
+        <dwell>2</dwell>
+      </node>
+      <node>
+        <x>8</x>
+        <y>86</y>
+        <dwell>2</dwell>
+      </node>
+    </Path>
+  </Enemy>
 </Level>

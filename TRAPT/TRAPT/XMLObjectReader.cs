@@ -50,8 +50,8 @@ namespace TRAPT
                 var nodeList = from node in i.Descendants("node") select node;
                 foreach (var node in nodeList)
                 {
-                    int x = (int)node.Element("x") * TraptMain.GRID_CELL_SIZE;
-                    int y = (int)node.Element("y") * TraptMain.GRID_CELL_SIZE;
+                    int x = (int)node.Element("x") * TraptMain.GRID_CELL_SIZE + (TraptMain.GRID_CELL_SIZE / 2);
+                    int y = (int)node.Element("y") * TraptMain.GRID_CELL_SIZE + (TraptMain.GRID_CELL_SIZE / 2);
                     int dwell = (int)node.Element("dwell");
 
                     PathNode tempNode = new PathNode(x, y, dwell);
