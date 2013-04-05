@@ -111,7 +111,7 @@ namespace TRAPT
             bgmInstance = bgMusic.CreateInstance();
             bgmInstance.IsLooped = true;
             bgmInstance.Play();
-            ToggleGamePad();
+            //ToggleGamePad();
 
             //Screen stuff
 

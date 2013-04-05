@@ -72,6 +72,7 @@ namespace TRAPT
         /** Bug 2 Variables  **/
         public bool useBug2 = true;
         public static List<WallTile> obstacles;
+        protected PathNode lastSafeNode;
 
         public static UGraphList<Cell> locationTracker;
 
@@ -358,7 +359,8 @@ namespace TRAPT
                 catch
                 {
                     //do something to get out of wall.
-                    this.position = currentNode.position;
+                    //this.position = currentNode.position;
+                    this.position = lastSafeNode.position;
                 }
                 finally
                 {
@@ -550,6 +552,16 @@ namespace TRAPT
 
         public override void Update(GameTime gameTime)
         {
+            PathNode testSafeNode = new PathNode((int)this.position.X / 128, (int)this.position.Y / 128, 0);
+            //if we are on a safe node
+            if (TraptMain.tileLayer.TransitionGrid.HasVertex(testSafeNode)
+                && !testSafeNode.Equals(lastSafeNode))
+            {
+                //save this node for corrections
+                lastSafeNode = testSafeNode;
+            }
+
+
             this.prevPos = this.position;
             obstacles = this.GetNearest8WallTiles();
             playerLineOfSight = new Line(this.position, TraptMain.player.Position);

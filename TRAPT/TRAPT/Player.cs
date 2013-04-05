@@ -125,7 +125,7 @@ namespace TRAPT
             this.prevPos = position;
             this.rotation = 0;
 
-            this.health = 100;
+            this.health = 1000;
             this.energy = 100;
             
 
@@ -322,7 +322,7 @@ namespace TRAPT
             if (this.health >= 100)
             {
                 //stop over flow 
-                this.health = 100;
+                this.health = 1000;
             }
             //decrement delays and update hud value
             this.healthDelay -= gameTime.ElapsedGameTime;
