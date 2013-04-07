@@ -847,7 +847,7 @@ namespace TRAPT
                 + "\nStuff: " + Game.Components.Count;
 //                + "\nFPS: " + this.FPS;
 
-            spriteBatch.DrawString(this.font, debug, new Vector2(0), Color.White);
+            //spriteBatch.DrawString(this.font, debug, new Vector2(0), Color.White);
         }
 
         /// <summary>

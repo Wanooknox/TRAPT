@@ -87,6 +87,9 @@ namespace TRAPT.Levels
             this.testGun = new Weapon(Game);
             this.testGun.Initialize(gunStart, 200, WeaponType.SMG);
 
+            LevelChanger exit = new LevelChanger(Game);
+            exit.Initialize();
+
 
             base.Initialize();
         }
@@ -121,13 +124,7 @@ namespace TRAPT.Levels
             Vector2 cursorCamPos = new Vector2(TraptMain.cursor.Position.X - Game.GraphicsDevice.Viewport.Width / 2, TraptMain.cursor.Position.Y - Game.GraphicsDevice.Viewport.Height / 2);
             TraptMain.camera.Position = new Vector2((cursorCamPos.X + playerCamPos.X) / 2, (cursorCamPos.Y + playerCamPos.Y) / 2);
 
-            KeyboardState ks = Keyboard.GetState();
-            if (ks.IsKeyDown(Keys.P))
-            {
-                //((TraptMain)Game).ChangeLevel("level2");
-                TraptMain.nextlvl = "level2";
-                TraptMain.currentGameState = GameState.Loading;
-            }
+           
 
             base.Update(gameTime);
         }

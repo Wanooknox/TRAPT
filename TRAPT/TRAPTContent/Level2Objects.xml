@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Level>
+  <Enemy>    
+    <Path>
+      <node>  <x>2</x> <y>4</y> <dwell>2</dwell> </node>
+      <node>  <x>8</x> <y>4</y> <dwell>2</dwell> </node>
+    </Path>
+  </Enemy>
+  <Enemy>
+    <Path>
+      <node> <x>2</x> <y>8</y> <dwell>2</dwell> </node>
+      <node> <x>8</x> <y>8</y> <dwell>2</dwell> </node>
+    </Path>
+  </Enemy>
+  <!--<Enemy>
+    <Path>
+      <node> <x>6</x> <y>5</y> <dwell>2</dwell> </node>
+      <node> <x>6</x> <y>11</y> <dwell>2</dwell> </node>
+      <node> <x>1</x><y>11</y><dwell>2</dwell> </node>
+      <node>
+        <x>1</x>
+        <y>5</y>
+        <dwell>2</dwell>
+      </node>
+    </Path>
+  </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>16</x>
+        <y>8</y>
+        <dwell>2</dwell>
+      </node>
+      <node>
+        <x>16</x>
+        <y>26</y>
+        <dwell>2</dwell>
+      </node>
+    </Path>
+  </Enemy>-->
+  <!--<Enemy>
+    <Path>
+      <node>
+        <x>28</x>
+        <y>86</y>
+        <dwell>2</dwell>
+      </node>
+      <node>
+        <x>8</x>
+        <y>86</y>
+        <dwell>2</dwell>
+      </node>
+    </Path>
+  </Enemy> --> 
+</Level>

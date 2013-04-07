@@ -78,6 +78,7 @@
     <Compile Include="Circle.cs" />
     <Compile Include="Dot.cs" />
     <Compile Include="HUD.cs" />
+    <Compile Include="LevelChanger.cs" />
     <Compile Include="XMLObjectReader.cs" />
     <Compile Include="DummyEnemy.cs" />
     <Compile Include="Enemy.cs" />

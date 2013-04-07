@@ -71,6 +71,10 @@
       <Name>Level1Map</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Level2Map.map">
+      <Name>Level2Map</Name>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="newMap.map">
       <Name>newMap</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -402,6 +406,13 @@
   <ItemGroup>
     <Compile Include="Characters\alienAnimation_death.png">
       <Name>alienAnimation_death</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="exitDoor.png">
+      <Name>exitDoor</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

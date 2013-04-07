@@ -60,8 +60,10 @@ Content\Sound\SMG.xnb
 Content\Sound\TitleTheme.xnb
 Content\Sound\pauseTheme.xnb
 Content\Sound\TitleTheme-song.xnb
+Content\exitDoor.xnb
 Content\Sound\TitleTheme-song.wma
 Content\Level1Map.map
+Content\Level2Map.map
 Content\newMap.map
 Content\EnemiesToPopulate.xml
 Content\Level1Objects.xml

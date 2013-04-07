@@ -55,8 +55,8 @@ namespace TRAPT
 
         #endregion 
 
+        #region Variables
         int screenWidth = 800, screenHeight = 600;
-
         public const int GRID_CELL_SIZE = 128;
         public static Random genRand = new Random();
         public static TileLayer tileLayer;
@@ -77,12 +77,11 @@ namespace TRAPT
         int screenAdjustmentY;
 
         TimeSpan gameOverTime;
-        String instructionInfo;
-           
+        String instructionInfo;           
 
         public SoundEffect bgMusic;
         public SoundEffectInstance bgmInstance;
-
+        #endregion
 
         #region XNA Built In
 
@@ -721,7 +720,7 @@ namespace TRAPT
                     {
                         layers[0].Add(i);
                     }
-                    else if (i is Agent || i is Weapon || i is Projectile)
+                    else if (i is Agent || i is Weapon || i is Projectile || i is Structure)
                     {
                         layers[1].Add(i);
                     }
