@@ -20,6 +20,7 @@ namespace TRAPT
     {
         MainMenu,
         Instructions,
+        Tutorial,
         Playing,
         Paused,
         Loading,
@@ -34,6 +35,12 @@ namespace TRAPT
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        //Screen Instructions
+        //Texture2D aswdKeysTex;
+        //Rectangle aswdKeysPos;
+
+        //Texture2D obstacleTexture;
+        //List<Obstacle> obstacles = new List<Obstacle>();
         
         #region GameState
         
@@ -41,7 +48,7 @@ namespace TRAPT
         public static GameState currentGameState = GameState.MainMenu;
         public static GameState nextGameState = GameState.MainMenu;
 
-        Button btnPlay, btnInstructions, btnQuit;
+        Button btnPlay, btnTutorial, btnInstructions, btnQuit;
         Level lvl;
         public static string nextlvl;
         TimeSpan switchDelay = TimeSpan.Zero;
@@ -106,6 +113,9 @@ namespace TRAPT
         /// </summary>
         protected override void Initialize()
         {
+            /*Testing obstacles*/
+            //InitializeObstacles();
+
             bgMusic = Content.Load<SoundEffect>(@"Sound\TitleTheme");
             bgmInstance = bgMusic.CreateInstance();
             bgmInstance.IsLooped = true;
@@ -151,6 +161,17 @@ namespace TRAPT
             base.Initialize();
         }
 
+        //private void InitializeObstacles()
+        //{
+        //    Obstacle obstacle;
+
+        //    Rectangle position = new Rectangle(3*128, 4*128, 128, 128);
+        //    obstacle = new Obstacle(position, player.Destination.Height/2);
+        //    obstacles.Add(obstacle);
+
+        //    player.obstacles = obstacles;
+        //}
+
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
@@ -160,27 +181,35 @@ namespace TRAPT
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            //Testing
+            //obstacleTexture = Content.Load<Texture2D>("obstacle");
+
             //Main Menu Buttons
-            btnPlay = new Button(Content.Load<Texture2D>(@"MenuButtons\playTutorial"), graphics.GraphicsDevice);
-            btnPlay.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 90));
+            btnTutorial = new Button(Content.Load<Texture2D>(@"MenuButtons\playTutorial"), graphics.GraphicsDevice);
+            btnTutorial.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 60));
+
+            btnPlay = new Button(Content.Load<Texture2D>(@"MenuButtons\newGame"), graphics.GraphicsDevice);
+            btnPlay.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 100));
             btnInstructions = new Button(Content.Load<Texture2D>(@"MenuButtons\instructions"), graphics.GraphicsDevice);
             if (graphics.PreferredBackBufferWidth == 800 && graphics.PreferredBackBufferHeight == 600)
-                btnInstructions.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 130));
+                btnInstructions.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 140));
             else
-                btnInstructions.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 145));
+                btnInstructions.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 155));
             btnQuit = new Button(Content.Load<Texture2D>(@"MenuButtons\quitGame"), graphics.GraphicsDevice);
-            btnQuit.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 2) + 70));
+            btnQuit.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 2) + 80));
+
+            //Tutorial sprites
+            //aswdKeysTex = Content.Load<Texture2D>("aswdKeys");
+            //aswdKeysPos = new Rectangle(100, 100,this.aswdKeysTex.Width, this.aswdKeysTex.Height);
 
             //Pause stuff
             pausedTexture = Content.Load<Texture2D>(@"logoScreens\gamePausedScreen");
             pausedRectangle = new Microsoft.Xna.Framework.Rectangle(0, 0, pausedTexture.Width, pausedTexture.Height);
 
-            btnReturn = new Button(Content.Load<Texture2D>(@"MenuButtons\playTutorial"), graphics.GraphicsDevice);
+            btnReturn = new Button(Content.Load<Texture2D>(@"MenuButtons\continue"), graphics.GraphicsDevice);
             btnReturn.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 70));
             btnMainMenu = new Button(Content.Load<Texture2D>(@"MenuButtons\quitGame"), graphics.GraphicsDevice);
             btnMainMenu.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 130));
-            
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -213,17 +242,22 @@ namespace TRAPT
             switch (currentGameState)
             {
                 case GameState.MainMenu:
+                    if (btnTutorial.isClicked)
+                    {
+                        cursor.ChangeMouseMode("play");
+                        Enemy.stopShooting = false;
+                        btnTutorial.isClicked = false;
+                        BackgroundMusic(@"Sound\ambient4");
+                        nextlvl = "tutorial";
+                        nextGameState = GameState.Tutorial;
+                        currentGameState = GameState.Loading;
+                    }
                     if (btnPlay.isClicked)
                     {
                         cursor.ChangeMouseMode("play");
                         Enemy.stopShooting = false;
                         btnPlay.isClicked = false;
-                        bgmInstance.Stop();
-                        bgMusic = Content.Load<SoundEffect>(@"Sound\ambient4");
-                        bgmInstance = bgMusic.CreateInstance();
-                        bgmInstance.IsLooped = true;
-                        //bgMusic.Play();
-                        bgmInstance.Play();
+                        BackgroundMusic(@"Sound\ambient4");
                         nextlvl = "level1";
                         nextGameState = GameState.Playing;
                         currentGameState = GameState.Loading;
@@ -235,12 +269,11 @@ namespace TRAPT
                     }
                     if (btnQuit.isClicked)
                     {
-                        //btnQuit.isClicked = false;
-                        //currentGameState = GameState.Instructions;
                         this.Exit();
                     }
                     if (ks.IsKeyDown(Keys.Escape)) this.Exit();
 
+                    btnTutorial.Update(ms);
                     btnPlay.Update(ms);
                     btnInstructions.Update(ms);
                     btnQuit.Update(ms);
@@ -258,14 +291,46 @@ namespace TRAPT
                     cursor.Update(gameTime);
                     //base.Update(gameTime);
                     break;
+                case GameState.Tutorial:
+                    //if no level loaded
+                   // aswdKeysPos = new Rectangle((int)player.Position.X - 100, (int)player.Position.Y - 100, this.aswdKeysTex.Width, this.aswdKeysTex.Height);
+                    if (this.lvl == null)
+                    {
+                        this.ChangeLevel("tutorial");
+                    }
+                    else //else run level update
+                    {
+                        CollisionTest();
+                        this.lvl.Update(gameTime);
+                    }
+
+                    if (ks.IsKeyDown(Keys.Escape) && !ksold.IsKeyDown(Keys.Escape))
+                    {
+                        EnableAllObjects(false);
+                        cursor.ChangeMouseMode("menu");
+                        currentGameState = GameState.Paused;
+                    }
+                    if (player.isDead)
+                    {
+                        //stop everything, wait a few seconds show the death animations and then move onto the game over screen
+
+                        gameOverTime -= gameTime.ElapsedGameTime;
+                        Enemy.stopShooting = true;
+                        if (gameOverTime <= TimeSpan.Zero)
+                        {
+                            BackgroundMusic(@"Sound\TitleTheme");
+                            cursor.ChangeMouseMode("menu");
+                            currentGameState = GameState.GameOver;
+                            //reset the gameOverTime
+                            gameOverTime = TimeSpan.FromSeconds(2);
+                        }
+                    }
+                    break;
 
                 case GameState.Playing:
                     //if no level loaded
                     if (this.lvl == null)
                     {
-                        //load next level
-                        //this.lvl = new Level1(this);
-                        //this.lvl.Initialize();
                         this.ChangeLevel("level1");
                     }
                     else //else run level update
@@ -282,11 +347,6 @@ namespace TRAPT
                         currentGameState = GameState.Paused;
                         //btnPlay.isClicked = false;
                     }
-
-                    //if (!ks.IsKeyDown(Keys.F1) && ksold.IsKeyDown(Keys.F1))
-                    //{
-                    //    currentGameState = GameState.MainMenu;
-                    //}
 
                     if (player.isDead)
                     {
@@ -320,12 +380,6 @@ namespace TRAPT
                         nextlvl = "mainmenu";
 
                         BackgroundMusic(@"Sound\TitleTheme");
-                        //bgmInstance.Stop();
-                        //bgMusic = Content.Load<SoundEffect>(@"Sound\TitleTheme");
-                        //bgmInstance = bgMusic.CreateInstance();
-                        //bgmInstance.IsLooped = true;
-                        ////bgMusic.Play();
-                        //bgmInstance.Play();
 
                         nextGameState = GameState.MainMenu;
                         currentGameState = GameState.Loading;
@@ -358,19 +412,6 @@ namespace TRAPT
                     cursor.Update(gameTime);
                     break;
             }
-
-            //if (ks.IsKeyDown(Keys.Down) && !ksold.IsKeyDown(Keys.Down))
-            //{
-            //    Console.WriteLine("KEY PRESSED: the player just pressed down");
-            //}
-            //else if (ks.IsKeyDown(Keys.Down) && ksold.IsKeyDown(Keys.Down))
-            //{
-            //    Console.WriteLine("KEY: the player is holding the key down");
-            //}
-            //else if (!ks.IsKeyDown(Keys.Down) && ksold.IsKeyDown(Keys.Down))
-            //{
-            //    Console.WriteLine("KEY RELEASED: the player was holding the key down, but has just let it go");
-            //}
             
             //save current keyboard state as the old state
             ksold = ks;
@@ -382,7 +423,7 @@ namespace TRAPT
         public void BackgroundMusic(String name)
         {
             bgmInstance.Stop();
-            bgMusic = Content.Load<SoundEffect>(name);           //change the theme song here for pause
+            bgMusic = Content.Load<SoundEffect>(name);           
             bgmInstance = bgMusic.CreateInstance();
             bgmInstance.IsLooped = true;
             bgmInstance.Play();
@@ -404,6 +445,7 @@ namespace TRAPT
 
                     spriteBatch.Draw(Content.Load<Texture2D>(@"logoScreens\logoScreen"), new Microsoft.Xna.Framework.Rectangle(0, 0, screenAdjustmentX, screenAdjustmentY),
                         Color.White);
+                    btnTutorial.Draw(this.spriteBatch);
                     btnPlay.Draw(this.spriteBatch);  //draw the start button
                     btnInstructions.Draw(this.spriteBatch);  //draw the instructions button
                     btnQuit.Draw(this.spriteBatch);  //draw the quit button
@@ -423,6 +465,28 @@ namespace TRAPT
                     cursor.Draw(this.spriteBatch);
                     //end draw
                     this.spriteBatch.End();
+                    break;
+                case GameState.Tutorial:
+                    //for each layer
+                    foreach (GameComponentCollection layer in layers)
+                    {
+                        //start a batch
+                        this.spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, camera.GetViewMatrix());
+                        //draw each component in the player
+                        foreach (DrawableGameComponent i in layer)
+                        {
+                            if (((EnvironmentObj)i).Visible)
+                                ((EnvironmentObj)i).Draw(this.spriteBatch);
+                        }
+                        //end the batch
+                        this.spriteBatch.End();
+                    }
+
+                    this.spriteBatch.Begin();
+                    //spriteBatch.Draw(this.aswdKeysTex, this.aswdKeysPos, Color.White);
+                    hud.Draw(this.spriteBatch);
+                    this.spriteBatch.End();
+
                     break;
 
                 case GameState.Playing:
@@ -456,7 +520,7 @@ namespace TRAPT
                     //start draw
                     this.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
-                    Color pauseBack = Color.Green;
+                    Color pauseBack = Color.White;
                     pauseBack.A = 128;
                     spriteBatch.Draw(Content.Load<Texture2D>(@"logoScreens\gamePausedScreen"), new Microsoft.Xna.Framework.Rectangle(0, 0, screenAdjustmentX, screenAdjustmentY),
                         pauseBack);
@@ -663,16 +727,20 @@ namespace TRAPT
             switch (level)
             {
                 case "mainmenu":
-                    this.lvl.Destory();
-                    player.Destory();
+                    this.lvl.Destroy();
+                    player.Destroy();
                     break;
                 case "level1":
                     this.lvl = new Level1(this);
                     this.lvl.Initialize();
                     break;
                 case "level2":
-                    this.lvl.Destory();
+                    this.lvl.Destroy();
                     this.lvl = new Level2(this);
+                    this.lvl.Initialize();
+                    break;
+                case "tutorial":
+                    this.lvl = new Tutorial(this);
                     this.lvl.Initialize();
                     break;
             }

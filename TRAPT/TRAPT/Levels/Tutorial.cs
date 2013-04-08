@@ -15,17 +15,18 @@ namespace TRAPT.Levels
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Level1 : Level
+    public class Tutorial : Level
     {
-        private string mapName = @"Maps\Level1Map";
-        private string xmlName = @"AIFiles\Level1Objects";
+        private string mapName = @"Maps\Tutorial";
+        private string xmlName = @"AIFiles\Level2Objects";
 
-        Vector2 playerStart;
+        Vector2 playerStart;        
 
         //Temp vars
-        Weapon testGun;
+        Weapon testShotGun;
+        Weapon testSMGGun;
 
-        public Level1(Game game)
+        public Tutorial(Game game)
             : base(game)
         {
             // TODO: Construct any child components here
@@ -37,8 +38,6 @@ namespace TRAPT.Levels
         /// </summary>
         public override void Initialize()
         {
-            //////////////////
-
             //get the size of the map
             TraptMain.tileLayer.ReadMapDimensions(mapName);
 
@@ -47,29 +46,32 @@ namespace TRAPT.Levels
 
             //load the map
             TraptMain.tileLayer.Initialize("tileSheet2", Game.Content.RootDirectory);
-            //this.tileLayer.Initialize(Content.Load<Texture2D>("spriteSheet"), Content.RootDirectory);
             TraptMain.tileLayer.OpenMap(mapName);
-
             
 
             //adjust the valid area for the camera
             TraptMain.camera.Limits = new Rectangle(0, 0, TraptMain.tileLayer.mapWidth * TraptMain.GRID_CELL_SIZE, TraptMain.tileLayer.mapHeight * TraptMain.GRID_CELL_SIZE);
 
             //initialize the player
-            this.playerStart = new Vector2(17 * 128, 2 * 128);//new Vector2(65*128, 33*128);
+            this.playerStart = new Vector2(450, 300);
             TraptMain.player = new Player(Game);
             TraptMain.player.Initialize(this.playerStart);
 
+            //Create the AI 
             TraptMain.xmlReader.populateEnemiesFromXML(xmlName);
 
-            //TEMP add a tester gun
-            Vector2 gunStart = new Vector2((Game.GraphicsDevice.Viewport.Width / 4) * 3, (Game.GraphicsDevice.Viewport.Height / 4) * 3);
-            this.testGun = new Weapon(Game);
-            this.testGun.Initialize(gunStart, 200, WeaponType.SMG);
+            //Setup two guns (one of each)
+            Vector2 gun1Start = new Vector2((Game.GraphicsDevice.Viewport.Width / 4) * 3, (Game.GraphicsDevice.Viewport.Height / 4) * 3);
+            this.testShotGun = new Weapon(Game);
+            this.testShotGun.Initialize(gun1Start, 30, WeaponType.Shotgun);
+            Vector2 gun2Start = new Vector2((Game.GraphicsDevice.Viewport.Width / 4) * 3, (Game.GraphicsDevice.Viewport.Height / 5) * 3);
+            this.testSMGGun = new Weapon(Game);
+            this.testSMGGun.Initialize(gun2Start, 50, WeaponType.SMG);
 
+            //Level Changer 
             LevelChanger exit = new LevelChanger(Game);
-            exit.Initialize(0, "exitDoors", 14*TraptMain.GRID_CELL_SIZE, 5, TraptMain.GRID_CELL_SIZE, TraptMain.GRID_CELL_SIZE);
-            
+            exit.Initialize(128, "exitDoors", 25 * TraptMain.GRID_CELL_SIZE-5, 9 * TraptMain.GRID_CELL_SIZE, TraptMain.GRID_CELL_SIZE, TraptMain.GRID_CELL_SIZE);
+
 
             base.Initialize();
         }

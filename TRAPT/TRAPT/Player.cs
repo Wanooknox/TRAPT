@@ -39,6 +39,8 @@ namespace TRAPT
     /// </summary>
     public class Player : Agent//Microsoft.Xna.Framework.DrawableGameComponent
     {
+
+        #region Variables
         // PHYSICS FIELDS
         private Vector2 prevPos, prevVel;
         //public Vector2 position;
@@ -107,6 +109,12 @@ namespace TRAPT
         int spriteStartY = 0; // Y of top left corner of sprite 0.
         int spriteWidth = 64;
         int spriteHeight = 64;
+        #endregion
+
+        /*Testing Bug2 for obstacles*/
+        //public bool useBug2 = true;
+        //public Bug2 bug2 = new Bug2();
+        //public List<Obstacle> obstacles;
 
         public Player(Game game)
             : base(game)
@@ -128,6 +136,8 @@ namespace TRAPT
 
             this.health = 100;
             this.energy = 100;
+
+            //IntializeBug2(this.position);
             
 
             //calculate a random sprite color
@@ -152,6 +162,12 @@ namespace TRAPT
 
             base.Initialize();
         }
+
+        //private void InitializeBug2(Vector2 position)
+        //{
+        //    bug2.Initialize(this.destination.Height / 4, new Vector2(this.position.X, this.position.Y));
+        //    //bug2.accerleration = Sumo.ACCELERATION_AMOUNT;
+        //}
 
         /// <summary>
         /// 
@@ -853,7 +869,7 @@ namespace TRAPT
         /// <summary>
         /// clear out the player object and all connected items
         /// </summary>
-        public void Destory()
+        public void Destroy()
         {
             //if have a weapon dispose of it
             if (this.Weapon != null)

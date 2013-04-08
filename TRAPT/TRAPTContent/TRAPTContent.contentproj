@@ -67,15 +67,19 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Level1Map.map">
+    <None Include="Maps\Tutorial.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Name>Tutorial</Name>
+    </None>
+    <None Include="Maps\Level1Map.map">
       <Name>Level1Map</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Level2Map.map">
+    <None Include="Maps\Level2Map.map">
       <Name>Level2Map</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="newMap.map">
+    <None Include="Maps\newMap.map">
       <Name>newMap</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -157,7 +161,7 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <None Include="EnemiesToPopulate.xml">
+    <None Include="AIFiles\EnemiesToPopulate.xml">
       <Name>EnemiesToPopulate</Name>
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
@@ -170,7 +174,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Level1Objects.xml">
+    <None Include="AIFiles\Level1Objects.xml">
       <Name>Level1Objects</Name>
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
@@ -413,6 +417,36 @@
   <ItemGroup>
     <Compile Include="exitDoor.png">
       <Name>exitDoor</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MenuButtons\newGame.png">
+      <Name>newGame</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="aswdKeys.png">
+      <Name>aswdKeys</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AIFiles\Level2Objects.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Name>Level2Objects</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="exitDoors.png">
+      <Name>exitDoors</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

@@ -17,7 +17,7 @@ namespace TRAPT.Levels
     /// </summary>
     public class Level2 : Level
     {
-        private string mapName = "Level2Map";
+        private string mapName = @"Maps\Level2Map";
 
         Vector2 playerStart;
 
