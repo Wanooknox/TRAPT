@@ -26,6 +26,8 @@ namespace TRAPT.Levels
         Weapon testShotGun;
         Weapon testSMGGun;
 
+
+
         public Tutorial(Game game)
             : base(game)
         {
@@ -72,6 +74,7 @@ namespace TRAPT.Levels
             LevelChanger exit = new LevelChanger(Game);
             exit.Initialize(128, "exitDoors", 25 * TraptMain.GRID_CELL_SIZE-5, 9 * TraptMain.GRID_CELL_SIZE, TraptMain.GRID_CELL_SIZE, TraptMain.GRID_CELL_SIZE);
 
+           
 
             base.Initialize();
         }
@@ -83,6 +86,8 @@ namespace TRAPT.Levels
         public override void Update(GameTime gameTime)
         {
             MouseState ms = Mouse.GetState();
+
+            
 
             Vector2 playerCamPos = new Vector2(TraptMain.player.Position.X - Game.GraphicsDevice.Viewport.Width / 2, TraptMain.player.Position.Y - Game.GraphicsDevice.Viewport.Height / 2);
             Vector2 cursorCamPos = new Vector2(TraptMain.cursor.Position.X - Game.GraphicsDevice.Viewport.Width / 2, TraptMain.cursor.Position.Y - Game.GraphicsDevice.Viewport.Height / 2);

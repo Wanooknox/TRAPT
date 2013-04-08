@@ -255,6 +255,8 @@ namespace TRAPT
                         Projectile bullet = new Projectile(Game);
                         bullet.Initialize(this.owner, this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
                         this.shotSound.Play(0.1f, 0.0f, 0.0f);
+                        MuzzleFlash flash = new MuzzleFlash(Game);
+                        flash.Initialize(this.Owner.Position, this.rotation);
                         //100 millisecond delay
                         this.delay = TimeSpan.FromMilliseconds(100);
                     }
@@ -266,9 +268,12 @@ namespace TRAPT
                             Projectile bullet = new Projectile(Game);
                             bullet.Initialize(this.owner, this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
                         }
+                        this.shotSound.Play(0.4f, 0.0f, 0.0f);
+                        MuzzleFlash flash = new MuzzleFlash(Game);
+                        flash.Initialize(this.Owner.Position, this.rotation);
                         //1500 millisecond delay
                         this.delay = TimeSpan.FromMilliseconds(1500);
-                        this.shotSound.Play(0.4f, 0.0f, 0.0f);
+                        
                     }
                     //allow enemies to have unlimited ammo
                     if (this.Owner is Player)

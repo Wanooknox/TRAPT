@@ -49,10 +49,12 @@ namespace TRAPT
         Vector2 rightMidPoint;
         Vector2 centerLeftPoint;
         Vector2 centerRightPoint;
+        Vector2 backCenterPoint;
         Line leftMidLine;
         Line centerLeftLine;
         Line centerRightLine;
         Line rightMidLine;
+        
 
         public AI_ViewCone(Game game)
             : base(game)
@@ -195,11 +197,12 @@ namespace TRAPT
 
             //Melee hitcone book-keeping/Orientation/whatnot
             float backLineRotation = rotation + ((float)(Math.PI / 2));
-            leftPointBack = new Vector2((float)(center.X + 50 * Math.Cos(backLineRotation - Math.PI / 6)), (float)(center.Y + 50 * Math.Sin(backLineRotation - Math.PI / 6)));
-            rightPointBack = new Vector2((float)(center.X + 50 * Math.Cos(backLineRotation + Math.PI / 6)), (float)(center.Y + 50 * Math.Sin(backLineRotation + Math.PI / 6)));
+            leftPointBack = new Vector2((float)(center.X + mcRADIUS * Math.Cos(backLineRotation - Math.PI / 6)), (float)(center.Y + mcRADIUS * Math.Sin(backLineRotation - Math.PI / 6)));
+            rightPointBack = new Vector2((float)(center.X + mcRADIUS * Math.Cos(backLineRotation + Math.PI / 6)), (float)(center.Y + mcRADIUS * Math.Sin(backLineRotation + Math.PI / 6)));
+            backCenterPoint = new Vector2((float)(center.X + mcRADIUS * Math.Cos(backLineRotation)), (float)(center.Y + mcRADIUS * Math.Sin(backLineRotation)));
             leftSideMeleeCone = new Line(center, leftPointBack);
             rightSideMeleeCone = new Line(center, rightPointBack);
-            backLine = new Line(leftPointBack, rightPointBack);
+            backLine = new Line(center, backCenterPoint);
 
             //check for collision somehwere here.
 
@@ -267,13 +270,15 @@ namespace TRAPT
         public Boolean intersectsMeleeCone(Rectangle playerRectangle)
         {
             if (leftSideMeleeCone.intersects(playerRectangle) ||
-               rightSideMeleeCone.intersects(playerRectangle) ||
-               backLine.intersects(playerRectangle))
+               rightSideMeleeCone.intersects(playerRectangle)) //||
+               //backLine.intersects(playerRectangle))
             {
-                return true;
+                //Console.WriteLine("Player is in my Cone");
+                return true;     
             }
             else
             {
+                //Console.WriteLine("Player is not in melee Cone");
                 return false;
             }
         }

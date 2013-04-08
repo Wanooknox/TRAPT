@@ -334,7 +334,7 @@ namespace TRAPT
 
         private void CheckMeleeCone()
         {
-            if (viewCone.intersectsMeleeCone(TraptMain.player.Destination) && (TraptMain.player.meleeDelay > TimeSpan.Zero))
+            if (this.viewCone.intersectsMeleeCone(TraptMain.player.Destination) && (TraptMain.player.meleeDelay > TimeSpan.Zero))
             {
                 this.HurtEnemy(Int32.MaxValue);
             }
@@ -556,7 +556,8 @@ namespace TRAPT
                 //this.Dispose(true);
             }
             if (this.currentState != AIstate.SEARCHING
-                && this.currentState != AIstate.ATTACKING)
+                && this.currentState != AIstate.ATTACKING
+                && !this.isDead)
             {
                 this.currentState = AIstate.SEARCHING;
             }
@@ -581,7 +582,6 @@ namespace TRAPT
             obstacles = this.GetNearest8WallTiles();
             playerLineOfSight = new Line(this.position, TraptMain.player.Position);
             this.PositionToGoalNode = new Line(currentNode.position, this.position);
-            Console.WriteLine(isStuck);
             //check how far away the enemy is from the alien sprite
             float distBetweenThem = Vector2.Distance(this.position, TraptMain.player.Position);
 
@@ -643,7 +643,7 @@ namespace TRAPT
                 if (!stopShooting)
                     this.Weapon.Shoot();
             }
-            if (isDead)
+            if (this.isDead)
             {
                 //stopShooting = true;
 
@@ -711,9 +711,9 @@ namespace TRAPT
         public override void Draw(SpriteBatch spriteBatch)
         {
             // playerLineOfSight.Draw(spriteBatch, pixelTexture);
-            // viewCone.Draw(spriteBatch);
+               viewCone.Draw(spriteBatch);
 
-            this.PositionToGoalNode.Draw(spriteBatch, pixelTexture);
+            //this.PositionToGoalNode.Draw(spriteBatch, pixelTexture);
 
             //this.destination = this.texture.Bounds;
             this.destination.X = (int)this.position.X;// -this.source.Width / 2;

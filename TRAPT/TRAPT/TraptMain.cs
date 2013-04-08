@@ -38,6 +38,7 @@ namespace TRAPT
         //Screen Instructions
         //Texture2D aswdKeysTex;
         //Rectangle aswdKeysPos;
+        SpriteFont instructions;
 
         //Texture2D obstacleTexture;
         //List<Obstacle> obstacles = new List<Obstacle>();
@@ -136,6 +137,7 @@ namespace TRAPT
 
             //load the font
             font = Content.Load<SpriteFont>("SpriteFont1");
+            instructions = Content.Load<SpriteFont>("SpriteFont1");
 
             //Init camera
             camera = new Camera(this);
@@ -484,6 +486,15 @@ namespace TRAPT
 
                     this.spriteBatch.Begin();
                     //spriteBatch.Draw(this.aswdKeysTex, this.aswdKeysPos, Color.White);
+                    this.spriteBatch.DrawString(instructions, "Movement:  A:Left \n" +
+                                                              "           S:Down \n" +
+                                                              "           D:Right \n" +
+                                                              "           W: UP \n" +
+                                                              "Look:      Mouse \n" +
+                                                              "Shoot:     LeftMouseButton\n" +
+                                                              "Melee:     RightMouseButton \n" +
+                                                              "Abilities: Shroud: Q \n" +
+                                                              "           Fortify: E", Vector2.Zero, Color.White);
                     hud.Draw(this.spriteBatch);
                     this.spriteBatch.End();
 

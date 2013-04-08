@@ -18,4 +18,49 @@
       <node> <x>10</x> <y>9</y> <dwell>2</dwell> </node>
     </Path>
   </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>7</x>
+        <y>10</y>
+        <dwell>2</dwell>
+      </node>
+      <node>
+        <x>7</x>
+        <y>1</y>
+        <dwell>2</dwell>
+      </node>
+    </Path>
+  </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+       
+          <x>13</x>
+          <y>10</y>
+          <dwell>2</dwell>
+        </node>
+      <node>
+        <x>13</x>
+        <y>1</y>
+        <dwell>2</dwell>
+      </node>
+     
+    </Path>
+  </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>10</x>
+        <y>9</y>
+        <dwell>2</dwell>
+      </node>
+      <node>
+        <x>2</x>
+        <y>9</y>
+        <dwell>2</dwell>
+      </node>
+      
+    </Path>
+  </Enemy>
 </Level>

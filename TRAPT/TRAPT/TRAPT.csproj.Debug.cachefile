@@ -53,6 +53,11 @@ Content\MenuButtons\quitGame.xnb
 Content\wallBase.xnb
 Content\tileSheet2.xnb
 Content\Characters\alienAnimation_death.xnb
+Content\exitDoor.xnb
+Content\MenuButtons\newGame.xnb
+Content\aswdKeys.xnb
+Content\exitDoors.xnb
+Content\muzzleflash.xnb
 Content\SpriteFont1.xnb
 Content\Sound\ambient4.xnb
 Content\Sound\shotgun.xnb
@@ -60,10 +65,6 @@ Content\Sound\SMG.xnb
 Content\Sound\TitleTheme.xnb
 Content\Sound\pauseTheme.xnb
 Content\Sound\TitleTheme-song.xnb
-Content\exitDoor.xnb
-Content\MenuButtons\newGame.xnb
-Content\aswdKeys.xnb
-Content\exitDoors.xnb
 Content\Sound\TitleTheme-song.wma
 Content\Maps\Tutorial.map
 Content\Maps\Level1Map.map

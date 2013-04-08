@@ -565,6 +565,11 @@ namespace TRAPT
             {
                 if (this.Visible)
                 {
+                    this.velocity = Vector2.Zero;
+                    if (this.Weapon != null)
+                    {
+                        this.Weapon.Dispose();
+                    }
                     this.aniRow = 2;
                     this.aniLength = 1;
                     this.aniRate = 333;
@@ -594,6 +599,10 @@ namespace TRAPT
             {
                 if (ms.LeftButton == ButtonState.Pressed || gps.Triggers.Right > 0)
                 {
+                    if (this.power == Power.Shroud)
+                    {
+                        this.power = Power.None;
+                    }
                     this.Weapon.Shoot();
                     this.isShooting = true;
                 }
