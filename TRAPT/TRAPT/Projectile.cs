@@ -22,7 +22,7 @@ namespace TRAPT
         private WeaponType projectileType;
         private Random strayRandomizer;
 
-        private SoundEffect shotSound;
+        //private SoundEffect shotSound;
 
         private Texture2D collider;
         private Rectangle collidingBox;
@@ -77,17 +77,17 @@ namespace TRAPT
             {
                 case WeaponType.SMG:
                     this.life = 700;//1920;
-                    this.shotSound = Game.Content.Load<SoundEffect>(@"Sound\SMG");
+                    //this.shotSound = Game.Content.Load<SoundEffect>(@"Sound\SMG");
                     break;
                 case WeaponType.Shotgun:
                     this.life = 500;//360;
-                    this.shotSound = Game.Content.Load<SoundEffect>(@"Sound\shotgun");
+                    //this.shotSound = Game.Content.Load<SoundEffect>(@"Sound\shotgun");
                     break;
                 default:
                     this.life = 10;
                     break;
             }
-            this.shotSound.Play(0.4f,0.0f,0.0f);
+            //this.shotSound.Play(0.2f,0.0f,0.0f);
 
             base.Initialize();
         }

@@ -29,6 +29,7 @@ namespace TRAPT
         private int ammo;
         //type of gun
         private WeaponType wpnType;
+        private SoundEffect shotSound;
         //agent that is using the gun
         private Agent owner;
         //count down before next bullet can be shot.
@@ -93,6 +94,7 @@ namespace TRAPT
             this.projectileStrayer = new Random();
 
             GetSprite();
+            GetSound();
             CellPosition(true);
 
             //// determine this object's cell position
@@ -147,6 +149,19 @@ namespace TRAPT
                     this.source = new Rectangle(25, 22, 38 - 25, 78 - 22);
                     this.destination = this.source;//new Rectangle(0, 0, 64, 106);
                 }
+            }
+        }
+
+        public void GetSound()
+        {
+            switch (this.wpnType)
+            {
+                case WeaponType.SMG:
+                    this.shotSound = Game.Content.Load<SoundEffect>(@"Sound\SMG");
+                    break;
+                case WeaponType.Shotgun:
+                    this.shotSound = Game.Content.Load<SoundEffect>(@"Sound\shotgun");
+                    break;
             }
         }
 
@@ -239,6 +254,7 @@ namespace TRAPT
                     {
                         Projectile bullet = new Projectile(Game);
                         bullet.Initialize(this.owner, this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
+                        this.shotSound.Play(0.1f, 0.0f, 0.0f);
                         //100 millisecond delay
                         this.delay = TimeSpan.FromMilliseconds(100);
                     }
@@ -249,9 +265,10 @@ namespace TRAPT
                         {
                             Projectile bullet = new Projectile(Game);
                             bullet.Initialize(this.owner, this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
-                            //1500 millisecond delay
-                            this.delay = TimeSpan.FromMilliseconds(1500);
                         }
+                        //1500 millisecond delay
+                        this.delay = TimeSpan.FromMilliseconds(1500);
+                        this.shotSound.Play(0.4f, 0.0f, 0.0f);
                     }
                     //allow enemies to have unlimited ammo
                     if (this.Owner is Player)

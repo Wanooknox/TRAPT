@@ -49,6 +49,11 @@ namespace TRAPT
             return yIntercept;
         }
 
+        public float CalculateY(float x)
+        {
+            return (slope * x + yIntercept);
+        }
+
         public bool intersects(Line line)
         {
             if (slope == line.getSlope())

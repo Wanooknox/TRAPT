@@ -51,7 +51,7 @@ namespace TRAPT.Levels
             base.Update(gameTime);
         }
 
-        public void Destory()
+        public void Destroy()
         {
             int count = Game.Components.Count();
             //for all game components
@@ -87,7 +87,7 @@ namespace TRAPT.Levels
         // This will be called whenever the list changes.
         private void EObjDispose(object sender, EventArgs e)
         {
-            Console.WriteLine("Disposed of:" + this.obj);
+            //Console.WriteLine("Disposed of:" + this.obj);
             foreach (GameComponentCollection layer in TraptMain.layers)
             {
                 if (layer.Contains(this.obj))

@@ -39,12 +39,15 @@ namespace TRAPT
     /// </summary>
     public class Player : Agent//Microsoft.Xna.Framework.DrawableGameComponent
     {
+
+        #region Variables
         // PHYSICS FIELDS
         private Vector2 prevPos, prevVel;
         //public Vector2 position;
         //public Vector2 velocity;
         //private float rotation;
         //private float direction;
+        public bool isShooting;
 
         private Vector2 weapPos = new Vector2();
         public override Vector2 WeaponPosition
@@ -106,6 +109,12 @@ namespace TRAPT
         int spriteStartY = 0; // Y of top left corner of sprite 0.
         int spriteWidth = 64;
         int spriteHeight = 64;
+        #endregion
+
+        /*Testing Bug2 for obstacles*/
+        //public bool useBug2 = true;
+        //public Bug2 bug2 = new Bug2();
+        //public List<Obstacle> obstacles;
 
         public Player(Game game)
             : base(game)
@@ -125,8 +134,10 @@ namespace TRAPT
             this.prevPos = position;
             this.rotation = 0;
 
-            this.health = 1000;
+            this.health = 100;
             this.energy = 100;
+
+            //IntializeBug2(this.position);
             
 
             //calculate a random sprite color
@@ -137,20 +148,26 @@ namespace TRAPT
                 this.spriteWidth, this.spriteHeight);
             this.source = new Rectangle(this.spriteStartX, this.spriteStartY, this.spriteWidth, this.spriteHeight);
 
-            this.texture = Game.Content.Load<Texture2D>("alienAnimation2");
+            this.texture = Game.Content.Load<Texture2D>(@"Characters\alienAnimation_death");
             // font for printing debug info.
             this.font = Game.Content.Load<SpriteFont>("SpriteFont1");
             this.guideTex = Game.Content.Load<Texture2D>("tileguide");
 
             //animation
             this.aniStart = 0;
-            this.aniLength = 8;
+            this.aniLength = 9;
             this.aniRate = 167;
             this.frameWidth = 64;
             
 
             base.Initialize();
         }
+
+        //private void InitializeBug2(Vector2 position)
+        //{
+        //    bug2.Initialize(this.destination.Height / 4, new Vector2(this.position.X, this.position.Y));
+        //    //bug2.accerleration = Sumo.ACCELERATION_AMOUNT;
+        //}
 
         /// <summary>
         /// 
@@ -322,7 +339,7 @@ namespace TRAPT
             if (this.health >= 100)
             {
                 //stop over flow 
-                this.health = 1000;
+                this.health = 100;
             }
             //decrement delays and update hud value
             this.healthDelay -= gameTime.ElapsedGameTime;
@@ -490,6 +507,8 @@ namespace TRAPT
             ms = Mouse.GetState();
             gps = GamePad.GetState(PlayerIndex.One);
                     
+            //Update sound circle
+            this.soundCircle = new Circle(this.position, 500);
 
             // Move faster or slower.
             if (ks.IsKeyDown(this.up))
@@ -546,6 +565,15 @@ namespace TRAPT
             {
                 if (this.Visible)
                 {
+                    this.velocity = Vector2.Zero;
+                    if (this.Weapon != null)
+                    {
+                        this.Weapon.Dispose();
+                    }
+                    this.aniRow = 2;
+                    this.aniLength = 1;
+                    this.aniRate = 333;
+
                     this.isDead = true;
                     //make a deapth object
                     AgentDie zombie = new AgentDie(Game);
@@ -571,7 +599,16 @@ namespace TRAPT
             {
                 if (ms.LeftButton == ButtonState.Pressed || gps.Triggers.Right > 0)
                 {
+                    if (this.power == Power.Shroud)
+                    {
+                        this.power = Power.None;
+                    }
                     this.Weapon.Shoot();
+                    this.isShooting = true;
+                }
+                if( ms.LeftButton == ButtonState.Released )
+                {
+                    this.isShooting = false;
                 }
                 TraptMain.hud.Ammo = this.Weapon.Ammo;
             }
@@ -584,8 +621,9 @@ namespace TRAPT
             if (this.meleeDelay <= TimeSpan.Zero)
                 //if (!this.doMelee && this.meleeDelay <= TimeSpan.Zero)
             {
+                this.aniRow = 0;
                 this.aniStart = 0;
-                this.aniLength = 8;
+                this.aniLength = 9;
                 if (this.Weapon != null) 
                     this.Weapon.Visible = true;
                 if (ms.RightButton == ButtonState.Pressed && msold.RightButton == ButtonState.Released //button just lifted
@@ -593,7 +631,8 @@ namespace TRAPT
                 {
                     //set a melee time to indicate performing a melee
                     this.meleeDelay = TimeSpan.FromMilliseconds(300);
-                    this.aniStart = 10;
+                    this.aniRow = 1;
+                    this.aniStart = 0;
                     this.aniLength = 0;
                     this.frameCount = 0;
                     if (this.Weapon != null) 
@@ -833,13 +872,13 @@ namespace TRAPT
                 + "\nStuff: " + Game.Components.Count;
 //                + "\nFPS: " + this.FPS;
 
-            spriteBatch.DrawString(this.font, debug, new Vector2(0), Color.White);
+            //spriteBatch.DrawString(this.font, debug, new Vector2(0), Color.White);
         }
 
         /// <summary>
         /// clear out the player object and all connected items
         /// </summary>
-        public void Destory()
+        public void Destroy()
         {
             //if have a weapon dispose of it
             if (this.Weapon != null)

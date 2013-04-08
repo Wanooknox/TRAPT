@@ -33,6 +33,8 @@ namespace TRAPT
         public int health;
         public bool isDead = false;
 
+        public Circle soundCircle;       
+
 
         public bool stopAnimation;
         

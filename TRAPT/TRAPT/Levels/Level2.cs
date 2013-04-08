@@ -17,7 +17,7 @@ namespace TRAPT.Levels
     /// </summary>
     public class Level2 : Level
     {
-        private string mapName = "newMap";
+        private string mapName = @"Maps\Level2Map";
 
         Vector2 playerStart;
 
@@ -43,20 +43,18 @@ namespace TRAPT.Levels
             TraptMain.PopulateGraph();
 
             //load the map
-            TraptMain.tileLayer.Initialize("mapTiles", Game.Content.RootDirectory);
-            //this.tileLayer.Initialize(Content.Load<Texture2D>("spriteSheet"), Content.RootDirectory);
+            TraptMain.tileLayer.Initialize("tileSheet2", Game.Content.RootDirectory);
             TraptMain.tileLayer.OpenMap(mapName);
 
             //adjust the valid area for the camera
             TraptMain.camera.Limits = new Rectangle(0, 0, TraptMain.tileLayer.mapWidth * TraptMain.GRID_CELL_SIZE, TraptMain.tileLayer.mapHeight * TraptMain.GRID_CELL_SIZE);
 
             //initialize the player
-            //this.playerStart = new Vector2(450, 300);
-            //TraptMain.player = new Player(Game);
-            //TraptMain.player.Initialize(this.playerStart);
-            TraptMain.player.Position = new Vector2(450, 300);
+            this.playerStart = new Vector2(450, 300);
+            TraptMain.player = new Player(Game);
+            TraptMain.player.Initialize(this.playerStart);
 
-            //TEMP add a tester gun
+            //TEMP add a default gun
             Vector2 gunStart = new Vector2((Game.GraphicsDevice.Viewport.Width / 4) * 3, (Game.GraphicsDevice.Viewport.Height / 4) * 3);
             this.testGun = new Weapon(Game);
             this.testGun.Initialize(gunStart, 30, WeaponType.Shotgun);
@@ -71,22 +69,11 @@ namespace TRAPT.Levels
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            //GameComponentCollection currComponentState = new GameComponentCollection();
-            //currComponentState.Concat(Game.Components);
-            //foreach (GameComponent i in currComponentState)
-            //{
-
-            //    i.Update(gameTime);
-
-            //}
-
             MouseState ms = Mouse.GetState();
 
             Vector2 playerCamPos = new Vector2(TraptMain.player.Position.X - Game.GraphicsDevice.Viewport.Width / 2, TraptMain.player.Position.Y - Game.GraphicsDevice.Viewport.Height / 2);
             Vector2 cursorCamPos = new Vector2(TraptMain.cursor.Position.X - Game.GraphicsDevice.Viewport.Width / 2, TraptMain.cursor.Position.Y - Game.GraphicsDevice.Viewport.Height / 2);
             TraptMain.camera.Position = new Vector2((cursorCamPos.X + playerCamPos.X) / 2, (cursorCamPos.Y + playerCamPos.Y) / 2);
-
-            
 
 
             base.Update(gameTime);

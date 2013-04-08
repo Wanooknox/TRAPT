@@ -52,6 +52,11 @@ Content\MenuButtons\playTutorial.xnb
 Content\MenuButtons\quitGame.xnb
 Content\wallBase.xnb
 Content\tileSheet2.xnb
+Content\Characters\alienAnimation_death.xnb
+Content\exitDoor.xnb
+Content\MenuButtons\newGame.xnb
+Content\aswdKeys.xnb
+Content\exitDoors.xnb
 Content\SpriteFont1.xnb
 Content\Sound\ambient4.xnb
 Content\Sound\shotgun.xnb
@@ -60,7 +65,10 @@ Content\Sound\TitleTheme.xnb
 Content\Sound\pauseTheme.xnb
 Content\Sound\TitleTheme-song.xnb
 Content\Sound\TitleTheme-song.wma
-Content\Level1Map.map
-Content\newMap.map
-Content\EnemiesToPopulate.xml
-Content\Level1Objects.xml
+Content\Maps\Tutorial.map
+Content\Maps\Level1Map.map
+Content\Maps\Level2Map.map
+Content\Maps\newMap.map
+Content\AIFiles\EnemiesToPopulate.xml
+Content\AIFiles\Level1Objects.xml
+Content\AIFiles\Level2Objects.xml
