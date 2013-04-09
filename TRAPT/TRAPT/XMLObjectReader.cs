@@ -118,10 +118,11 @@ namespace TRAPT
             string filePath = Game.Content.RootDirectory + @"\"+ xmlName +".xml";
             xDoc = XDocument.Load(filePath);
             Enemy agent = null;
+            Robot roboagent = null;
 
             //Creating a XDocument from a XML File
-            var enemy = from i in xDoc.Descendants("Enemy") select i;                                  //Making a query
-            foreach (var i in enemy)
+            var enemys = from i in xDoc.Descendants("Enemy") select i;                                  //Making a query
+            foreach (var i in enemys)
             {
                 Console.WriteLine("I am here");
                 agent = new Enemy(Game);
@@ -136,6 +137,26 @@ namespace TRAPT
                     agent.addPathNode(tempNode);
                 }
                 agent.Initialize();
+                agentList.AddLast(agent);
+            }
+
+            //Creating a XDocument from a XML File
+            var robots = from i in xDoc.Descendants("Robot") select i;                                  //Making a query
+            foreach (var i in robots)
+            {
+                Console.WriteLine("I am here");
+                roboagent = new Robot(Game);
+                var nodeList = from node in i.Descendants("node") select node;
+                foreach (var node in nodeList)
+                {
+                    int x = (int)node.Element("x") * TraptMain.GRID_CELL_SIZE + (TraptMain.GRID_CELL_SIZE / 2);
+                    int y = (int)node.Element("y") * TraptMain.GRID_CELL_SIZE + (TraptMain.GRID_CELL_SIZE / 2);
+                    int dwell = (int)node.Element("dwell");
+
+                    PathNode tempNode = new PathNode(x, y, dwell);
+                    roboagent.addPathNode(tempNode);
+                }
+                roboagent.Initialize();
                 agentList.AddLast(agent);
             }
 

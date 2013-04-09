@@ -475,9 +475,17 @@ namespace TRAPT
                 dwelling = true;
                 //this.lookingAround(tempRotation);
                 dwellTimeSpan -= gameTime.ElapsedGameTime;
+                //stopping feet at corners, breaks feet
+                //this.aniStart = 1;
+                //this.frameCount = 0;
+                //this.aniLength = 0;
             }
             else
             {
+                //stopping feet at corners, breaks robot
+                //this.aniStart = 0;
+                //this.aniLength = 2;
+
                 //Console.WriteLine("CurrentNode.X: " + currentNode.getPosition().X + " CurrentNode.y: " + currentNode.getPosition().Y);
                 dwelling = false;
                 float dx = currentNode.getPosition().X - this.position.X;
@@ -727,7 +735,7 @@ namespace TRAPT
         public override void Draw(SpriteBatch spriteBatch)
         {
             // playerLineOfSight.Draw(spriteBatch, pixelTexture);
-               viewCone.Draw(spriteBatch);
+               //viewCone.Draw(spriteBatch);
 
             //this.PositionToGoalNode.Draw(spriteBatch, pixelTexture);
 

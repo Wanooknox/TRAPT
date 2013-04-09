@@ -20,7 +20,7 @@
       </node>
     </Path>
   </Enemy>
-  <Enemy>
+  <Robot>
     <Path>
       <node>
         <x>17</x>
@@ -33,7 +33,7 @@
         <dwell>2</dwell>
       </node>
     </Path>
-  </Enemy>
+  </Robot>
  <!--<Robot>
     <Path>
       <node> <x>12</x> <y>1</y>  <dwell>3</dwell>  </node>

@@ -37,7 +37,14 @@ namespace TRAPT
                 this.anotherway = new Path();
                 this.texture = Game.Content.Load<Texture2D>(@"Characters\robot");
                 this.health = 100;
-                this.speed = 6.0f;
+                this.speed = 12.0f;
+
+                //animation
+                this.aniLength = 0;
+                this.aniStart = 0;
+                this.aniRow = 0;
+                this.isLoop = false;
+
                 this.isStatSet = true;
             }
 
