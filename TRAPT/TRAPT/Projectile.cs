@@ -49,7 +49,7 @@ namespace TRAPT
             this.owner = owner;
 
             //image holding all the bullets
-            this.texture = Game.Content.Load<Texture2D>("projectiles");
+            this.texture = Game.Content.Load<Texture2D>("bullets");
             this.collider = Game.Content.Load<Texture2D>("bulletcollider");
 
 
@@ -80,7 +80,7 @@ namespace TRAPT
                     //this.shotSound = Game.Content.Load<SoundEffect>(@"Sound\SMG");
                     break;
                 case WeaponType.Shotgun:
-                    this.life = 500;//360;
+                    this.life = 360;
                     //this.shotSound = Game.Content.Load<SoundEffect>(@"Sound\shotgun");
                     break;
                 default:
@@ -132,21 +132,35 @@ namespace TRAPT
         /// </summary>
         public void GetSprite()
         {
+            frameCount = 0; // Which frame we are.  Values = {0, 1, 2}
+            aniStart = 0; // the index of the first frame
+            aniLength = 0; // the count of the frame on which to wrap on
+            aniRate = 333; // # milliseconds between frames.
+            frameWidth = 16; // how wide a frame is
+            frameHeight = 32; // how tall a frame is.
+
             //if a rifle shot.
             if (this.projectileType == WeaponType.SMG)
             {
                 //load the one floor view of the rifle
-                this.source = new Rectangle(0, 0, 17, 48);
-                this.destination = new Rectangle(0, 0, 17, 48);
+                //this.source = new Rectangle(0, 0, 16, 32);
+
+                //find appropriate bullet with the animation fields
+                aniRow = 0;
+                isLoop = false;
             }
             else if (this.projectileType == WeaponType.Shotgun)
             {
                 //TODO: adjust values for the shotgun shell.
                 //load the one floor view of the rifle
-                this.source = new Rectangle(0, 0, 17, 48);
-                this.destination = new Rectangle(0, 0, 17, 48);
+                //this.source = new Rectangle(0, 0, 16, 32);
+
+                //find appropriate bullet with the animation fields
+                aniRow = 1; // the row in the source to pull frames from
+                isLoop = false;
             }
-          
+            this.source = new Rectangle(0, 0, 16, 32);
+            this.destination = this.source;//new Rectangle(0, 0, 17, 48);
         }
 
         /// <summary>

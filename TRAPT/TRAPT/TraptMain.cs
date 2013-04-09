@@ -81,6 +81,10 @@ namespace TRAPT
         public MouseState ms, msold;
         public GamePadState gps, gpsold;
         //public static KeyboardState ks, ksold;
+        private Texture2D xboxControllerTex;
+        private Rectangle xboxControllerPos;
+        private Texture2D mouseKeyboardTex;
+        private Rectangle mouseKeyboardPos;
 
         int screenAdjustmentX;
         int screenAdjustmentY;
@@ -126,11 +130,11 @@ namespace TRAPT
 
             //Screen stuff
 
-            //graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            //graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            graphics.PreferredBackBufferWidth = screenWidth;
-            graphics.PreferredBackBufferHeight = screenHeight;
-            //graphics.IsFullScreen = true;
+            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            //graphics.PreferredBackBufferWidth = screenWidth;
+            //graphics.PreferredBackBufferHeight = screenHeight;
+            graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
             screenAdjustmentX = graphics.PreferredBackBufferWidth;
@@ -201,9 +205,11 @@ namespace TRAPT
             btnQuit = new Button(Content.Load<Texture2D>(@"MenuButtons\quitGame"), graphics.GraphicsDevice);
             btnQuit.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 2) + 80));
 
-            //Tutorial sprites
-            //aswdKeysTex = Content.Load<Texture2D>("aswdKeys");
-            //aswdKeysPos = new Rectangle(100, 100,this.aswdKeysTex.Width, this.aswdKeysTex.Height);
+            //Instruction images
+            this.xboxControllerTex = this.Content.Load<Texture2D>("xbox");
+            this.xboxControllerPos = new Rectangle(screenAdjustmentX / 5, screenAdjustmentY / 2, this.xboxControllerTex.Width, this.xboxControllerTex.Height);
+            this.mouseKeyboardTex = this.Content.Load<Texture2D>("FullGuide");
+            this.mouseKeyboardPos = new Rectangle(screenAdjustmentX / 5, screenAdjustmentY / 8 + 25, this.mouseKeyboardTex.Width, this.mouseKeyboardTex.Height - 50);
 
             //Pause stuff
             pausedTexture = Content.Load<Texture2D>(@"logoScreens\gamePausedScreen");
@@ -213,6 +219,8 @@ namespace TRAPT
             btnReturn.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 70));
             btnMainMenu = new Button(Content.Load<Texture2D>(@"MenuButtons\quitGame"), graphics.GraphicsDevice);
             btnMainMenu.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 130));
+
+
         }
 
         /// <summary>
@@ -469,8 +477,10 @@ namespace TRAPT
 
                     spriteBatch.Draw(Content.Load<Texture2D>(@"logoScreens\GameInstructions"), new Microsoft.Xna.Framework.Rectangle(0, 0, screenAdjustmentX, screenAdjustmentY),
                         Color.White);
-                    LoadInstructions();
-                    spriteBatch.DrawString(font, instructionInfo, new Vector2(110, 200), Color.White);
+                    //LoadInstructions();
+                    //spriteBatch.DrawString(font, instructionInfo, new Vector2(110, 200), Color.White);
+                    spriteBatch.Draw(this.xboxControllerTex, this.xboxControllerPos, Color.White);
+                    spriteBatch.Draw(this.mouseKeyboardTex, this.mouseKeyboardPos, Color.White);
                     cursor.Draw(this.spriteBatch);
                     //end draw
                     this.spriteBatch.End();
