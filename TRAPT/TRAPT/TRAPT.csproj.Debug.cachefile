@@ -76,6 +76,10 @@ Content\Characters\alienAnimation(New).xnb
 Content\bullets.xnb
 Content\xbox.xnb
 Content\FullGuide.xnb
+Content\Barriers_1.xnb
+Content\Switches_1.xnb
+Content\Switches_2.xnb
+Content\Switches_3.xnb
 Content\Sound\TitleTheme-song.wma
 Content\Maps\Level1.map
 Content\Maps\Level2.map
@@ -88,3 +92,4 @@ Content\AIFiles\Level1Objects.xml
 Content\AIFiles\TutorialObjects.xml
 Content\AIFiles\Level1Objects_v2.xml
 Content\AIFiles\Level2Objects_v2.xml
+Content\Level1_Switch_Barrier.xml

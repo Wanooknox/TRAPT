@@ -84,7 +84,9 @@
     <Compile Include="Levels\TutorialGuides.cs" />
     <Compile Include="MuzzleFlash.cs" />
     <Compile Include="Obstacle.cs" />
+    <Compile Include="ObstacleSwitch.cs" />
     <Compile Include="Robot.cs" />
+    <Compile Include="Switch.cs" />
     <Compile Include="XMLObjectReader.cs" />
     <Compile Include="DummyEnemy.cs" />
     <Compile Include="Enemy.cs" />

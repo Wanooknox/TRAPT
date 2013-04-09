@@ -942,7 +942,7 @@ namespace TRAPT
             //that.UpdateDirection();
 
             //TODO: work on player object's collision resolution
-            if (that is WallTile)
+            if (that is WallTile ||(that is Obstacle) && ((Obstacle)that).SwStatus)
             {
                 //colliding = true;
                 //throw new ApplicationException("hit wall!");

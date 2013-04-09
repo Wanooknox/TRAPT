@@ -19,6 +19,7 @@ namespace TRAPT.Levels
     {
         private string mapName = @"Maps\Tutorial";
         private string xmlName = @"AIFiles\TutorialObjects";
+        private string xmlSwitch = @"Level1_Switch_Barrier";
 
         Vector2 playerStart;        
 
@@ -61,6 +62,7 @@ namespace TRAPT.Levels
 
             //Create the AI 
             TraptMain.xmlReader.populateEnemiesFromXML(xmlName);
+            TraptMain.xmlReader.placeSwitchAndBarrier(xmlSwitch);
 
             //Setup two guns (one of each)
             Vector2 gun1Start = new Vector2(13*128-64, 3*128-64);
