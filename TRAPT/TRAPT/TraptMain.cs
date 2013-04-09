@@ -79,6 +79,7 @@ namespace TRAPT
         public static bool useGamePad = false;
         public KeyboardState ks, ksold;
         public MouseState ms, msold;
+        public GamePadState gps, gpsold;
         //public static KeyboardState ks, ksold;
 
         int screenAdjustmentX;
@@ -238,8 +239,12 @@ namespace TRAPT
             //get newest keyboard state
             ks = Keyboard.GetState();
             ms = Mouse.GetState();
+            gps = GamePad.GetState(PlayerIndex.One);
 
-            //if (ks.IsKeyDown(Keys.Escape)) this.Exit();
+            if (!ks.IsKeyDown(Keys.F10) && ksold.IsKeyDown(Keys.F10))
+            {
+                ToggleGamePad();
+            }
 
             switch (currentGameState)
             {
@@ -284,7 +289,8 @@ namespace TRAPT
                     break;
 
                 case GameState.Instructions:
-                    if (ms.LeftButton == ButtonState.Pressed && msold.LeftButton == ButtonState.Released)
+                    if (ms.LeftButton == ButtonState.Pressed && msold.LeftButton == ButtonState.Released
+                        || (gps.Buttons.LeftShoulder == ButtonState.Pressed && gpsold.Buttons.LeftShoulder == ButtonState.Released))
                     {
                         currentGameState = GameState.MainMenu;
                     }
@@ -418,6 +424,7 @@ namespace TRAPT
             //save current keyboard state as the old state
             ksold = ks;
             msold = ms;
+            gpsold = gps;
 
             base.Update(gameTime);
         }
@@ -485,16 +492,16 @@ namespace TRAPT
                     }
 
                     this.spriteBatch.Begin();
-                    //spriteBatch.Draw(this.aswdKeysTex, this.aswdKeysPos, Color.White);
-                    this.spriteBatch.DrawString(instructions, "Movement:  A:Left \n" +
-                                                              "           S:Down \n" +
-                                                              "           D:Right \n" +
-                                                              "           W: UP \n" +
-                                                              "Look:      Mouse \n" +
-                                                              "Shoot:     LeftMouseButton\n" +
-                                                              "Melee:     RightMouseButton \n" +
-                                                              "Abilities: Shroud: Q \n" +
-                                                              "           Fortify: E", Vector2.Zero, Color.White);
+                    ////spriteBatch.Draw(this.aswdKeysTex, this.aswdKeysPos, Color.White);
+                    //this.spriteBatch.DrawString(instructions, "Movement:  A:Left \n" +
+                    //                                          "           S:Down \n" +
+                    //                                          "           D:Right \n" +
+                    //                                          "           W: UP \n" +
+                    //                                          "Look:      Mouse \n" +
+                    //                                          "Shoot:     LeftMouseButton\n" +
+                    //                                          "Melee:     RightMouseButton \n" +
+                    //                                          "Abilities: Shroud: Q \n" +
+                    //                                          "           Fortify: E", Vector2.Zero, Color.White);
                     hud.Draw(this.spriteBatch);
                     this.spriteBatch.End();
 
@@ -515,12 +522,7 @@ namespace TRAPT
                         }
                         //end the batch
                         this.spriteBatch.End();
-                    }
-
-                    //if (ks.IsKeyDown(Keys.F10) && !ksold.IsKeyDown(Keys.F10))
-                    //{
-                    //    ToggleGamePad();
-                    //}
+                    }                    
 
                     this.spriteBatch.Begin();
                     hud.Draw(this.spriteBatch);
@@ -799,11 +801,12 @@ namespace TRAPT
             {
                 if (i is DrawableGameComponent && ((DrawableGameComponent)i).Visible)
                 {
-                    if (i is Tile)
+                    if (i is Tile )
                     {
                         layers[0].Add(i);
                     }
-                    else if (i is Agent || i is Weapon || i is Projectile || i is Structure)
+                    else if (i is Agent || i is Weapon || i is Projectile 
+                        || i is Structure || i is TutorialGuides)
                     {
                         layers[1].Add(i);
                     }

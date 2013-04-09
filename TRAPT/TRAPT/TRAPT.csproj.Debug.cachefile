@@ -58,6 +58,9 @@ Content\MenuButtons\newGame.xnb
 Content\aswdKeys.xnb
 Content\exitDoors.xnb
 Content\muzzleflash.xnb
+Content\Guns\guns.xnb
+Content\Guns\gunsNew.xnb
+Content\Characters\robot.xnb
 Content\SpriteFont1.xnb
 Content\Sound\ambient4.xnb
 Content\Sound\shotgun.xnb
@@ -65,9 +68,10 @@ Content\Sound\SMG.xnb
 Content\Sound\TitleTheme.xnb
 Content\Sound\pauseTheme.xnb
 Content\Sound\TitleTheme-song.xnb
-Content\Guns\guns.xnb
-Content\Guns\gunsNew.xnb
-Content\Characters\robot.xnb
+Content\Tutorial\GunGuide.xnb
+Content\Tutorial\MeleeGuide.xnb
+Content\Tutorial\MoveGuide.xnb
+Content\Tutorial\PowerGuide.xnb
 Content\Sound\TitleTheme-song.wma
 Content\Maps\Level1.map
 Content\Maps\Level2.map
