@@ -18,7 +18,7 @@ namespace TRAPT.Levels
     public class Tutorial : Level
     {
         private string mapName = @"Maps\Tutorial";
-        private string xmlName = @"AIFiles\Level2Objects";
+        private string xmlName = @"AIFiles\TutorialObjects";
 
         Vector2 playerStart;        
 
@@ -86,8 +86,6 @@ namespace TRAPT.Levels
         public override void Update(GameTime gameTime)
         {
             MouseState ms = Mouse.GetState();
-
-            
 
             Vector2 playerCamPos = new Vector2(TraptMain.player.Position.X - Game.GraphicsDevice.Viewport.Width / 2, TraptMain.player.Position.Y - Game.GraphicsDevice.Viewport.Height / 2);
             Vector2 cursorCamPos = new Vector2(TraptMain.cursor.Position.X - Game.GraphicsDevice.Viewport.Width / 2, TraptMain.cursor.Position.Y - Game.GraphicsDevice.Viewport.Height / 2);

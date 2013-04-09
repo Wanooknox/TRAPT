@@ -17,8 +17,8 @@ namespace TRAPT.Levels
     /// </summary>
     public class Level1 : Level
     {
-        private string mapName = @"Maps\Level1Map";
-        private string xmlName = @"AIFiles\Level1Objects";
+        private string mapName = @"Maps\Level1";
+        private string xmlName = @"AIFiles\Level1Objects_v2";
 
         Vector2 playerStart;
 
@@ -56,19 +56,19 @@ namespace TRAPT.Levels
             TraptMain.camera.Limits = new Rectangle(0, 0, TraptMain.tileLayer.mapWidth * TraptMain.GRID_CELL_SIZE, TraptMain.tileLayer.mapHeight * TraptMain.GRID_CELL_SIZE);
 
             //initialize the player
-            this.playerStart = new Vector2(17 * 128, 2 * 128);//new Vector2(65*128, 33*128);
+            this.playerStart = new Vector2(2 * 128, 3 * 128);//new Vector2(65*128, 33*128);
             TraptMain.player = new Player(Game);
             TraptMain.player.Initialize(this.playerStart);
 
             TraptMain.xmlReader.populateEnemiesFromXML(xmlName);
 
             //TEMP add a tester gun
-            Vector2 gunStart = new Vector2((Game.GraphicsDevice.Viewport.Width / 4) * 3, (Game.GraphicsDevice.Viewport.Height / 4) * 3);
-            this.testGun = new Weapon(Game);
-            this.testGun.Initialize(gunStart, 200, WeaponType.SMG);
+            //Vector2 gunStart = new Vector2((Game.GraphicsDevice.Viewport.Width / 4) * 3, (Game.GraphicsDevice.Viewport.Height / 4) * 3);
+            //this.testGun = new Weapon(Game);
+            //this.testGun.Initialize(gunStart, 200, WeaponType.SMG);
 
             LevelChanger exit = new LevelChanger(Game);
-            exit.Initialize(0, "exitDoors", 14*TraptMain.GRID_CELL_SIZE, 5, TraptMain.GRID_CELL_SIZE, TraptMain.GRID_CELL_SIZE);
+            exit.Initialize(0, "exitDoors", 39*TraptMain.GRID_CELL_SIZE, 10*TraptMain.GRID_CELL_SIZE+5, TraptMain.GRID_CELL_SIZE, TraptMain.GRID_CELL_SIZE);
             
 
             base.Initialize();

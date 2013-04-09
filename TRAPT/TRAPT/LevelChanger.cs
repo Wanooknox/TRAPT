@@ -50,11 +50,11 @@ namespace TRAPT
                 if (TraptMain.currentGameState == GameState.Tutorial)
                 {
                     //Return to the main menu
-                    TraptMain.player.Destroy();
-                    TraptMain.nextlvl = "mainmenu";
-                    TraptMain.nextGameState = GameState.MainMenu;
+                    TraptMain.player.Destroy();                    
+                    TraptMain.nextlvl = "level1";
+                    TraptMain.nextGameState = GameState.Playing;
                     TraptMain.currentGameState = GameState.Loading;
-                    TraptMain.cursor.ChangeMouseMode("menu");
+                    TraptMain.cursor.ChangeMouseMode("play");
                 }
                 else if( TraptMain.currentGameState == GameState.Playing)
                 {

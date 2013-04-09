@@ -742,6 +742,10 @@ namespace TRAPT
                     player.Destroy();
                     break;
                 case "level1":
+                    if (this.lvl != null)
+                    {
+                        this.lvl.Destroy();                        
+                    }
                     this.lvl = new Level1(this);
                     this.lvl.Initialize();
                     break;

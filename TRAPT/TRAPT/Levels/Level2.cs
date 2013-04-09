@@ -17,7 +17,8 @@ namespace TRAPT.Levels
     /// </summary>
     public class Level2 : Level
     {
-        private string mapName = @"Maps\Level2Map";
+        private string mapName = @"Maps\Level2";
+        private string xmlName = @"AIFiles\Level2Objects_v2";
 
         Vector2 playerStart;
 
@@ -36,6 +37,8 @@ namespace TRAPT.Levels
         /// </summary>
         public override void Initialize()
         {
+            //////////////////
+
             //get the size of the map
             TraptMain.tileLayer.ReadMapDimensions(mapName);
 
@@ -44,20 +47,28 @@ namespace TRAPT.Levels
 
             //load the map
             TraptMain.tileLayer.Initialize("tileSheet2", Game.Content.RootDirectory);
+            //this.tileLayer.Initialize(Content.Load<Texture2D>("spriteSheet"), Content.RootDirectory);
             TraptMain.tileLayer.OpenMap(mapName);
+
+
 
             //adjust the valid area for the camera
             TraptMain.camera.Limits = new Rectangle(0, 0, TraptMain.tileLayer.mapWidth * TraptMain.GRID_CELL_SIZE, TraptMain.tileLayer.mapHeight * TraptMain.GRID_CELL_SIZE);
 
             //initialize the player
-            this.playerStart = new Vector2(450, 300);
+            this.playerStart = new Vector2(2 * TraptMain.GRID_CELL_SIZE, 13 * TraptMain.GRID_CELL_SIZE);//new Vector2(65*128, 33*128);
             TraptMain.player = new Player(Game);
             TraptMain.player.Initialize(this.playerStart);
 
-            //TEMP add a default gun
+            TraptMain.xmlReader.populateEnemiesFromXML(xmlName);
+
+            //TEMP add a tester gun
             Vector2 gunStart = new Vector2((Game.GraphicsDevice.Viewport.Width / 4) * 3, (Game.GraphicsDevice.Viewport.Height / 4) * 3);
             this.testGun = new Weapon(Game);
-            this.testGun.Initialize(gunStart, 30, WeaponType.Shotgun);
+            this.testGun.Initialize(gunStart, 200, WeaponType.SMG);
+
+            LevelChanger exit = new LevelChanger(Game);
+            exit.Initialize(0, "exitDoors", 14 * TraptMain.GRID_CELL_SIZE, 5, TraptMain.GRID_CELL_SIZE, TraptMain.GRID_CELL_SIZE);
 
 
             base.Initialize();
@@ -74,7 +85,6 @@ namespace TRAPT.Levels
             Vector2 playerCamPos = new Vector2(TraptMain.player.Position.X - Game.GraphicsDevice.Viewport.Width / 2, TraptMain.player.Position.Y - Game.GraphicsDevice.Viewport.Height / 2);
             Vector2 cursorCamPos = new Vector2(TraptMain.cursor.Position.X - Game.GraphicsDevice.Viewport.Width / 2, TraptMain.cursor.Position.Y - Game.GraphicsDevice.Viewport.Height / 2);
             TraptMain.camera.Position = new Vector2((cursorCamPos.X + playerCamPos.X) / 2, (cursorCamPos.Y + playerCamPos.Y) / 2);
-
 
             base.Update(gameTime);
         }

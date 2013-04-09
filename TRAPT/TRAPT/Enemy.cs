@@ -34,9 +34,9 @@ namespace TRAPT
         //float rotation;
 
 
-        AI_ViewCone viewCone;                               //The viewcone keeps track of the viewCone AND the cone for melee range detection
-        Path path;                                          //Data structure for an Agent's pathNodes ( DIFFERENT THAN THE TUTORIAL'S )
-        Path anotherway;
+        protected AI_ViewCone viewCone;                               //The viewcone keeps track of the viewCone AND the cone for melee range detection
+        protected Path path;                                          //Data structure for an Agent's pathNodes ( DIFFERENT THAN THE TUTORIAL'S )
+        protected Path anotherway;
         //Vector2 playerPosition;                             //The position of the human player
         Boolean lineOfSight;                                //Flag for L o S
         public bool followPath = false;
@@ -63,6 +63,19 @@ namespace TRAPT
         int spriteStartY = 0; // Y of top left corner of sprite 0.
         int spriteWidth = 64;
         int spriteHeight = 64;
+
+        private Vector2 weapPos = new Vector2();
+        public override Vector2 WeaponPosition
+        {
+            get
+            {
+                int offset = 25;
+                weapPos.Y = (float)(offset * Math.Cos(this.rotation + Math.PI));
+                weapPos.X = (float)(offset * Math.Sin(this.rotation));
+                return new Vector2(this.position.X + weapPos.X, this.position.Y + weapPos.Y);
+                //return this.position;
+            }
+        }
 
         Vector2 prevPos;
 
@@ -292,6 +305,7 @@ namespace TRAPT
             //Set line of sight to false
         }
 
+        //This method checks to see if the player enemy line of sight is broken from a wall tile
         public bool LineOfSightBroken(Line LoS)
         {
             /* bool result = false;
@@ -600,8 +614,10 @@ namespace TRAPT
                 TraversePath(gameTime);
 
                 //if the circles are in collision and the player is shooting then change the state to searching
-                if (this.soundCircle.Intersects(TraptMain.player.soundCircle) && TraptMain.player.isShooting)
+                if (this.soundCircle.Intersects(TraptMain.player.soundCircle) && TraptMain.player.isShooting &&
+                    !LineOfSightBroken(playerLineOfSight) )
                 {
+                    //Console.WriteLine("searching for player");
                     currentState = AIstate.SEARCHING;
                 }
             }
