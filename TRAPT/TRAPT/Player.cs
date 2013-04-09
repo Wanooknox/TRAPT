@@ -606,7 +606,7 @@ namespace TRAPT
                     this.Weapon.Shoot();
                     this.isShooting = true;
                 }
-                if( ms.LeftButton == ButtonState.Released )
+                if( (ms.LeftButton == ButtonState.Released && !TraptMain.useGamePad) || gps.Triggers.Right <= 0)
                 {
                     this.isShooting = false;
                 }
