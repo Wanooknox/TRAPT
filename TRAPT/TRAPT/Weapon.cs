@@ -83,7 +83,7 @@ namespace TRAPT
         {
             this.DrawOrder = 350;
 
-            this.texture = Game.Content.Load<Texture2D>("guns");
+            this.texture = Game.Content.Load<Texture2D>(@"Guns\gunsNew");
 
             this.position = position;
             this.ammo = ammo;
@@ -117,36 +117,36 @@ namespace TRAPT
         public void GetSprite()
         {
             //if i don't have an owner
-            if (owner == null)
+            if (owner == null) //on the ground
             {
                 this.Depth = 200;
                 if (this.wpnType == WeaponType.SMG)
                 {
                     //load the one floor view of the rifle
-                    this.source = new Rectangle(25, 22, 38 - 25, 78 - 22);
+                    this.source = new Rectangle(20, 0, 20, 56);
                     this.destination = this.source;//new Rectangle(0, 0, 64, 106);
                 }
-                else if (this.wpnType == WeaponType.Shotgun)
+                else if (this.wpnType == WeaponType.Shotgun)  
                 {
                     //TODO: adjust numbers for the shotgun
                     //load the one floor view of the rifle
-                    this.source = new Rectangle(25, 22, 95 - 79, 72 - 29);
+                    this.source = new Rectangle(0, 0, 20, 56);
                     this.destination = this.source;//new Rectangle(0, 0, 64, 106);
                 }
             }
-            else // i DO have an ower
+            else // i DO have an ower       //in the hands
             {
                 this.Depth = 300;
                 if (this.wpnType == WeaponType.SMG)
                 {
                     // load the in hands view for the rife
-                    this.source = new Rectangle(25, 22, 95 - 79, 72 - 29);
+                    this.source = new Rectangle(60, 0, 20, 56);
                     this.destination = this.source;//new Rectangle(0, 0, 64, 106);
                 }
                 else if (this.wpnType == WeaponType.Shotgun)
                 {
                     // load the in hands view for the rife
-                    this.source = new Rectangle(25, 22, 38 - 25, 78 - 22);
+                    this.source = new Rectangle(40, 0, 20, 56);
                     this.destination = this.source;//new Rectangle(0, 0, 64, 106);
                 }
             }
@@ -255,6 +255,8 @@ namespace TRAPT
                         Projectile bullet = new Projectile(Game);
                         bullet.Initialize(this.owner, this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
                         this.shotSound.Play(0.1f, 0.0f, 0.0f);
+                        MuzzleFlash flash = new MuzzleFlash(Game);
+                        flash.Initialize(this.Owner.Position, this.rotation);
                         //100 millisecond delay
                         this.delay = TimeSpan.FromMilliseconds(100);
                     }
@@ -266,9 +268,12 @@ namespace TRAPT
                             Projectile bullet = new Projectile(Game);
                             bullet.Initialize(this.owner, this.position, 20.0f, this.rotation, this.wpnType, ref this.projectileStrayer);
                         }
+                        this.shotSound.Play(0.4f, 0.0f, 0.0f);
+                        MuzzleFlash flash = new MuzzleFlash(Game);
+                        flash.Initialize(this.Owner.Position, this.rotation);
                         //1500 millisecond delay
                         this.delay = TimeSpan.FromMilliseconds(1500);
-                        this.shotSound.Play(0.4f, 0.0f, 0.0f);
+                        
                     }
                     //allow enemies to have unlimited ammo
                     if (this.Owner is Player)

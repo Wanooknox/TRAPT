@@ -67,6 +67,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Maps\Level1.map">
+      <Name>Level1</Name>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Maps\Level2.map">
+      <Name>Level2</Name>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Maps\Tutorial.map">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Name>Tutorial</Name>
@@ -436,10 +444,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="AIFiles\Level2Objects.xml">
+    <None Include="AIFiles\TutorialObjects.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <Name>Level2Objects</Name>
+      <Name>TutorialObjects</Name>
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
     </None>
@@ -450,6 +458,48 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="muzzleflash.png">
+      <Name>muzzleflash</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Guns\guns.png">
+      <Name>guns</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Guns\gunsNew.png">
+      <Name>gunsNew</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Characters\robot.png">
+      <Name>robot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AIFiles\Level1Objects_v2.xml">
+      <Name>Level1Objects_v2</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="AIFiles\Level2Objects_v2.xml">
+      <Name>Level2Objects_v2</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 

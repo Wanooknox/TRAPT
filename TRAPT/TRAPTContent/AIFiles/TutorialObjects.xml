@@ -6,7 +6,14 @@
       <node> <x>7</x> <y>10</y> <dwell>2</dwell> </node>
     </Path>
   </Enemy>
-  <Enemy>
+<!-- <Robot>
+    <Path>
+      <node> <x>12</x> <y>1</y>  <dwell>3</dwell>  </node>
+      <node> <x>12</x> <y>10</y> <dwell>3</dwell>  </node>
+    </Path>
+  </Robot>-->
+
+  <!-- <Enemy>
     <Path>
       <node> <x>13</x> <y>1</y>  <dwell>2</dwell> </node>
       <node> <x>13</x> <y>10</y> <dwell>2</dwell> </node>
@@ -62,5 +69,5 @@
       </node>
       
     </Path>
-  </Enemy>
+  </Enemy>-->
 </Level>

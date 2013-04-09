@@ -34,9 +34,9 @@ namespace TRAPT
         //float rotation;
 
 
-        AI_ViewCone viewCone;                               //The viewcone keeps track of the viewCone AND the cone for melee range detection
-        Path path;                                          //Data structure for an Agent's pathNodes ( DIFFERENT THAN THE TUTORIAL'S )
-        Path anotherway;
+        protected AI_ViewCone viewCone;                               //The viewcone keeps track of the viewCone AND the cone for melee range detection
+        protected Path path;                                          //Data structure for an Agent's pathNodes ( DIFFERENT THAN THE TUTORIAL'S )
+        protected Path anotherway;
         //Vector2 playerPosition;                             //The position of the human player
         Boolean lineOfSight;                                //Flag for L o S
         public bool followPath = false;
@@ -63,6 +63,19 @@ namespace TRAPT
         int spriteStartY = 0; // Y of top left corner of sprite 0.
         int spriteWidth = 64;
         int spriteHeight = 64;
+
+        private Vector2 weapPos = new Vector2();
+        public override Vector2 WeaponPosition
+        {
+            get
+            {
+                int offset = 25;
+                weapPos.Y = (float)(offset * Math.Cos(this.rotation + Math.PI));
+                weapPos.X = (float)(offset * Math.Sin(this.rotation));
+                return new Vector2(this.position.X + weapPos.X, this.position.Y + weapPos.Y);
+                //return this.position;
+            }
+        }
 
         Vector2 prevPos;
 
@@ -130,7 +143,7 @@ namespace TRAPT
             this.destination.Y = (int)this.position.Y;
 
             //Circle for sound detection
-            this.soundCircle = new Circle(this.position, 500);
+            this.soundCircle = new Circle(this.position, 700);
 
 
             playerLineOfSight = new Line(this.position, TraptMain.player.Position);
@@ -292,6 +305,7 @@ namespace TRAPT
             //Set line of sight to false
         }
 
+        //This method checks to see if the player enemy line of sight is broken from a wall tile
         public bool LineOfSightBroken(Line LoS)
         {
             /* bool result = false;
@@ -383,7 +397,7 @@ namespace TRAPT
 
         public void TraversePath(GameTime gameTime)
         {
-
+           
             // Console.WriteLine(currentNode);
 
             /*  if (isStuck)
@@ -452,12 +466,15 @@ namespace TRAPT
                     anotherway.RemoveFirst();
                     //goalNode = currentNode;
                     goalNode = new PathNode((int)temp.position.X * 128 + 64, (int)temp.position.Y * 128 + 64, 0);
+                    
                 }
                 currentNode = goalNode;
             }
 
             if (dwellTimeSpan >= TimeSpan.Zero)
             {
+                
+
                 dwelling = true;
                 //this.lookingAround(tempRotation);
                 dwellTimeSpan -= gameTime.ElapsedGameTime;
@@ -465,6 +482,7 @@ namespace TRAPT
             else
             {
                 //Console.WriteLine("CurrentNode.X: " + currentNode.getPosition().X + " CurrentNode.y: " + currentNode.getPosition().Y);
+                //this.stopAnimation = false;
                 dwelling = false;
                 float dx = currentNode.getPosition().X - this.position.X;
                 float dy = currentNode.getPosition().Y - this.position.Y;
@@ -473,6 +491,19 @@ namespace TRAPT
                 this.velocity.Y = (float)(this.speed * Math.Cos(this.rotation + Math.PI));
                 this.velocity.X = (float)(this.speed * Math.Sin(this.rotation));
             }
+           /* if (dwelling)
+            {
+                this.aniStart = 0;
+                this.aniRow = 2;
+                this.aniLength = 7;
+            }
+            else
+            {
+                this.frameCount = 0;
+                this.aniStart = 0;
+                this.aniRow = 1;
+                this.aniLength = 2;
+            }*/
         }
 
         private Path GraphToPath(AGraph<PathNode> graph)
@@ -597,17 +628,20 @@ namespace TRAPT
             //Still have not implemented updating of sprite animation, that will need to be switched around
             if (currentState == AIstate.PATHING)
             {
+                this.speed = 3.0f;
                 TraversePath(gameTime);
 
                 //if the circles are in collision and the player is shooting then change the state to searching
-                if (this.soundCircle.Intersects(TraptMain.player.soundCircle) && TraptMain.player.isShooting)
+                if (this.soundCircle.Intersects(TraptMain.player.soundCircle) && TraptMain.player.isShooting &&
+                    !LineOfSightBroken(playerLineOfSight) )
                 {
+                    //Console.WriteLine("searching for player");
                     currentState = AIstate.SEARCHING;
                 }
             }
             if (currentState == AIstate.SEARCHING)
             {
-
+                this.speed = 4.5f;
                 /* ADD WHAT TO DO WHEN SEARCHING FOR THE PLAYER
                  Go to the players coordinates unless line of sight is broken in the next tick/heartbeat
                  if Line of sight is broken, dwell at the last known location for X amount of time.
@@ -624,7 +658,7 @@ namespace TRAPT
             }
             if (currentState == AIstate.ATTACKING)
             {
-
+                this.speed = 4.5f;
                 CheckViewCone();
                 if (this.Weapon.WpnType == WeaponType.Shotgun)
                 {
@@ -711,7 +745,7 @@ namespace TRAPT
         public override void Draw(SpriteBatch spriteBatch)
         {
             // playerLineOfSight.Draw(spriteBatch, pixelTexture);
-               viewCone.Draw(spriteBatch);
+               //viewCone.Draw(spriteBatch);
 
             //this.PositionToGoalNode.Draw(spriteBatch, pixelTexture);
 

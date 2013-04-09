@@ -17,6 +17,7 @@ namespace TRAPT
     public class XMLObjectReader //: Microsoft.Xna.Framework.GameComponent
     {
         LinkedList<Enemy> agentList = new LinkedList<Enemy>();
+        
         Enemy agent;
 
         public Game Game { get; set; }
@@ -40,12 +41,13 @@ namespace TRAPT
             string filePath = Game.Content.RootDirectory + @"\"+ xmlName +".xml";
             xDoc = XDocument.Load(filePath);
             Enemy agent = null;
+            Robot robotAgent = null;
 
             //Creating a XDocument from a XML File
             var enemy = from i in xDoc.Descendants("Enemy") select i;                                  //Making a query
             foreach (var i in enemy)
             {
-                Console.WriteLine("I am here");
+               // Console.WriteLine("I am here");
                 agent = new Enemy(Game);
                 var nodeList = from node in i.Descendants("node") select node;
                 foreach (var node in nodeList)
@@ -60,6 +62,27 @@ namespace TRAPT
                 agent.Initialize();
                 agentList.AddLast(agent);
             }
+
+
+            var robot = from i in xDoc.Descendants("Robot") select i;                                  //Making a query
+            foreach (var i in robot)
+            {
+                // Console.WriteLine("I am here");
+                robotAgent = new Robot(Game);
+                var nodeList = from node in i.Descendants("node") select node;
+                foreach (var node in nodeList)
+                {
+                    int x = (int)node.Element("x") * TraptMain.GRID_CELL_SIZE + (TraptMain.GRID_CELL_SIZE / 2);
+                    int y = (int)node.Element("y") * TraptMain.GRID_CELL_SIZE + (TraptMain.GRID_CELL_SIZE / 2);
+                    int dwell = (int)node.Element("dwell");
+
+                    PathNode tempNode = new PathNode(x, y, dwell);
+                    agent.addPathNode(tempNode);
+                }
+                agent.Initialize();
+                agentList.AddLast(agent);
+            }
+
 
             Console.WriteLine(agentList.Count);
             foreach (Enemy a in agentList)

@@ -125,11 +125,11 @@ namespace TRAPT
 
             //Screen stuff
 
-            //graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            //graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            graphics.PreferredBackBufferWidth = screenWidth;
-            graphics.PreferredBackBufferHeight = screenHeight;
-            //graphics.IsFullScreen = true;
+            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            //graphics.PreferredBackBufferWidth = screenWidth;
+            //graphics.PreferredBackBufferHeight = screenHeight;
+            graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
             screenAdjustmentX = graphics.PreferredBackBufferWidth;
@@ -260,7 +260,7 @@ namespace TRAPT
                         Enemy.stopShooting = false;
                         btnPlay.isClicked = false;
                         BackgroundMusic(@"Sound\ambient4");
-                        nextlvl = "level1";
+                        nextlvl = "level2";
                         nextGameState = GameState.Playing;
                         currentGameState = GameState.Loading;
                     }
@@ -742,11 +742,18 @@ namespace TRAPT
                     player.Destroy();
                     break;
                 case "level1":
+                    if (this.lvl != null)
+                    {
+                        this.lvl.Destroy();                        
+                    }
                     this.lvl = new Level1(this);
                     this.lvl.Initialize();
                     break;
                 case "level2":
-                    this.lvl.Destroy();
+                    if (this.lvl != null)
+                    {
+                        this.lvl.Destroy();
+                    }
                     this.lvl = new Level2(this);
                     this.lvl.Initialize();
                     break;
