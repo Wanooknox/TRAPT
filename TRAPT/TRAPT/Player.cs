@@ -627,8 +627,8 @@ namespace TRAPT
                 this.aniLength = 9;
                 if (this.Weapon != null) 
                     this.Weapon.Visible = true;
-                if (ms.RightButton == ButtonState.Pressed && msold.RightButton == ButtonState.Released //button just lifted
-                    || gps.Triggers.Left > 0 && !(gpsold.Triggers.Left > 0))
+                if ((ms.RightButton == ButtonState.Pressed && msold.RightButton == ButtonState.Released) //button just lifted
+                    || (gps.Triggers.Left > 0 && !(gpsold.Triggers.Left > 0)) || (gps.IsButtonDown(Buttons.RightStick) && !gpsold.IsButtonDown(Buttons.RightStick)))
                 {
                     //set a melee time to indicate performing a melee
                     this.meleeDelay = TimeSpan.FromMilliseconds(300);

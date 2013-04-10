@@ -18,7 +18,7 @@
   </Barrier>
   <Barrier>
     <connection>2</connection>
-    <texPosition>1</texPosition>
+    <texPosition>0</texPosition>
     <position>
       <x>21</x>
       <y>9</y>

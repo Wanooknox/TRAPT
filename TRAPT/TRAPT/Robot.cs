@@ -19,6 +19,19 @@ namespace TRAPT
     {
         bool isStatSet = false;
 
+        private Vector2 weapPos = new Vector2();
+        public override Vector2 WeaponPosition
+        {
+            get
+            {
+                int offset = 20;
+                weapPos.Y = (float)(offset * Math.Cos(this.rotation + Math.PI));
+                weapPos.X = (float)(offset * Math.Sin(this.rotation));
+                return new Vector2(this.position.X + weapPos.X, this.position.Y + weapPos.Y);
+                //return this.position;
+            }
+        }
+
         public Robot(Game game)
             : base(game)
         { }
