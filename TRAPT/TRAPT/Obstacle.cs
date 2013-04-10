@@ -14,12 +14,12 @@ namespace TRAPT
     // a obstacle turned on/off by ObstacleSwitch
     public class Obstacle : Switch
     {
-        int texPosisiton;
+        int texPosition;
 
-        public int TexPosistion
+        public int TexPosition
         {
-            get { return texPosisiton; }
-            set { texPosisiton = value; }
+            get { return texPosition; }
+            set { texPosition = value; }
         }
         public Obstacle(Game game)
             : base(game)
@@ -42,7 +42,7 @@ namespace TRAPT
             }
             else
             {
-                this.tileCount = texPosisiton; // obstacle is on
+                this.tileCount = texPosition; // obstacle is on
             }
 
             if (this.IsColliding(TraptMain.player) && this.swStatus)

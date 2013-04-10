@@ -15,7 +15,16 @@ namespace TRAPT
     public class ObstacleSwitch : Switch
     {
         LinkedList<Obstacle> obstacles; // list of obstacles to change by this switch
-        TimeSpan delay = TimeSpan.Zero; // delay for the switch collision
+        //TimeSpan delay = TimeSpan.Zero; // delay for the switch collision
+        int texPosisiton;
+
+        bool spaceIsDown = false;
+
+        public int TexPosistion
+        {
+            get { return texPosisiton; }
+            set { texPosisiton = value; }
+        }
 
         public ObstacleSwitch(Game game)
             : base(game)
@@ -37,11 +46,20 @@ namespace TRAPT
 
         public override void Update(GameTime gameTime)
         {
+            ks = Keyboard.GetState();
+            gps = GamePad.GetState(PlayerIndex.One);
 
-            if (this.IsColliding(TraptMain.player) && delay >= TimeSpan.FromSeconds(2))
+            if (this.IsColliding(TraptMain.player))
+                TraptMain.hud.ContextTip = "Press 'Space Bar' to activate switch";
+
+            if (this.IsColliding(TraptMain.player) 
+                && (ks.IsKeyDown(Keys.Space) && !ksold.IsKeyDown(Keys.Space) 
+                || gps.IsButtonDown(Buttons.A) && !gpsold.IsButtonDown(Buttons.A)) )// && delay >= TimeSpan.FromSeconds(2)
             {
                 this.swStatus = !this.swStatus;
-                delay = TimeSpan.Zero;
+                //delay = TimeSpan.Zero;
+               // spaceIsDown = false;
+                Console.WriteLine("SpaceIsDown: " + spaceIsDown);
             }
             if (!this.swStatus)
             {
@@ -59,8 +77,20 @@ namespace TRAPT
                     obs.SwStatus = true; // turn on the obstacle(s)
                 }
             }
-            delay += gameTime.ElapsedGameTime;
+            //delay += gameTime.ElapsedGameTime;
+
+
+            //if (ks.IsKeyDown(Keys.Space))
+            //{
+            //    this.spaceIsDown = true;
+            //}
+
+            ksold = ks;
+            gpsold = gps;
+
             base.Update(gameTime);
+
+
         }
     }
 }

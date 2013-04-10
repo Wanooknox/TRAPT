@@ -64,9 +64,9 @@ namespace TRAPT
             {
                 barrier = new Obstacle(Game);
                 int connection = (int)b.Element("connection");
-                int texPosistion = (int)b.Element("texPosistion");
-                var posistions = from pos in b.Descendants("posistion") select pos;
-                foreach (var pos in posistions)
+                int texPosition = (int)b.Element("texPosition");
+                var positions = from pos in b.Descendants("position") select pos;
+                foreach (var pos in positions)
                 {
                     int x = (int)pos.Element("x") * TraptMain.GRID_CELL_SIZE;
                     int y = (int)pos.Element("y") * TraptMain.GRID_CELL_SIZE;
@@ -74,7 +74,7 @@ namespace TRAPT
                 }
                 barrier.Initialize(posVec, texStr1, texBarrierPos);
                 barrier.Connection = connection;
-                barrier.TexPosistion = texPosistion;
+                barrier.TexPosition = texPosition;
                 Console.WriteLine("Something");
                 barrierList.AddLast(barrier);
                 Console.WriteLine(barrierList);
@@ -87,8 +87,8 @@ namespace TRAPT
             {
                 Switch = new ObstacleSwitch(Game);
                 int connection = (int)s.Element("connection");
-                var posistions = from pos in s.Descendants("posistion") select pos;
-                foreach (var pos in posistions)
+                var positions = from pos in s.Descendants("position") select pos;
+                foreach (var pos in positions)
                 {
                     int x = (int)pos.Element("x") * TraptMain.GRID_CELL_SIZE;
                     int y = (int)pos.Element("y") * TraptMain.GRID_CELL_SIZE;

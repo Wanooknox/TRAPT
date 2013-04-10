@@ -19,6 +19,7 @@ namespace TRAPT.Levels
     {
         private string mapName = @"Maps\Level1";
         private string xmlName = @"AIFiles\Level1Objects_v2";
+        private string xmlSwitch = @"Level1_Switch_Barrier";
 
         Vector2 playerStart;
 
@@ -61,6 +62,7 @@ namespace TRAPT.Levels
             TraptMain.player.Initialize(this.playerStart);
 
             TraptMain.xmlReader.populateEnemiesFromXML(xmlName);
+            TraptMain.xmlReader.placeSwitchAndBarrier(xmlSwitch);
 
             //TEMP add a tester gun
             //Vector2 gunStart = new Vector2((Game.GraphicsDevice.Viewport.Width / 4) * 3, (Game.GraphicsDevice.Viewport.Height / 4) * 3);
@@ -80,7 +82,6 @@ namespace TRAPT.Levels
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-
             
             base.Update(gameTime);
         }

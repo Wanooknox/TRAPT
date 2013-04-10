@@ -41,11 +41,14 @@ namespace TRAPT
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            KeyboardState ks = Keyboard.GetState();
+            ks = Keyboard.GetState();
+            gps = GamePad.GetState(PlayerIndex.One);
 
             if (this.destination.Intersects(TraptMain.player.Destination))
-                TraptMain.hud.ContextTip = "Press 'space bar' to enter next level"; 
-            if (this.destination.Intersects(TraptMain.player.Destination) && ks.IsKeyDown(Keys.Space))
+                TraptMain.hud.ContextTip = "Press 'space bar' to enter next level\n([A] on Gamepad)";
+            if (this.destination.Intersects(TraptMain.player.Destination) && 
+                ( (ks.IsKeyDown(Keys.Space) && !ksold.IsKeyDown(Keys.Space)) 
+                || (gps.IsButtonDown(Buttons.A) && !gpsold.IsButtonDown(Buttons.A)) ))
             {
                 if (TraptMain.currentGameState == GameState.Tutorial)
                 {
@@ -58,11 +61,26 @@ namespace TRAPT
                 }
                 else if( TraptMain.currentGameState == GameState.Playing)
                 {
+                    if (TraptMain.nextlvl == "level1")
+                    {
+                        TraptMain.nextlvl = "level2";
+                    }
+                    else if (TraptMain.nextlvl == "level2")
+                    {
+                        TraptMain.nextlvl = "mainmenu";
+                        
+                        //TraptMain.cursor.cameraMode = false;
+                        TraptMain.cursor.ChangeMouseMode("menu");
+                        TraptMain.nextGameState = GameState.MainMenu;
+                    }
                     TraptMain.player.Destroy();
-                    TraptMain.nextlvl = "level2";
+                    
                     TraptMain.currentGameState = GameState.Loading;
                 }
             }
+
+            ksold = ks;
+            gpsold = gps;
 
             base.Update(gameTime);
         }

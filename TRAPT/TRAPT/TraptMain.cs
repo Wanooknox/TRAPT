@@ -240,7 +240,7 @@ namespace TRAPT
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed) this.Exit();
+            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed) this.Exit();
 
             //cursor.Update(gameTime);
 
@@ -320,11 +320,14 @@ namespace TRAPT
                         this.lvl.Update(gameTime);
                     }
 
-                    if (ks.IsKeyDown(Keys.Escape) && !ksold.IsKeyDown(Keys.Escape))
+                    if ((ks.IsKeyDown(Keys.Escape) && !ksold.IsKeyDown(Keys.Escape))
+                        || (gps.IsButtonDown(Buttons.Start) && !gpsold.IsButtonDown(Buttons.Start)))
                     {
                         EnableAllObjects(false);
+                        //cursor.cameraMode = false;
                         cursor.ChangeMouseMode("menu");
                         currentGameState = GameState.Paused;
+                        //btnPlay.isClicked = false;
                     }
                     if (player.isDead)
                     {
@@ -355,7 +358,8 @@ namespace TRAPT
                         this.lvl.Update(gameTime);
                     }
 
-                    if (ks.IsKeyDown(Keys.Escape) && !ksold.IsKeyDown(Keys.Escape))
+                    if ((ks.IsKeyDown(Keys.Escape) && !ksold.IsKeyDown(Keys.Escape)) 
+                        || (gps.IsButtonDown(Buttons.Start) && !gpsold.IsButtonDown(Buttons.Start)))
                     {
                         EnableAllObjects(false);
                         //cursor.cameraMode = false;

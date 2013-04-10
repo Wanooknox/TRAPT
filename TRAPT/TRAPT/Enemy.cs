@@ -723,7 +723,7 @@ namespace TRAPT
             spriteCenter = new Vector2((this.source.Width / 2), (this.source.Height / 2));
             viewCone.Update(gameTime, rotation, this.position);
             this.CheckViewCone();
-            if (currentState != AIstate.ATTACKING || currentState != AIstate.SEARCHING)
+            if (currentState != AIstate.ATTACKING && currentState != AIstate.SEARCHING)
             {
                 this.CheckMeleeCone();
             }

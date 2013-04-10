@@ -3,191 +3,191 @@
   <Barrier>
     <connection>1</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>1</x>
       <y>20</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>1</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>2</x>
       <y>20</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>1</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>3</x>
       <y>20</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>22</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>23</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>24</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>25</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>26</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>27</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>28</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>29</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>30</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>31</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>32</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>33</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>34</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>35</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>36</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>37</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>38</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>39</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Barrier>
     <connection>2</connection>
     <texPosition>1</texPosition>
-    <position>
+    <posistion>
       <x>40</x>
       <y>19</y>
-    </position>
+    </posistion>
   </Barrier>
   <Switch>
     <connection>1</connection>
-    <position>
+    <posistion>
       <x>16</x>
       <y>17</y>
-    </position>
+    </posistion>
   </Switch>
   <Switch>
     <connection>2</connection>
-    <position>
+    <posistion>
       <x>39</x>
       <y>28</y>
-    </position>
+    </posistion>
   </Switch>
 </Level>

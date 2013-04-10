@@ -19,7 +19,7 @@ namespace TRAPT.Levels
     {
         private string mapName = @"Maps\Tutorial";
         private string xmlName = @"AIFiles\TutorialObjects";
-        private string xmlSwitch = @"Level1_Switch_Barrier";
+        private string xmlSwitch = @"Tutorial_Switch_Barrier";
 
         Vector2 playerStart;        
 

@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Level>
+  <Barrier>
+    <connection>1</connection>
+    <texPosition>1</texPosition>
+    <position>
+      <x>9</x>
+      <y>6</y>
+    </position>
+  </Barrier>
+  <Barrier>
+    <connection>1</connection>
+    <texPosition>1</texPosition>
+    <position>
+      <x>10</x>
+      <y>6</y>
+    </position>
+  </Barrier>
+  <Barrier>
+    <connection>2</connection>
+    <texPosition>1</texPosition>
+    <position>
+      <x>21</x>
+      <y>9</y>
+    </position>
+  </Barrier>
+  <Switch>
+    <connection>1</connection>
+    <position>
+      <x>16</x>
+      <y>1</y>
+    </position>
+  </Switch>
+  <Switch>
+    <connection>2</connection>
+    <position>
+      <x>2</x>
+      <y>10</y>
+    </position>
+  </Switch>
+</Level>
+
