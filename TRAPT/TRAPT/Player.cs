@@ -148,7 +148,7 @@ namespace TRAPT
                 this.spriteWidth, this.spriteHeight);
             this.source = new Rectangle(this.spriteStartX, this.spriteStartY, this.spriteWidth, this.spriteHeight);
 
-            this.texture = Game.Content.Load<Texture2D>(@"Characters\alienAnimation_death");
+            this.texture = Game.Content.Load<Texture2D>(@"Characters\alienAnimation(New)");
             // font for printing debug info.
             this.font = Game.Content.Load<SpriteFont>("SpriteFont1");
             this.guideTex = Game.Content.Load<Texture2D>("tileguide");
@@ -362,13 +362,13 @@ namespace TRAPT
                     if (this.power == Power.Shroud)
                     {
                         this.energy -= 1;
-                        this.energyDelay = TimeSpan.FromMilliseconds(200);
+                        this.energyDelay = TimeSpan.FromMilliseconds(25);
                         this.energyRegenDelay = TimeSpan.FromMilliseconds(3000);
                     }//else for fortify
                     else if (this.power == Power.Fortify)
                     {
                         this.energy -= 1;
-                        this.energyDelay = TimeSpan.FromMilliseconds(50);
+                        this.energyDelay = TimeSpan.FromMilliseconds(100);
                         this.energyRegenDelay = TimeSpan.FromMilliseconds(3000);
                     }
                     else //else no power
@@ -606,7 +606,8 @@ namespace TRAPT
                     this.Weapon.Shoot();
                     this.isShooting = true;
                 }
-                if( ms.LeftButton == ButtonState.Released )
+                if( (ms.LeftButton == ButtonState.Released && !TraptMain.useGamePad) 
+                    || (gps.Triggers.Right <= 0 && TraptMain.useGamePad))
                 {
                     this.isShooting = false;
                 }
@@ -643,6 +644,13 @@ namespace TRAPT
             {
                 //decrement the melee delay
                 this.meleeDelay -= gameTime.ElapsedGameTime;
+            }
+
+            //Change sripte animation when we have a gun
+            if (this.Weapon != null)
+            {
+                this.aniRow = 1;
+                this.aniLength = 9;
             }
             
 
@@ -935,7 +943,7 @@ namespace TRAPT
             //that.UpdateDirection();
 
             //TODO: work on player object's collision resolution
-            if (that is WallTile)
+            if (that is WallTile ||(that is Obstacle) && ((Obstacle)that).SwStatus)
             {
                 //colliding = true;
                 //throw new ApplicationException("hit wall!");

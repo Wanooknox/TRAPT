@@ -26,8 +26,8 @@ namespace TRAPT
             {
                 _position = value;
 
-                // If there's a limit set and the camera is not transformed clamp position to limits
-                if (Limits != null && Zoom == 1.0f && Rotation == 0.0f)
+                //// If there's a limit set and the camera is not transformed clamp position to limits
+                if (Limits != null && Zoom == 1.0f && Rotation == 0.0f && !TraptMain.useGamePad)
                 {
                     _position.X = MathHelper.Clamp(_position.X, Limits.Value.X, Limits.Value.X + Limits.Value.Width - _viewport.Width);
                     _position.Y = MathHelper.Clamp(_position.Y, Limits.Value.Y, Limits.Value.Y + Limits.Value.Height - _viewport.Height);

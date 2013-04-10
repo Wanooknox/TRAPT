@@ -19,6 +19,7 @@ namespace TRAPT
         public Vector2 size;
         public bool isClicked;
         private MouseState msold;
+        private GamePadState gpsold;
 
 
         public Button(Texture2D newTexture, GraphicsDevice graphics)
@@ -40,7 +41,7 @@ namespace TRAPT
             {
                 this.color = Color.Red;
                 if (mouse.LeftButton == ButtonState.Pressed && msold.LeftButton == ButtonState.Released
-                    || gps.IsButtonDown(Buttons.A))
+                    || gps.IsButtonDown(Buttons.LeftShoulder) && !gpsold.IsButtonDown(Buttons.LeftShoulder))
                 {
                     isClicked = true;
                 }
@@ -51,6 +52,7 @@ namespace TRAPT
             }
 
             msold = mouse;
+            gpsold = gps;
         }
 
         public void setPosition(Vector2 newPosition)

@@ -156,7 +156,7 @@ namespace TRAPT
 
                 posT.X = (Game.GraphicsDevice.Viewport.Width/2) - (tipWidth / 2);
                 spriteBatch.Draw(texT, posT, recT, Color.White);
-                spriteBatch.DrawString(ammoFont, this.ContextTip, new Vector2(posT.X + texT.Width + 10, posT.Y), Color.White);
+                spriteBatch.DrawString(ammoFont, this.ContextTip, new Vector2(posT.X + texT.Width + 10, posT.Y), Color.Blue);
 
                 this.ContextTip = ""; //n context
             }

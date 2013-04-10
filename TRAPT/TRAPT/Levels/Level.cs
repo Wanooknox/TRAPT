@@ -46,8 +46,20 @@ namespace TRAPT.Levels
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
+            MouseState ms = Mouse.GetState();
 
+            Vector2 playerCamPos = new Vector2(TraptMain.player.Position.X - Game.GraphicsDevice.Viewport.Width / 2, TraptMain.player.Position.Y - Game.GraphicsDevice.Viewport.Height / 2);
+            Vector2 cursorCamPos = new Vector2(TraptMain.cursor.Position.X - Game.GraphicsDevice.Viewport.Width / 2, TraptMain.cursor.Position.Y - Game.GraphicsDevice.Viewport.Height / 2);
+            if (TraptMain.useGamePad)
+            {
+                //if useing gamepad, cente camera on player
+                TraptMain.camera.Position = playerCamPos;
+            }
+            else
+            {
+                //if useing kbd+ms, center between player and cusror
+                TraptMain.camera.Position = new Vector2((cursorCamPos.X + playerCamPos.X) / 2, (cursorCamPos.Y + playerCamPos.Y) / 2);
+            }
             base.Update(gameTime);
         }
 

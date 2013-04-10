@@ -19,6 +19,7 @@ namespace TRAPT.Levels
     {
         private string mapName = @"Maps\Tutorial";
         private string xmlName = @"AIFiles\TutorialObjects";
+        private string xmlSwitch = @"Tutorial_Switch_Barrier";
 
         Vector2 playerStart;        
 
@@ -55,25 +56,28 @@ namespace TRAPT.Levels
             TraptMain.camera.Limits = new Rectangle(0, 0, TraptMain.tileLayer.mapWidth * TraptMain.GRID_CELL_SIZE, TraptMain.tileLayer.mapHeight * TraptMain.GRID_CELL_SIZE);
 
             //initialize the player
-            this.playerStart = new Vector2(450, 300);
+            this.playerStart = new Vector2(2*128-64, 3*128-64);
             TraptMain.player = new Player(Game);
             TraptMain.player.Initialize(this.playerStart);
 
             //Create the AI 
             TraptMain.xmlReader.populateEnemiesFromXML(xmlName);
+            TraptMain.xmlReader.placeSwitchAndBarrier(xmlSwitch);
 
             //Setup two guns (one of each)
-            Vector2 gun1Start = new Vector2((Game.GraphicsDevice.Viewport.Width / 4) * 3, (Game.GraphicsDevice.Viewport.Height / 4) * 3);
+            Vector2 gun1Start = new Vector2(13*128-64, 3*128-64);
             this.testShotGun = new Weapon(Game);
             this.testShotGun.Initialize(gun1Start, 30, WeaponType.Shotgun);
-            Vector2 gun2Start = new Vector2((Game.GraphicsDevice.Viewport.Width / 4) * 3, (Game.GraphicsDevice.Viewport.Height / 5) * 3);
+            Vector2 gun2Start = new Vector2(14 * 128 - 64, 3 * 128 - 64);
             this.testSMGGun = new Weapon(Game);
             this.testSMGGun.Initialize(gun2Start, 50, WeaponType.SMG);
 
             //Level Changer 
             LevelChanger exit = new LevelChanger(Game);
-            exit.Initialize(128, "exitDoors", 25 * TraptMain.GRID_CELL_SIZE-5, 9 * TraptMain.GRID_CELL_SIZE, TraptMain.GRID_CELL_SIZE, TraptMain.GRID_CELL_SIZE);
+            exit.Initialize(128, "exitDoors", 28 * TraptMain.GRID_CELL_SIZE-5, 9 * TraptMain.GRID_CELL_SIZE, TraptMain.GRID_CELL_SIZE, TraptMain.GRID_CELL_SIZE);
 
+            TutorialGuides guide = new TutorialGuides(Game);
+            guide.Initialize();
            
 
             base.Initialize();

@@ -79,7 +79,12 @@ namespace TRAPT
         public static bool useGamePad = false;
         public KeyboardState ks, ksold;
         public MouseState ms, msold;
+        public GamePadState gps, gpsold;
         //public static KeyboardState ks, ksold;
+        private Texture2D xboxControllerTex;
+        private Rectangle xboxControllerPos;
+        private Texture2D mouseKeyboardTex;
+        private Rectangle mouseKeyboardPos;
 
         int screenAdjustmentX;
         int screenAdjustmentY;
@@ -125,11 +130,11 @@ namespace TRAPT
 
             //Screen stuff
 
-            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            //graphics.PreferredBackBufferWidth = screenWidth;
-            //graphics.PreferredBackBufferHeight = screenHeight;
-            graphics.IsFullScreen = true;
+            //graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            //graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            graphics.PreferredBackBufferWidth = screenWidth;
+            graphics.PreferredBackBufferHeight = screenHeight;
+            //graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
             screenAdjustmentX = graphics.PreferredBackBufferWidth;
@@ -200,9 +205,11 @@ namespace TRAPT
             btnQuit = new Button(Content.Load<Texture2D>(@"MenuButtons\quitGame"), graphics.GraphicsDevice);
             btnQuit.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 2) + 80));
 
-            //Tutorial sprites
-            //aswdKeysTex = Content.Load<Texture2D>("aswdKeys");
-            //aswdKeysPos = new Rectangle(100, 100,this.aswdKeysTex.Width, this.aswdKeysTex.Height);
+            //Instruction images
+            this.xboxControllerTex = this.Content.Load<Texture2D>("xbox");
+            this.xboxControllerPos = new Rectangle(screenAdjustmentX / 5, screenAdjustmentY / 2, this.xboxControllerTex.Width, this.xboxControllerTex.Height);
+            this.mouseKeyboardTex = this.Content.Load<Texture2D>("FullGuide");
+            this.mouseKeyboardPos = new Rectangle(screenAdjustmentX / 5, screenAdjustmentY / 8 + 25, this.mouseKeyboardTex.Width, this.mouseKeyboardTex.Height - 50);
 
             //Pause stuff
             pausedTexture = Content.Load<Texture2D>(@"logoScreens\gamePausedScreen");
@@ -212,6 +219,8 @@ namespace TRAPT
             btnReturn.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 70));
             btnMainMenu = new Button(Content.Load<Texture2D>(@"MenuButtons\quitGame"), graphics.GraphicsDevice);
             btnMainMenu.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 130));
+
+
         }
 
         /// <summary>
@@ -231,15 +240,19 @@ namespace TRAPT
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed) this.Exit();
+            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed) this.Exit();
 
             //cursor.Update(gameTime);
 
             //get newest keyboard state
             ks = Keyboard.GetState();
             ms = Mouse.GetState();
+            gps = GamePad.GetState(PlayerIndex.One);
 
-            //if (ks.IsKeyDown(Keys.Escape)) this.Exit();
+            if (!ks.IsKeyDown(Keys.F10) && ksold.IsKeyDown(Keys.F10))
+            {
+                ToggleGamePad();
+            }
 
             switch (currentGameState)
             {
@@ -260,7 +273,7 @@ namespace TRAPT
                         Enemy.stopShooting = false;
                         btnPlay.isClicked = false;
                         BackgroundMusic(@"Sound\ambient4");
-                        nextlvl = "level2";
+                        nextlvl = "level1";
                         nextGameState = GameState.Playing;
                         currentGameState = GameState.Loading;
                     }
@@ -284,7 +297,8 @@ namespace TRAPT
                     break;
 
                 case GameState.Instructions:
-                    if (ms.LeftButton == ButtonState.Pressed && msold.LeftButton == ButtonState.Released)
+                    if (ms.LeftButton == ButtonState.Pressed && msold.LeftButton == ButtonState.Released
+                        || (gps.Buttons.LeftShoulder == ButtonState.Pressed && gpsold.Buttons.LeftShoulder == ButtonState.Released))
                     {
                         currentGameState = GameState.MainMenu;
                     }
@@ -306,11 +320,14 @@ namespace TRAPT
                         this.lvl.Update(gameTime);
                     }
 
-                    if (ks.IsKeyDown(Keys.Escape) && !ksold.IsKeyDown(Keys.Escape))
+                    if ((ks.IsKeyDown(Keys.Escape) && !ksold.IsKeyDown(Keys.Escape))
+                        || (gps.IsButtonDown(Buttons.Start) && !gpsold.IsButtonDown(Buttons.Start)))
                     {
                         EnableAllObjects(false);
+                        //cursor.cameraMode = false;
                         cursor.ChangeMouseMode("menu");
                         currentGameState = GameState.Paused;
+                        //btnPlay.isClicked = false;
                     }
                     if (player.isDead)
                     {
@@ -341,7 +358,8 @@ namespace TRAPT
                         this.lvl.Update(gameTime);
                     }
 
-                    if (ks.IsKeyDown(Keys.Escape) && !ksold.IsKeyDown(Keys.Escape))
+                    if ((ks.IsKeyDown(Keys.Escape) && !ksold.IsKeyDown(Keys.Escape)) 
+                        || (gps.IsButtonDown(Buttons.Start) && !gpsold.IsButtonDown(Buttons.Start)))
                     {
                         EnableAllObjects(false);
                         //cursor.cameraMode = false;
@@ -418,6 +436,7 @@ namespace TRAPT
             //save current keyboard state as the old state
             ksold = ks;
             msold = ms;
+            gpsold = gps;
 
             base.Update(gameTime);
         }
@@ -462,8 +481,10 @@ namespace TRAPT
 
                     spriteBatch.Draw(Content.Load<Texture2D>(@"logoScreens\GameInstructions"), new Microsoft.Xna.Framework.Rectangle(0, 0, screenAdjustmentX, screenAdjustmentY),
                         Color.White);
-                    LoadInstructions();
-                    spriteBatch.DrawString(font, instructionInfo, new Vector2(110, 200), Color.White);
+                    //LoadInstructions();
+                    //spriteBatch.DrawString(font, instructionInfo, new Vector2(110, 200), Color.White);
+                    spriteBatch.Draw(this.xboxControllerTex, this.xboxControllerPos, Color.White);
+                    spriteBatch.Draw(this.mouseKeyboardTex, this.mouseKeyboardPos, Color.White);
                     cursor.Draw(this.spriteBatch);
                     //end draw
                     this.spriteBatch.End();
@@ -485,16 +506,16 @@ namespace TRAPT
                     }
 
                     this.spriteBatch.Begin();
-                    //spriteBatch.Draw(this.aswdKeysTex, this.aswdKeysPos, Color.White);
-                    this.spriteBatch.DrawString(instructions, "Movement:  A:Left \n" +
-                                                              "           S:Down \n" +
-                                                              "           D:Right \n" +
-                                                              "           W: UP \n" +
-                                                              "Look:      Mouse \n" +
-                                                              "Shoot:     LeftMouseButton\n" +
-                                                              "Melee:     RightMouseButton \n" +
-                                                              "Abilities: Shroud: Q \n" +
-                                                              "           Fortify: E", Vector2.Zero, Color.White);
+                    ////spriteBatch.Draw(this.aswdKeysTex, this.aswdKeysPos, Color.White);
+                    //this.spriteBatch.DrawString(instructions, "Movement:  A:Left \n" +
+                    //                                          "           S:Down \n" +
+                    //                                          "           D:Right \n" +
+                    //                                          "           W: UP \n" +
+                    //                                          "Look:      Mouse \n" +
+                    //                                          "Shoot:     LeftMouseButton\n" +
+                    //                                          "Melee:     RightMouseButton \n" +
+                    //                                          "Abilities: Shroud: Q \n" +
+                    //                                          "           Fortify: E", Vector2.Zero, Color.White);
                     hud.Draw(this.spriteBatch);
                     this.spriteBatch.End();
 
@@ -515,12 +536,7 @@ namespace TRAPT
                         }
                         //end the batch
                         this.spriteBatch.End();
-                    }
-
-                    //if (ks.IsKeyDown(Keys.F10) && !ksold.IsKeyDown(Keys.F10))
-                    //{
-                    //    ToggleGamePad();
-                    //}
+                    }                    
 
                     this.spriteBatch.Begin();
                     hud.Draw(this.spriteBatch);
@@ -750,10 +766,7 @@ namespace TRAPT
                     this.lvl.Initialize();
                     break;
                 case "level2":
-                    if (this.lvl != null)
-                    {
-                        this.lvl.Destroy();
-                    }
+                    this.lvl.Destroy();
                     this.lvl = new Level2(this);
                     this.lvl.Initialize();
                     break;
@@ -802,11 +815,12 @@ namespace TRAPT
             {
                 if (i is DrawableGameComponent && ((DrawableGameComponent)i).Visible)
                 {
-                    if (i is Tile)
+                    if (i is Tile )
                     {
                         layers[0].Add(i);
                     }
-                    else if (i is Agent || i is Weapon || i is Projectile || i is Structure)
+                    else if (i is Agent || i is Weapon || i is Projectile 
+                        || i is Structure || i is TutorialGuides)
                     {
                         layers[1].Add(i);
                     }

@@ -61,6 +61,18 @@ Content\muzzleflash.xnb
 Content\Guns\guns.xnb
 Content\Guns\gunsNew.xnb
 Content\Characters\robot.xnb
+Content\Tutorial\GunGuide.xnb
+Content\Tutorial\MeleeGuide.xnb
+Content\Tutorial\MoveGuide.xnb
+Content\Tutorial\PowerGuide.xnb
+Content\Characters\alienAnimation(New).xnb
+Content\bullets.xnb
+Content\xbox.xnb
+Content\FullGuide.xnb
+Content\Barriers_1.xnb
+Content\Switches_1.xnb
+Content\Switches_2.xnb
+Content\Switches_3.xnb
 Content\SpriteFont1.xnb
 Content\Sound\ambient4.xnb
 Content\Sound\shotgun.xnb
@@ -80,3 +92,6 @@ Content\AIFiles\Level1Objects.xml
 Content\AIFiles\TutorialObjects.xml
 Content\AIFiles\Level1Objects_v2.xml
 Content\AIFiles\Level2Objects_v2.xml
+Content\Level1_Switch_Barrier.xml
+Content\Level2_Switch_Barrier.xml
+Content\Tutorial_Switch_Barrier.xml
