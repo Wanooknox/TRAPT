@@ -29,9 +29,6 @@ namespace TRAPT
             position.X = xPos;
             position.Y = yPos;
             this.dwell = dwell;
-
-            //debugDot = new Dot(TraptMain.cursor.Game);
-            //debugDot.Initialize(this.position);
         }
 
         public Vector2 getPosition()

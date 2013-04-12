@@ -14,10 +14,25 @@ namespace TRAPT
 {
     /// <summary>
     /// This is a game component that implements IUpdateable.
+    /// This class is an extension of Enemy
+    /// Everything is the same except for speed and sprite parameters
     /// </summary>
     public class Robot : Enemy
     {
         bool isStatSet = false;
+
+        private Vector2 weapPos = new Vector2();
+        public override Vector2 WeaponPosition
+        {
+            get
+            {
+                int offset = 20;
+                weapPos.Y = (float)(offset * Math.Cos(this.rotation + Math.PI));
+                weapPos.X = (float)(offset * Math.Sin(this.rotation));
+                return new Vector2(this.position.X + weapPos.X, this.position.Y + weapPos.Y);
+                //return this.position;
+            }
+        }
 
         public Robot(Game game)
             : base(game)

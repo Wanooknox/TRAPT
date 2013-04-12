@@ -158,9 +158,11 @@ namespace TRAPT
             {
                 case WeaponType.SMG:
                     this.shotSound = Game.Content.Load<SoundEffect>(@"Sound\SMG");
+                    this.ammo = 50;
                     break;
                 case WeaponType.Shotgun:
                     this.shotSound = Game.Content.Load<SoundEffect>(@"Sound\shotgun");
+                    this.ammo = 10;
                     break;
             }
         }

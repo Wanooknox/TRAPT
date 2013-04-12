@@ -130,11 +130,11 @@ namespace TRAPT
 
             //Screen stuff
 
-            //graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            //graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            graphics.PreferredBackBufferWidth = screenWidth;
-            graphics.PreferredBackBufferHeight = screenHeight;
-            //graphics.IsFullScreen = true;
+            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            //graphics.PreferredBackBufferWidth = screenWidth;
+           // graphics.PreferredBackBufferHeight = screenHeight;
+            graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
             screenAdjustmentX = graphics.PreferredBackBufferWidth;
@@ -196,20 +196,20 @@ namespace TRAPT
             btnTutorial.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 60));
 
             btnPlay = new Button(Content.Load<Texture2D>(@"MenuButtons\newGame"), graphics.GraphicsDevice);
-            btnPlay.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 100));
+            btnPlay.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 123));
             btnInstructions = new Button(Content.Load<Texture2D>(@"MenuButtons\instructions"), graphics.GraphicsDevice);
             if (graphics.PreferredBackBufferWidth == 800 && graphics.PreferredBackBufferHeight == 600)
                 btnInstructions.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 140));
             else
-                btnInstructions.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 155));
+                btnInstructions.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 3) + 185));
             btnQuit = new Button(Content.Load<Texture2D>(@"MenuButtons\quitGame"), graphics.GraphicsDevice);
             btnQuit.setPosition(new Vector2(screenAdjustmentX / 3, (screenAdjustmentY / 2) + 80));
 
             //Instruction images
-            this.xboxControllerTex = this.Content.Load<Texture2D>("xbox");
-            this.xboxControllerPos = new Rectangle(screenAdjustmentX / 5, screenAdjustmentY / 2, this.xboxControllerTex.Width, this.xboxControllerTex.Height);
+            this.xboxControllerTex = this.Content.Load<Texture2D>("xBoxNew");
+            this.xboxControllerPos = new Rectangle((screenAdjustmentX / 20)*9, screenAdjustmentY / 4, this.xboxControllerTex.Width, this.xboxControllerTex.Height);
             this.mouseKeyboardTex = this.Content.Load<Texture2D>("FullGuide");
-            this.mouseKeyboardPos = new Rectangle(screenAdjustmentX / 5, screenAdjustmentY / 8 + 25, this.mouseKeyboardTex.Width, this.mouseKeyboardTex.Height - 50);
+            this.mouseKeyboardPos = new Rectangle(screenAdjustmentX / 20, (screenAdjustmentY / 20)*8, this.mouseKeyboardTex.Width, this.mouseKeyboardTex.Height - 50);
 
             //Pause stuff
             pausedTexture = Content.Load<Texture2D>(@"logoScreens\gamePausedScreen");
@@ -286,7 +286,7 @@ namespace TRAPT
                     {
                         this.Exit();
                     }
-                    if (ks.IsKeyDown(Keys.Escape)) this.Exit();
+                    //if (ks.IsKeyDown(Keys.Escape)) this.Exit();
 
                     btnTutorial.Update(ms);
                     btnPlay.Update(ms);
@@ -302,7 +302,7 @@ namespace TRAPT
                     {
                         currentGameState = GameState.MainMenu;
                     }
-                    if (ks.IsKeyDown(Keys.Escape)) this.Exit();
+                    //if (ks.IsKeyDown(Keys.Escape)) this.Exit();
 
                     cursor.Update(gameTime);
                     //base.Update(gameTime);
@@ -404,7 +404,7 @@ namespace TRAPT
                         nextGameState = GameState.MainMenu;
                         currentGameState = GameState.Loading;
                     }
-                    if (ks.IsKeyDown(Keys.Escape) && !ksold.IsKeyDown(Keys.Escape)) this.Exit();
+                    //if (ks.IsKeyDown(Keys.Escape) && !ksold.IsKeyDown(Keys.Escape)) this.Exit();
 
                     btnReturn.Update(ms);
                     btnMainMenu.Update(ms);

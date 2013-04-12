@@ -13,8 +13,10 @@ using System.Xml.Linq;
 
 namespace TRAPT
 {
-
-    public class XMLObjectReader //: Microsoft.Xna.Framework.GameComponent
+    /// <summary>
+    /// Class created for use of reading game objects from our XML documents
+    /// </summary>
+    public class XMLObjectReader
     {
         LinkedList<Enemy> agentList = new LinkedList<Enemy>();
         Enemy agent;
@@ -47,6 +49,10 @@ namespace TRAPT
             Game = game;
         }
 
+        /// <summary>
+        /// Method to pull barriers and switches from our XML file given the name of the file
+        /// </summary>
+        /// <param name="xmlName"></param>
         public void placeSwitchAndBarrier(string xmlName)
         {
             string texStr = "Switches_3";
@@ -114,7 +120,7 @@ namespace TRAPT
         public void populateEnemiesFromXML(string xmlName)
         {
             XDocument xDoc = new XDocument();
-            //string filePath = "C:/Users/Jason/Documents/Visual Studio 2010/Projects/Trapt_AI_test/Trapt_AI_test/Trapt_AI_test/EnemiesToPopulate.xml";
+            
             string filePath = Game.Content.RootDirectory + @"\"+ xmlName +".xml";
             xDoc = XDocument.Load(filePath);
             Enemy agent = null;
