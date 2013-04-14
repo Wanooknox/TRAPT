@@ -28,10 +28,6 @@ namespace TRAPT
         Bottom,
         Right, 
         Left,
-        //TopRight,
-        //TopLeft,
-        //BottomRight,
-        //BottomLeft,
     }
 
     /// <summary>
@@ -43,37 +39,12 @@ namespace TRAPT
         #region Variables
         // PHYSICS FIELDS
         private Vector2 prevPos, prevVel;
-        //public Vector2 position;
-        //public Vector2 velocity;
-        //private float rotation;
-        //private float direction;
         public bool isShooting;
+              
 
-        private Vector2 weapPos = new Vector2();
-        public override Vector2 WeaponPosition
-        {
-            get
-            {
-                int offset = 25;
-                weapPos.Y = (float)(offset * Math.Cos(this.rotation + Math.PI));
-                weapPos.X = (float)(offset * Math.Sin(this.rotation));
-                return new Vector2(this.position.X + weapPos.X, this.position.Y + weapPos.Y);
-                //return this.position;
-            }
-        }
-
-        //public override Vector2 WeaponOrigin
-        //{ get { return new Vector2(-12,42); } }
-
-        //float speed = 0f;
         private static float MAX_PLAYER_SPEED = 5f;
         private static float MIN_PLAYER_SPEED = 0f;
 
-        //float friction = 0.25f;
-        //float acceleration = 0.5f;
-
-        //bool colliding = false;
-        //EnvironmentObj collidingWith;
         public Power power = Power.None;
         private Barrier vBarrier = Barrier.None;
         private Barrier hBarrier = Barrier.None;
@@ -94,8 +65,6 @@ namespace TRAPT
         protected Keys right = Keys.D;
         // melee delay
         public TimeSpan meleeDelay = TimeSpan.Zero;
-        //public bool doMelee = false;
-
 
         // DRAWING FIELDS
         Texture2D guideTex;
@@ -109,12 +78,27 @@ namespace TRAPT
         int spriteStartY = 0; // Y of top left corner of sprite 0.
         int spriteWidth = 64;
         int spriteHeight = 64;
-        #endregion
+        
 
         /*Testing Bug2 for obstacles*/
         //public bool useBug2 = true;
         //public Bug2 bug2 = new Bug2();
         //public List<Obstacle> obstacles;
+
+        private Vector2 weapPos = new Vector2();
+        public override Vector2 WeaponPosition
+        {
+            get
+            {
+                int offset = 25;
+                weapPos.Y = (float)(offset * Math.Cos(this.rotation + Math.PI));
+                weapPos.X = (float)(offset * Math.Sin(this.rotation));
+                return new Vector2(this.position.X + weapPos.X, this.position.Y + weapPos.Y);
+                //return this.position;
+            }
+        }
+        #endregion
+
 
         public Player(Game game)
             : base(game)
@@ -148,7 +132,7 @@ namespace TRAPT
                 this.spriteWidth, this.spriteHeight);
             this.source = new Rectangle(this.spriteStartX, this.spriteStartY, this.spriteWidth, this.spriteHeight);
 
-            this.texture = Game.Content.Load<Texture2D>(@"Characters\alienAnimation_death");
+            this.texture = Game.Content.Load<Texture2D>(@"Characters\alienAnimation(New)");
             // font for printing debug info.
             this.font = Game.Content.Load<SpriteFont>("SpriteFont1");
             this.guideTex = Game.Content.Load<Texture2D>("tileguide");
@@ -362,13 +346,13 @@ namespace TRAPT
                     if (this.power == Power.Shroud)
                     {
                         this.energy -= 1;
-                        this.energyDelay = TimeSpan.FromMilliseconds(200);
+                        this.energyDelay = TimeSpan.FromMilliseconds(25);
                         this.energyRegenDelay = TimeSpan.FromMilliseconds(3000);
                     }//else for fortify
                     else if (this.power == Power.Fortify)
                     {
                         this.energy -= 1;
-                        this.energyDelay = TimeSpan.FromMilliseconds(50);
+                        this.energyDelay = TimeSpan.FromMilliseconds(100);
                         this.energyRegenDelay = TimeSpan.FromMilliseconds(3000);
                     }
                     else //else no power
@@ -550,12 +534,6 @@ namespace TRAPT
 
             this.ManagePowers();
 
-            //TEMP HEALTH MODFIER
-            //if (ks.IsKeyDown(Keys.T) && !ksold.IsKeyDown(Keys.T)) //key lifted
-            //{
-            //    this.HurtPlayer(10);
-            //}
-
             //manage player health
             this.ManageHealth(gameTime);
 
@@ -579,11 +557,7 @@ namespace TRAPT
                     AgentDie zombie = new AgentDie(Game);
                     zombie.Initialize(this.texture, 3300, this.rotation, this.position, this.source, this.destination);
                     zombie.SetAnimationParams(this.aniStart, this.aniLength, this.aniRate, this.aniRow, this.frameWidth, this.frameHeight);
-
-                    //get rid of the enemy object
-                    //this.Weapon.Drop();
-                    //this.ClearLocationCheckin();
-                    //this.Dispose(true);
+                    
                     this.Visible = false;
                 }
             }
@@ -606,7 +580,8 @@ namespace TRAPT
                     this.Weapon.Shoot();
                     this.isShooting = true;
                 }
-                if( ms.LeftButton == ButtonState.Released )
+                if( (ms.LeftButton == ButtonState.Released && !TraptMain.useGamePad) 
+                    || (gps.Triggers.Right <= 0 && TraptMain.useGamePad))
                 {
                     this.isShooting = false;
                 }
@@ -626,8 +601,8 @@ namespace TRAPT
                 this.aniLength = 9;
                 if (this.Weapon != null) 
                     this.Weapon.Visible = true;
-                if (ms.RightButton == ButtonState.Pressed && msold.RightButton == ButtonState.Released //button just lifted
-                    || gps.Triggers.Left > 0 && !(gpsold.Triggers.Left > 0))
+                if ((ms.RightButton == ButtonState.Pressed && msold.RightButton == ButtonState.Released) //button just lifted
+                    || (gps.Triggers.Left > 0 && !(gpsold.Triggers.Left > 0)) || (gps.IsButtonDown(Buttons.RightStick) && !gpsold.IsButtonDown(Buttons.RightStick)))
                 {
                     //set a melee time to indicate performing a melee
                     this.meleeDelay = TimeSpan.FromMilliseconds(300);
@@ -644,21 +619,16 @@ namespace TRAPT
                 //decrement the melee delay
                 this.meleeDelay -= gameTime.ElapsedGameTime;
             }
-            
 
-            //////////////////////////////
+            //Change sripte animation when we have a gun
+            if (this.Weapon != null)
+            {
+                this.aniRow = 1;
+                this.aniLength = 9;
+            }
 
-            //Vector2 temp = Vector2.Transform(this.position, Matrix.Invert(((TraptMain)Game).camera.GetViewMatrix(new Vector2(0))));
-            ////this.camera.Position = new Vector2(ms.X - temp.X, ms.Y - temp.Y);
 
-            
-            //double delX = ms.X - temp.X;//this.position.X;
-            //double delY = ms.Y - temp.Y;//this.position.Y;
-            //this.rotation = (float)(Math.Atan2(delY, delX) + (Math.PI / 2.0));
-            //Console.WriteLine(delX + " " + delY);
-
-            ////////////////////////
-            
+            #region Friction
             // Include friction.
             // If our velocity (scalar magnitude of a vector = length of a vector) is greater than the effect of friction,
             // then friction should be applied in the opposite direction of the velocity.  
@@ -674,72 +644,26 @@ namespace TRAPT
                 this.velocity.X = MIN_PLAYER_SPEED;
                 this.velocity.Y = MIN_PLAYER_SPEED;
                 this.speed = MIN_PLAYER_SPEED;
-            } 
+            }
+            #endregion
 
-            // stop at edge of screen  
-            //if (this.position.X + this.velocity.X < this.spriteWidth
-            //    || Game.GraphicsDevice.Viewport.Width < this.position.X + this.velocity.X)
-            //{
-            //    //halt the x velocity 
-            //    this.velocity.X = 0;
-            //}
-            //if (this.position.Y + this.velocity.Y < this.spriteHeight
-            //    || Game.GraphicsDevice.Viewport.Height < this.position.Y + this.velocity.Y)
-            //{
-            //    //halt y velocity
-            //    this.velocity.Y = 0;
-            //}
-
-            //Enforce collision resolution
-            //if (colliding)
-            //{
-            //    EnforceCollide(collidingWith);
-            //}
-
-            //if (!colliding)
-            //{
-            //    // Apply the velocity to the position.  
-            //    this.position.Y += this.velocity.Y;
-            //    this.position.X += this.velocity.X;
-            //}
-            //else 
-            //{ 
-            //    colliding = false;
-            //    for (int i = 0; i < imHitting.Count(); i++)
-            //    {
-            //        this.Collide(imHitting[i]);
-            //        imHitting.RemoveAt(i);
-            //    }
-            //}
-
-
+            #region Collision detection
             int hitCount = imHitting.Count();
             for (int i = hitCount - 1; 0 <= i; i--)
             {
                 this.Collide(imHitting[i]);
                 imHitting.RemoveAt(i);
             }
+            #endregion
 
             //barrier resolution  (Stops him from not to get caught in a wall)
             ManageBarriers();
-
-
+            
             // Apply the velocity to the position.
             this.prevPos = Vector2.Zero + this.position;
             this.position.Y += this.velocity.Y;
             this.position.X += this.velocity.X;
-
-            //int hitCount = imHitting.Count();
-            //for (int i = hitCount - 1; 0 <= i; i--)
-            //{
-            //    this.Collide(imHitting[i]);
-            //    imHitting.RemoveAt(i);
-            //}
-
-            //this.hBarrier = Barrier.None;
-            //this.vBarrier = Barrier.None;
-
-            
+                        
             ksold = ks;
             msold = ms;
             gpsold = gps;
@@ -826,25 +750,7 @@ namespace TRAPT
         }
 
         public override void Draw(SpriteBatch spriteBatch)
-        {
-            //this.FPS = (gt.ElapsedGameTime.Milliseconds / 1000.0) * 100 *60;
-
-            ////waste time
-            //int n = 10;
-            //for (int i = 0; i < n; i++)
-            //{
-            //    for (int j = 0; j < n; j++)
-            //    {
-            //        //do nothing
-            //        Console.WriteLine("Waste Some Time " + i + " " + j);
-            //    }
-            //}
-
-            // Basic destination rectangle updating from last time. 
-            //this.DrawNormal(spriteBatch);
-            //this.DrawShroud(spriteBatch);
-            //this.DrawFortify(spriteBatch);
-
+        {           
             switch (this.power)
             {
                 case Power.None:
@@ -861,9 +767,6 @@ namespace TRAPT
             //TODO: Orgin is bad
             this.destination.X = (int)Math.Round(this.position.X - this.destination.Width / 2);
             this.destination.Y = (int)Math.Round(this.position.Y - this.destination.Height / 2);
-
-            //reference for where the hitbox is.
-            //spriteBatch.Draw(this.guideTex, this.Destination, Color.White);
 
             String debug = "Destination: " + this.Destination//this.direction * (180.0/Math.PI)
                 + "\nVelocity: " + this.velocity
@@ -891,102 +794,37 @@ namespace TRAPT
 
         public override bool IsColliding(EnvironmentObj that)
         {
-            //Rectangle collidingBox = new Rectangle(this.destination.X - (this.destination.Width / 2), this.destination.Y - (this.destination.Height / 2), this.destination.Width * 2, this.destination.Y * 2);
             Rectangle collidingBox = this.destination;//.Inflate(32, 32);
             collidingBox.Inflate(32, 32);
             return collidingBox.Intersects(that.Destination);
-
-           /* Rectangle temp = this.destination;
-
-            temp.X = (int)Math.Round(this.position.X + this.velocity.X - this.destination.Width / 2);
-            temp.Y = (int)Math.Round(this.position.Y + this.velocity.Y - this.destination.Height / 2);
-
-            return temp.Intersects(that.Destination);*/
-
-            //return this.destination.Intersects(that.Destination);
-            //return true;
         }
 
         public override void Collide(EnvironmentObj that)
         {
-            //this.destination.X -= (int)(Math.Sign(this.velocity.X) * Math.Abs(this.velocity.X));//(int)Math.Round(this.velocity.X);
-            //this.destination.Y -= (int)Math.Round(this.velocity.Y);
-
-            //Math.Sign(this.velocity.X) * this.friction;
-
-
-
-            //this.position.X -= (int)(Math.Sign(this.velocity.X) * Math.Ceiling(Math.Abs(this.velocity.X)));
-            //this.position.Y -= (int)(Math.Sign(this.velocity.Y) * Math.Ceiling(Math.Abs(this.velocity.Y)));
-
-            //this.destination.X = (int)(Math.Sign(this.velocity.X) * Math.Abs(Math.Round(this.position.X - this.destination.Width / 2)));
-            //this.destination.Y = (int)(Math.Sign(this.velocity.Y) * Math.Abs(Math.Round(this.position.Y - this.destination.Height / 2)));
-
-
-
-            //// change the velocites
-            //Vector2 swapV = new Vector2(that.velocity.X, that.velocity.Y);
-            //that.velocity.X = this.velocity.X * -1;
-            //that.velocity.Y = this.velocity.Y * -1;
-            //this.velocity.X = swapV.X;
-            //this.velocity.Y = swapV.Y;
-            ////and input new motion
-            //this.UpdateDirection();
-            //that.UpdateDirection();
-
-            //TODO: work on player object's collision resolution
-            if (that is WallTile)
+            if (that is WallTile ||(that is Obstacle) && ((Obstacle)that).SwStatus)
             {
-                //colliding = true;
-                //throw new ApplicationException("hit wall!");
-
-                //if (this.velocity.X > 0 || this.velocity.X < 0) //came from left
-                //{
-                //    this.position.X = this.prevPos.X; // -this.velocity.X;
-                //    //this.velocity.X = 0;
-                //}
-                //if (this.velocity.Y > 0 || this.velocity.Y < 0)
-                //{
-                //    this.position.Y = this.prevPos.Y;// -this.velocity.Y;
-                //    //this.velocity.Y = 0;
-                //}
-
+               
                 //previous destionation rectangle on the y asix
                 Rectangle prevDest = this.destination;
                 prevDest.Y = (int)Math.Round(this.prevPos.Y - this.destination.Height / 2);
 
                 //if (this.destination.Right > that.Destination.Left && this.destination.Right < that.Destination.Center.X) // object came from the left
                 if (this.velocity.X > 0 && prevDest.Intersects(that.Destination)) // object came from the left
-                {
-                    //if position tracked by center of sprite, move position to be wall left - half my width
-                    //this.position.X = that.Destination.Left - (this.destination.Width / 2)-1;
-                    //if position tracked by top left corner, move position to be wall left - my width
-                    //this.position.X = that.Destination.Left - (this.destination.Width) - 1;
-
-                    //Kinda good
+                {               
                     //this.position.X = prevPos.X;// -Math.Abs(prevVel.X);
                     this.position.X = prevPos.X - Math.Abs(velocity.X);
 
                     //barrier on the right side of me
                     this.hBarrier = Barrier.Right;
-
-                    //this.velocity.X = 0;
-                    //this.position.X = prevPos.X;
                 }
                 //else if (this.destination.Left < that.Destination.Right && this.destination.Left > that.Destination.Center.X) // object came from the right
                 else if (this.velocity.X < 0 && prevDest.Intersects(that.Destination)) // object came from the right
                 {
-                    //this.position.X = that.Destination.Right + (this.destination.Width / 2) + 1;
-
-                    //Kinda good
                     //this.position.X = prevPos.X;// +Math.Abs(prevVel.X);
                     this.position.X = prevPos.X +Math.Abs(velocity.X);
 
                     //barrier on the left side of me
-                    this.hBarrier = Barrier.Left;
-
-                    //this.velocity.X = 0;
-                    //this.position.X = prevPos.X;                   
+                    this.hBarrier = Barrier.Left;            
                 }
                 
                 //previous destionation rectangle on the x asxis
@@ -996,9 +834,6 @@ namespace TRAPT
                 //if (this.destination.Bottom > that.Destination.Top && this.destination.Bottom < that.Destination.Center.Y) // object came from the top
                 if (this.velocity.Y > 0 && prevDest.Intersects(that.Destination)) // object came from the top
                 {
-                    //this.position.Y = that.Destination.Top - (this.destination.Height/2)-1;
-
-                    //Kinda good
                     //this.position.Y = prevPos.Y;// -Math.Abs(prevVel.Y);
                     this.position.Y = prevPos.Y - Math.Abs(velocity.Y);
 
@@ -1008,52 +843,23 @@ namespace TRAPT
                 //else if (this.destination.Top < that.Destination.Bottom && this.destination.Top > that.Destination.Center.Y) // object came from the top
                 else if (this.velocity.Y < 0 && prevDest.Intersects(that.Destination)) // object came from the bottom
                 {
-                    //this.position.Y = that.Destination.Bottom + (this.destination.Height / 2) + 1;
-
-                    //Kinda good
                     //this.position.Y = prevPos.Y;// +Math.Abs(prevVel.Y);
                     this.position.Y = prevPos.Y + Math.Abs(velocity.Y);
 
                     //barrier on the top side of me
                     this.vBarrier = Barrier.Top;
                 }
-                
-
-                ////if horizontal collision
-                //if (this.Destination.Left <= that.Destination.Right || this.Destination.Right >= that.Destination.Left)
-                ////  if  (this.position.X + this.velocity.X < this.spriteWidth
-                ////|| that.Destination.Width < this.position.X + this.velocity.X)
-                //{
-                //    //this.position.X -= this.Destination.Left - that.Destination.Right;
-                //    this.velocity.X = 0;
-                //}
-                //if (this.Destination.Top <= that.Destination.Bottom || this.Destination.Bottom >= that.Destination.Top)
-                //{
-                //    //this.position.Y -= this.Destination.Bottom - that.Destination.Top;
-                //    this.velocity.Y = 0;
-                //}
-                 
-                
             }
             else if (that is Weapon)
             {
                 if (((Weapon)that).Owner == null && this.Weapon == null)
-                //if (TraptMain.ks.IsKeyDown(Keys.R) && !TraptMain.ksold.IsKeyDown(Keys.R))
                 {
                     TraptMain.hud.ContextTip = ((Weapon)that).TipString();
-                    //KeyboardState ks = Keyboard.GetState();
-                    //if (((Weapon)that).Owner == null && this.Weapon == null)
                     if (!ks.IsKeyDown(Keys.F) && ksold.IsKeyDown(Keys.F)
                         || !gps.IsButtonDown(Buttons.Y) && gpsold.IsButtonDown(Buttons.Y))
                     {
                         ((Weapon)that).PickUp(true, this);
-                        //this.Weapon = (Weapon)that;
-                        Console.WriteLine("R key PRESSED");
-                        //((Weapon)that).Owner = this;
-                        //((Weapon)that).GetSprite();
-                        //throw new ApplicationException("FUICK");
                     }
-                    //TraptMain.ksold = ks;
                 }
             }
             

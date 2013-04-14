@@ -5,22 +5,22 @@
       <node>
         <x>14</x>
         <y>1</y>
-        <dwell>2</dwell>
+        <dwell>0</dwell>
       </node>
       <node>
-        <x>55</x>
+        <x>41</x>
         <y>1</y>
-        <dwell>2</dwell>
+        <dwell>0</dwell>
       </node>
       <node>
-        <x>55</x>
+        <x>41</x>
         <y>27</y>
-        <dwell>2</dwell>
+        <dwell>0</dwell>
       </node>
       <node>
         <x>14</x>
         <y>27</y>
-        <dwell>2</dwell>
+        <dwell>0</dwell>
       </node>
     </Path>
   </Enemy>
@@ -32,17 +32,137 @@
         <dwell>2</dwell>
       </node>
       <node>
-        <x>54</x>
+        <x>40</x>
         <y>2</y>
-        <dwell>2</dwell>
+        <dwell>1</dwell>
       </node>
       <node>
-        <x>54</x>
+        <x>40</x>
         <y>26</y>
         <dwell>2</dwell>
       </node>
       <node>
         <x>15</x>
+        <y>26</y>
+        <dwell>1</dwell>
+      </node>
+    </Path>
+  </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>40</x>
+        <y>2</y>
+        <dwell>2</dwell>
+      </node>
+      <node>
+        <x>40</x>
+        <y>26</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>15</x>
+        <y>26</y>
+        <dwell>2</dwell>
+      </node>
+      <node>
+        <x>15</x>
+        <y>2</y>
+        <dwell>1</dwell>
+      </node>
+    </Path>
+  </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>41</x>
+        <y>1</y>
+        <dwell>0</dwell>
+      </node>
+      <node>
+        <x>41</x>
+        <y>27</y>
+        <dwell>0</dwell>
+      </node>
+      <node>
+        <x>14</x>
+        <y>27</y>
+        <dwell>0</dwell>
+      </node>
+      <node>
+        <x>14</x>
+        <y>1</y>
+        <dwell>0</dwell>
+      </node>
+    </Path>
+  </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>40</x>
+        <y>26</y>
+        <dwell>2</dwell>
+      </node>
+      <node>
+        <x>15</x>
+        <y>26</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>15</x>
+        <y>2</y>
+        <dwell>2</dwell>
+      </node>
+      <node>
+        <x>40</x>
+        <y>2</y>
+        <dwell>1</dwell>
+      </node>
+    </Path>
+  </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>41</x>
+        <y>27</y>
+        <dwell>0</dwell>
+      </node>
+      <node>
+        <x>14</x>
+        <y>27</y>
+        <dwell>0</dwell>
+      </node>
+      <node>
+        <x>14</x>
+        <y>1</y>
+        <dwell>0</dwell>
+      </node>
+      <node>
+        <x>41</x>
+        <y>1</y>
+        <dwell>0</dwell>
+      </node>
+    </Path>
+  </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>15</x>
+        <y>26</y>
+        <dwell>2</dwell>
+      </node>
+      <node>
+        <x>15</x>
+        <y>2</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>40</x>
+        <y>2</y>
+        <dwell>2</dwell>
+      </node>
+      <node>
+        <x>40</x>
         <y>26</y>
         <dwell>2</dwell>
       </node>
@@ -51,49 +171,266 @@
   <Enemy>
     <Path>
       <node>
-        <x>54</x>
-        <y>2</y>
-        <dwell>2</dwell>
+        <x>14</x>
+        <y>27</y>
+        <dwell>0</dwell>
       </node>
       <node>
-        <x>54</x>
-        <y>26</y>
-        <dwell>2</dwell>
+        <x>14</x>
+        <y>1</y>
+        <dwell>0</dwell>
       </node>
       <node>
-        <x>15</x>
-        <y>2</y>
-        <dwell>2</dwell>
+        <x>41</x>
+        <y>1</y>
+        <dwell>0</dwell>
       </node>
       <node>
-        <x>15</x>
-        <y>26</y>
-        <dwell>2</dwell>
+        <x>41</x>
+        <y>27</y>
+        <dwell>0</dwell>
       </node>
     </Path>
   </Enemy>
   <Enemy>
     <Path>
       <node>
-        <x>55</x>
-        <y>1</y>
-        <dwell>2</dwell>
+        <x>18</x>
+        <y>12</y>
+        <dwell>1</dwell>
       </node>
       <node>
-        <x>55</x>
-        <y>27</y>
-        <dwell>2</dwell>
+        <x>17</x>
+        <y>13</y>
+        <dwell>3</dwell>
       </node>
       <node>
-        <x>14</x>
-        <y>1</y>
-        <dwell>2</dwell>
-      </node>  
-      <node>
-        <x>14</x>
-        <y>27</y>
-        <dwell>2</dwell>
+        <x>23</x>
+        <y>13</y>
+        <dwell>3</dwell>
       </node>
     </Path>
   </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>18</x>
+        <y>15</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>17</x>
+        <y>14</y>
+        <dwell>3</dwell>
+      </node>
+      <node>
+        <x>23</x>
+        <y>14</y>
+        <dwell>3</dwell>
+      </node>
+    </Path>
+  </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>38</x>
+        <y>10</y>
+        <dwell>3</dwell>
+      </node>
+      <node>
+        <x>36</x>
+        <y>11</y>
+        <dwell>3</dwell>
+      </node>
+      <node>
+        <x>39</x>
+        <y>12</y>
+        <dwell>3</dwell>
+      </node>
+    </Path>
+  </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>39</x>
+        <y>16</y>
+        <dwell>3</dwell>
+      </node>
+      <node>
+        <x>38</x>
+        <y>18</y>
+        <dwell>3</dwell>
+      </node>
+      <node>
+        <x>36</x>
+        <y>17</y>
+        <dwell>3</dwell>
+      </node>
+    </Path>
+  </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>28</x>
+        <y>17</y>
+        <dwell>3</dwell>
+      </node>
+      <node>
+        <x>26</x>
+        <y>16</y>
+        <dwell>3</dwell>
+      </node>
+      <node>
+        <x>30</x>
+        <y>17</y>
+        <dwell>3</dwell>
+      </node>
+    </Path>
+  </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>30</x>
+        <y>10</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>28</x>
+        <y>11</y>
+        <dwell>3</dwell>
+      </node>
+      <node>
+        <x>32</x>
+        <y>11</y>
+        <dwell>3</dwell>
+      </node>
+    </Path>
+  </Enemy>
+  <Robot>
+    <Path>
+      <node>
+        <x>26</x>
+        <y>12</y>
+        <dwell>3</dwell>
+      </node>
+      <node>
+        <x>31</x>
+        <y>12</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>32</x>
+        <y>11</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>37</x>
+        <y>12</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>40</x>
+        <y>9</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>40</x>
+        <y>18</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>37</x>
+        <y>16</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>31</x>
+        <y>16</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>26</x>
+        <y>15</y>
+        <dwell>3</dwell>
+      </node>
+    </Path>
+  </Robot>
+  <Robot>
+    <Path>
+      <node>
+        <x>26</x>
+        <y>15</y>
+        <dwell>3</dwell>
+      </node>
+      <node>
+        <x>31</x>
+        <y>16</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>37</x>
+        <y>16</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>40</x>
+        <y>18</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>40</x>
+        <y>9</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>37</x>
+        <y>12</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>32</x>
+        <y>11</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>31</x>
+        <y>12</y>
+        <dwell>1</dwell>
+      </node>
+      <node>
+        <x>26</x>
+        <y>12</y>
+        <dwell>3</dwell>
+      </node>
+    </Path>
+  </Robot>
+  <Robot>
+    <Path>
+      <node>
+        <x>40</x>
+        <y>13</y>
+        <dwell>0</dwell>
+      </node>
+      <node>
+        <x>40</x>
+        <y>26</y>
+        <dwell>0</dwell>
+      </node>
+      <node>
+        <x>15</x>
+        <y>26</y>
+        <dwell>0</dwell>
+      </node>
+      <node>
+        <x>15</x>
+        <y>2</y>
+        <dwell>0</dwell>
+      </node>
+      <node>
+        <x>40</x>
+        <y>2</y>
+        <dwell>0</dwell>
+      </node>
+    </Path>
+  </Robot>
 </Level>

@@ -22,8 +22,6 @@ namespace TRAPT
         private WeaponType projectileType;
         private Random strayRandomizer;
 
-        //private SoundEffect shotSound;
-
         private Texture2D collider;
         private Rectangle collidingBox;
 
@@ -49,7 +47,7 @@ namespace TRAPT
             this.owner = owner;
 
             //image holding all the bullets
-            this.texture = Game.Content.Load<Texture2D>("projectiles");
+            this.texture = Game.Content.Load<Texture2D>("bullets");
             this.collider = Game.Content.Load<Texture2D>("bulletcollider");
 
 
@@ -59,10 +57,6 @@ namespace TRAPT
 
             //location and speed of the bullet
             this.position = position;
-
-            //this.position.Y += (float)(42 * Math.Cos(this.rotation + Math.PI));
-            //this.position.X += (float)(-12 * Math.Sin(this.rotation));
-            //return new Vector2(this.position.X + weapPos.X, this.position.Y + weapPos.Y);
 
             this.speed = (float)(speed + strayRandomizer.NextDouble());
 
@@ -80,7 +74,7 @@ namespace TRAPT
                     //this.shotSound = Game.Content.Load<SoundEffect>(@"Sound\SMG");
                     break;
                 case WeaponType.Shotgun:
-                    this.life = 500;//360;
+                    this.life = 360;
                     //this.shotSound = Game.Content.Load<SoundEffect>(@"Sound\shotgun");
                     break;
                 default:
@@ -132,21 +126,28 @@ namespace TRAPT
         /// </summary>
         public void GetSprite()
         {
+            frameCount = 0; // Which frame we are.  Values = {0, 1, 2}
+            aniStart = 0; // the index of the first frame
+            aniLength = 0; // the count of the frame on which to wrap on
+            aniRate = 333; // # milliseconds between frames.
+            frameWidth = 16; // how wide a frame is
+            frameHeight = 32; // how tall a frame is.
+
             //if a rifle shot.
             if (this.projectileType == WeaponType.SMG)
             {
-                //load the one floor view of the rifle
-                this.source = new Rectangle(0, 0, 17, 48);
-                this.destination = new Rectangle(0, 0, 17, 48);
+                //find appropriate bullet with the animation fields
+                aniRow = 0;
+                isLoop = false;
             }
             else if (this.projectileType == WeaponType.Shotgun)
             {
-                //TODO: adjust values for the shotgun shell.
-                //load the one floor view of the rifle
-                this.source = new Rectangle(0, 0, 17, 48);
-                this.destination = new Rectangle(0, 0, 17, 48);
+                //find appropriate bullet with the animation fields
+                aniRow = 1; // the row in the source to pull frames from
+                isLoop = false;
             }
-          
+            this.source = new Rectangle(0, 0, 16, 32);
+            this.destination = this.source;//new Rectangle(0, 0, 17, 48);
         }
 
         /// <summary>
@@ -196,16 +197,6 @@ namespace TRAPT
                 //this.owner.WeaponOrigin,
                 origin,
                 SpriteEffects.None, this.Depth);
-
-            //spriteBatch.Draw(this.collider, this.destination, this.source, Color.White,
-            //    this.rotation, // The rotation of the Sprite.  0 = facing up, Pi/2 = facing right
-            //    this.owner.WeaponOrigin,
-            //    SpriteEffects.None, this.Depth);
-
-            //Line hbleft = new Line(new Vector2(collidingBox.Left, collidingBox.Top), new Vector2(collidingBox.Left, collidingBox.Bottom));
-            //hbleft.Draw(spriteBatch, pixelTexture);
-            //Line hbtop = new Line(new Vector2(collidingBox.Left, collidingBox.Top), new Vector2(collidingBox.Right, collidingBox.Top));
-            //hbtop.Draw(spriteBatch, pixelTexture);
         }
 
         public override bool IsColliding(EnvironmentObj that)
@@ -215,26 +206,7 @@ namespace TRAPT
             collidingBox.Width = 1;
             collidingBox.Height = 1;
 
-            //Vector2 pt = new Vector2(collidingBox.X, collidingBox.Y);
-            //pt = Vector2.Transform(pt,
-            //    Matrix.Invert(
-            //    Matrix.CreateRotationX(this.rotation)
-            //    )
-            //    );
-            //collidingBox.X = (int)pt.X;
-            //collidingBox.Y = (int)pt.Y;
             return collidingBox.Intersects(that.Destination);
-
-
-            //pt = Vector2.Transform(pt,
-            //    Matrix.CreateTranslation(new Vector3(this.owner.WeaponOrigin, 0))
-            //    );
-
-            //Vector2.Transform(new Vector2(collidingBox.X, collidingBox.Y),
-            //    Matrix.Invert(
-            //    Matrix.CreateRotationZ(this.rotation)
-            //    )
-            //    );
         }
 
         public override void Collide(EnvironmentObj that)

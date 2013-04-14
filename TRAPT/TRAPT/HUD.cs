@@ -25,6 +25,7 @@ namespace TRAPT
         int ammo;
         //int healthlost;
 
+        #region Getters/Setters
         public int Health
         {
             get { return health; }
@@ -41,7 +42,9 @@ namespace TRAPT
           set { ammo = value; }
         }
         public string ContextTip { get; set; }
+        #endregion 
 
+        #region Class Variables
         Texture2D texH;
         Rectangle recH;
         Vector2   posH;
@@ -74,6 +77,8 @@ namespace TRAPT
 
         int recLeftPercent = 100;
         int timeLeftPercent = 100;
+
+        #endregion
 
         public HUD(Game game) : base(game)
         {
@@ -156,7 +161,7 @@ namespace TRAPT
 
                 posT.X = (Game.GraphicsDevice.Viewport.Width/2) - (tipWidth / 2);
                 spriteBatch.Draw(texT, posT, recT, Color.White);
-                spriteBatch.DrawString(ammoFont, this.ContextTip, new Vector2(posT.X + texT.Width + 10, posT.Y), Color.White);
+                spriteBatch.DrawString(ammoFont, this.ContextTip, new Vector2(posT.X + texT.Width + 10, posT.Y), Color.Blue);
 
                 this.ContextTip = ""; //n context
             }

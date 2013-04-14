@@ -1,52 +1,57 @@
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using Microsoft.Xna.Framework;
-//using Microsoft.Xna.Framework.Audio;
-//using Microsoft.Xna.Framework.Content;
-//using Microsoft.Xna.Framework.GamerServices;
-//using Microsoft.Xna.Framework.Graphics;
-//using Microsoft.Xna.Framework.Input;
-//using Microsoft.Xna.Framework.Media;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
+namespace TRAPT
+{
+    // a obstacle turned on/off by ObstacleSwitch
+    public class Obstacle : Switch
+    {
+        int texPosition;
 
-//namespace TRAPT
-//{
-//    public class Obstacle : Structure
-//    {
-//        // Stores the position of the obstacle in the play area
-//        public Rectangle position;
-//        private int bugOffset = -1;
+        public int TexPosition
+        {
+            get { return texPosition; }
+            set { texPosition = value; }
+        }
+        public Obstacle(Game game)
+            : base(game)
+        { 
+        
+        }
 
-//        public Obstacle(Game game)
-//            : base(game)
-//        {
-//            // TODO: Construct any child components here
-//        }
+        public override void Initialize()
+        {
+            this.Depth = 500;
 
-       
-//        public override void Initialize(Rectangle newPosition, int offSet)
-//        {
-//            this.position = newPosition;
-//            this.bugOffset = offSet;
+            base.Initialize();
+        }
 
-//            base.Initialize();
-//        }
+        public override void Update(GameTime gameTime)
+        {
+            if (!swStatus) // swStatus is changed from ObstacleSwitch-class
+            {
+                this.tileCount = 2; // obstacle is off
+            }
+            else
+            {
+                this.tileCount = texPosition; // obstacle is on
+            }
 
-//        public override void Update(GameTime gameTime)
-//        {
-            
+            if (this.IsColliding(TraptMain.player) && this.swStatus)
+            {
+                // collision detection or do whatever fun there is to do
+                TraptMain.player.Collide(this);
+            }
 
-//            base.Update(gameTime);
-//        }
-
-//        public static void Draw(List<Obstacle> obstacles, SpriteBatch spriteBatch, Texture2D obstacleTexture)
-//        {
-//            // Draw obstacles
-//            for (int i = 0; i < obstacles.Count; i++)
-//            {
-//                spriteBatch.Draw(obstacleTexture, obstacles[i].position, Color.White);
-//            }
-//        }
-//    }
-//}
+            base.Update(gameTime);
+        }
+    }
+}

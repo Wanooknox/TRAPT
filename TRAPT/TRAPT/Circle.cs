@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TRAPT
 {
+    //Circle class used for collision detection for sound barrier
     public class Circle
     {
         public Vector2 position;

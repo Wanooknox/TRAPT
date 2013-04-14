@@ -2,10 +2,38 @@
 <Level>
   <Enemy>    
     <Path>
-      <node> <x>7</x> <y>1</y>  <dwell>2</dwell> </node>
-      <node> <x>7</x> <y>10</y> <dwell>2</dwell> </node>
+      <node> <x>17</x> <y>1</y>  <dwell>2</dwell> </node>
+      <node> <x>17</x> <y>4</y> <dwell>2</dwell> </node>
     </Path>
   </Enemy>
+  <Enemy>
+    <Path>
+      <node>
+        <x>2</x>
+        <y>8</y>
+        <dwell>2</dwell>
+      </node>
+      <node>
+        <x>2</x>
+        <y>10</y>
+        <dwell>2</dwell>
+      </node>
+    </Path>
+  </Enemy>
+  <Robot>
+    <Path>
+      <node>
+        <x>17</x>
+        <y>12</y>
+        <dwell>5</dwell>
+      </node>
+      <node>
+        <x>12</x>
+        <y>12</y>
+        <dwell>5</dwell>
+      </node>
+    </Path>
+  </Robot>
  <!--<Robot>
     <Path>
       <node> <x>12</x> <y>1</y>  <dwell>3</dwell>  </node>
